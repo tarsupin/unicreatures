@@ -1,0 +1,37 @@
+******************************
+****** Balancing System ******
+******************************
+
+Energy Max: 400 max
+Energy Regain: 1 every 20 seconds
+
+Energy Balance: Every 2 hours, you get 400 energy. That's 400 per site visit. x3 visits per day that's 1200 per day.
+
+An average of .55 of your actions will gain a supply.
+That's 660 supplies each day, or 220 per site visit.
+
+Specific Results:
+1% Special Item		2.2 per visit		6.6 / day		32 / week
+2% Pets				4.5 per visit		13 / day		65 / week
+25% Components		55 per visit		165 / day		800 / week
+18% Coins			40 per visit		120 / day		550 / week
+6% Crafting			13 per visit		40 / day		200 / week
+4% Alchemy			9 per visit			27 / day		125 / week
+
+
+**************************************
+****** Expected Purchases / Day ******
+**************************************
+
+Small Land Plot (30 pets) - 1 every 2 days				250 Coins
+Upgraded Land Plot (40 pets) - 1 every 5 days			200 Crafting
+Maxed Land Plot (50 pets) - 1 every 10 days				400 Crafting
+Rare Land Plots 										(( Double the Rate ))
+Best Land Plot											(( x4 the Rate ))
+
+Full Evolution (50 components) - 3 every day			165 / day (exact amount)
+
+
+
+
+

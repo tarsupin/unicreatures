@@ -1,0 +1,115 @@
+
+/************************
+****** Page Layout ******
+************************/
+
+@media screen and (min-width:1421px) {
+	#content { background-color:white; margin-left:260px; max-width:100%; margin-right:305px; padding:16px; }
+	#panel-right { background-color:white; width:280px; }
+}
+
+@media screen and (min-width:1121px) and (max-width:1420px) {
+	#content { background-color:white; margin-left:260px; max-width:100%; margin-right:10px; padding:16px; }
+}
+
+@media screen and (min-width:921px) and (max-width:1120px) {
+	#content { background-color:white; margin-left:260px; margin-right:10px; padding:12px; }
+}
+
+@media screen and (min-width:501px) and (max-width:920px) {
+	#content { background-color:white; margin-left:0px; margin-right:10px; padding:10px; }
+}
+
+@media screen and (max-width:500px) {
+	#content { background-color:white; margin-left:0px; padding:10px; }
+}
+
+#panel-nav { width:245px; }
+
+#content { overflow:hidden; }
+
+/*********************
+****** Pet Page ******
+*********************/
+
+#pet { text-align:center; background-color:#abcdef; padding:6px; border-radius:6px; margin-bottom:12px; }
+#pet img { max-width:100%; }
+#pet-nickname { white-space:no-wrap; font-weight:bold; }
+#pet-blurb { font-weight:bold; text-align:center; margin-bottom:12px; }
+#pet-details { background-color:#abcdef; padding:6px; border-radius:6px; margin-top:12px; }
+
+.attr-row { display:table-row; }
+.attr-name { display:table-cell; text-align:right; padding-left:4px; }
+.attr-num { display:table-cell; padding-left:10px; font-weight:bold; }
+
+#pet-rare-act { text-align:center; background-color:#cdedef; padding:3px; border-radius:6px; margin-bottom:12px; }
+.pet-rare-bub { display:inline-block; padding:3px; margin:3px; width:110px; }
+.pet-rare-title { font-size:0.8em; font-weight:bold; }
+.pet-rare-note { font-size:0.8em; font-weight:normal; }
+
+@media screen and (min-width:675px) {
+	#pet-page-left { float:left; width:300px; margin:0 10px 10px 0; }
+	#pet-page-right { margin-left:310px; }
+	.attr-graph { display:table-cell; padding-left:10px; font-weight:bold; }
+}
+
+@media screen and (max-width:674px) {
+	#pet-page-left { float:left; width:54%; margin:0 10px 10px 0; }
+	#pet-page-right { margin-left:56%; }
+	.attr-graph { display:none; }
+}
+
+@media screen and (max-width:400px) {
+	#pet-desc { display:none; }
+}
+
+
+/**********************
+****** Plot Page ******
+**********************/
+
+#plot-page-left { float:left; width:180px; margin:0 10px 10px 0; }
+#plot-page-right { margin-left:190px; }
+
+#land-plot { text-align:center; background-color:#abcdef; padding:6px; border-radius:6px; }
+#land-plot>img { max-width:100%; }
+
+.lp-bold { font-weight:bold; font-size:1.1em; }
+.lp-note { font-size:0.8em; }
+
+#lp-caretaker { text-align:center; background-color:#abcdef; padding:6px; border-radius:6px; margin-top:12px; }
+#lp-caretaker img { max-width:100%; }
+
+.plot-pet { display:inline-block; text-align:center; }
+.plot-pet-inner { display:table-cell; vertical-align:bottom; width:140px; height:140px; overflow:hidden; }
+.plot-pet img { max-width:140px; max-height:140px; }
+
+/**************************
+****** Special Pages ******
+**************************/
+
+.dual-col-item {  }
+
+
+/**********************
+****** Shop Page ******
+**********************/
+
+@media screen and (min-width:730px) {
+	.shop-block { float:left; width:33.3%; height:170px; }
+}
+
+@media screen and (min-width:450px) and (max-width:729px) {
+	.shop-block { float:left; width:50%; height:170px; }
+}
+
+@media screen and (max-width:449px) {
+	.shop-block { float:left; width:100%; height:170px; }
+}
+
+.shop-block-inner { padding:4px; margin:4px; background-color:#deefff; border-radius:6px; height:150px; overflow:hidden; }
+.shop-block-left { float:left; width:70px; text-align:center; margin-top:12px; }
+.shop-block-right { margin-left:80px; position:relative; height:100%; }
+.shop-block-title { font-weight:bold; font-size:1.1em; }
+.shop-block-note { font-size:0.9em; }
+.shop-block-leave { position:absolute; bottom:0px; left:0px; font-size:0.9em; color:#aa0000; }
