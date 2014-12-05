@@ -1,5 +1,11 @@
 <?php if(!defined("CONF_PATH")) { die("No direct script access allowed."); }
 
+// Prepare the Page's Active Hashtag
+if(!isset($config['active-hashtag']))
+{
+	$config['active-hashtag'] = "UniCreatures";
+}
+
 // Base style sheet for this site
 Metadata::addHeader('<link rel="stylesheet" href="' . CDN . '/css/unifaction-2col.css" />');
 
@@ -14,7 +20,7 @@ if(Me::$loggedIn)
 	<div class="menu-wrap hide-600">
 		<ul class="menu">' . (isset($uniMenu) ? $uniMenu : '') . '
 			
-			<li class="menu-slot"><a href="/' . Me::$vals['handle'] . '">My Profile</a><ul><li class="dropdown-slot"><a href="/treasure-queue">Treasure Chest</a></li><li class="dropdown-slot"><a href="/training-center">Training Center</a></li><li class="dropdown-slot"><a href="/achievements">My Achievements</a></li><li class="dropdown-slot"><a href="/' . Me::$vals['handle'] . '">Visiting Page</a></li></ul>
+			<li class="menu-slot"><a href="/' . Me::$vals['handle'] . '">My Profile</a><ul><li class="dropdown-slot"><a href="/treasure-chest">Treasure Chest</a></li><li class="dropdown-slot"><a href="/training-center">Training Center</a></li><li class="dropdown-slot"><a href="/achievements">My Achievements</a></li><li class="dropdown-slot"><a href="/' . Me::$vals['handle'] . '">Visiting Page</a></li></ul>
 			
 			<li class="menu-slot"><a href="/land-plots">My Pets</a><ul><li class="dropdown-slot"><a href="/wild">My Wild Area</a></li><li class="dropdown-slot"><a href="/action/sort-plots">Sort My Plots</a></li></ul>
 			
@@ -41,6 +47,21 @@ if(Me::$loggedIn)
 }
 else
 {
+	// UniFaction Dropdown Menu
+	WidgetLoader::add("UniFactionMenu", 10, '
+	<div class="menu-wrap hide-600">
+		<ul class="menu">' . (isset($uniMenu) ? $uniMenu : '') . '
+			
+			<li class="menu-slot"><a href="/login">My Profile</a><ul><li class="dropdown-slot"><a href="/treasure-chest">Treasure Chest</a></li><li class="dropdown-slot"><a href="/training-center">Training Center</a></li><li class="dropdown-slot"><a href="/achievements">My Achievements</a></li></ul>
+			
+			<li class="menu-slot"><a href="/land-plots">My Pets</a><ul><li class="dropdown-slot"><a href="/wild">My Wild Area</a></li><li class="dropdown-slot"><a href="/action/sort-plots">Sort My Plots</a></li></ul>
+			
+			<li class="menu-slot"><a href="/">Caretaker Hut</a></li><li class="menu-slot"><a href="javascript:void(0);">Shop</a><ul><li class="dropdown-slot"><a href="/shop-pets">Pet Shop</a></li><li class="dropdown-slot"><a href="/exotic-pets">Exotic Pet Shop</a></li><li class="dropdown-slot"><a href="/shop-supplies">Supply Shop</a></li><li class="dropdown-slot"><a href="/shop-deeds">Land Plots</a></li></ul>
+			
+			<li class="menu-slot"><a href="/herd-list">Herds</a></li><li class="menu-slot"><a href="/explore">Explore</a></li><li class="menu-slot"><a href="javascript:void(0)">Info</a><ul><li class="dropdown-slot"><a href="/creature-database">Pet Database</a></li><li class="dropdown-slot"><a href="javascript:void(0);">Help &amp; Tutorial</a></li><li class="dropdown-slot"><a href="' . URL::avatar_unifaction_community() . '/unicreatures">UniCreatures Forum</a></li></ul>
+		</ul>
+	</div>');
+	
 	// Main Navigation
 	WidgetLoader::add("MobilePanel", 10, '
 	<div class="panel-box">

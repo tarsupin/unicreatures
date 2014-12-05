@@ -3,92 +3,68 @@
 ****** Page Layout ******
 ************************/
 
-@media screen and (min-width:1421px) {
-	#content { background-color:white; margin-left:260px; max-width:100%; margin-right:305px; padding:16px; }
-	#panel-right { background-color:white; width:280px; }
+@media screen and (min-width:921px) {
+	#content { padding:14px; }
 }
 
-@media screen and (min-width:1121px) and (max-width:1420px) {
-	#content { background-color:white; margin-left:260px; max-width:100%; margin-right:10px; padding:16px; }
-}
-
-@media screen and (min-width:921px) and (max-width:1120px) {
-	#content { background-color:white; margin-left:260px; margin-right:10px; padding:12px; }
-}
-
-@media screen and (min-width:501px) and (max-width:920px) {
-	#content { background-color:white; margin-left:0px; margin-right:10px; padding:10px; }
-}
-
-@media screen and (max-width:500px) {
-	#content { background-color:white; margin-left:0px; padding:10px; }
+@media screen and (max-width:920px) {
+	#content { padding:10px; }
 }
 
 #panel-nav { width:245px; }
 
-#content { overflow:hidden; }
+#content { background-color:white; overflow:hidden; }
 
-/*********************
-****** Pet Page ******
-*********************/
 
-#pet { text-align:center; background-color:#abcdef; padding:6px; border-radius:6px; margin-bottom:12px; }
-#pet img { max-width:100%; }
-#pet-nickname { white-space:no-wrap; font-weight:bold; }
-#pet-blurb { font-weight:bold; text-align:center; margin-bottom:12px; }
-#pet-details { background-color:#abcdef; padding:6px; border-radius:6px; margin-top:12px; }
+/*****************************
+****** Modules & Blocks ******
+*****************************/
 
+#pet-desc { }
+
+.uc-static-block { text-align:center; background-color:#abcdef; padding:5px; border-radius:6px; margin-bottom:12px; }
+.uc-static-block img { max-width:100%; }
+
+.uc-action-block { text-align:center; background-color:#cdedef; padding:3px; border-radius:6px; margin-bottom:12px; }
+.uc-action-inline { display:inline-block; padding:3px; margin:3px; width:110px; }
+
+.uc-bold { font-weight:bold; font-size:1.1em; }
+.uc-bold-block { font-weight:bold; text-align:center; margin-bottom:12px; }
+.uc-note { font-size:0.8em; }
+.uc-note-bold { font-size:0.8em; font-weight:bold; }
+
+/* Pet Cubes */
+.pet-cube { display:inline-block; text-align:center; }
+.pet-cube-inner { display:table-cell; vertical-align:bottom; width:140px; height:140px; overflow:hidden; }
+.pet-cube img { max-width:140px; max-height:140px; }
+
+/* Pet Page - Skill Table */
 .attr-row { display:table-row; }
 .attr-name { display:table-cell; text-align:right; padding-left:4px; }
 .attr-num { display:table-cell; padding-left:10px; font-weight:bold; }
 
-#pet-rare-act { text-align:center; background-color:#cdedef; padding:3px; border-radius:6px; margin-bottom:12px; }
-.pet-rare-bub { display:inline-block; padding:3px; margin:3px; width:110px; }
-.pet-rare-title { font-size:0.8em; font-weight:bold; }
-.pet-rare-note { font-size:0.8em; font-weight:normal; }
-
+/* Responsive Design (Wide Sidebars) */
 @media screen and (min-width:675px) {
-	#pet-page-left { float:left; width:300px; margin:0 10px 10px 0; }
-	#pet-page-right { margin-left:310px; }
-	.attr-graph { display:table-cell; padding-left:10px; font-weight:bold; }
+	#uc-left-wide { float:left; width:300px; margin:0 10px 10px 0; }
+	#uc-right-wide { margin-left:310px; }
+	.attr-graph { display:table-cell; text-align:left; padding-left:10px; font-weight:bold; }
 }
 
-@media screen and (max-width:674px) {
-	#pet-page-left { float:left; width:54%; margin:0 10px 10px 0; }
-	#pet-page-right { margin-left:56%; }
+@media screen and (min-width:435px) and (max-width:674px) {
+	#uc-left-wide { float:left; width:54%; margin:0 10px 10px 0; }
+	#uc-right-wide { margin-left:56%; }
 	.attr-graph { display:none; }
 }
 
-@media screen and (max-width:400px) {
-	#pet-desc { display:none; }
+@media screen and (max-width:434px) {
+	.attr-graph { display:table-cell; text-align:left; padding-left:10px; font-weight:bold; }
 }
 
-
-/**********************
-****** Plot Page ******
-**********************/
-
-#plot-page-left { float:left; width:180px; margin:0 10px 10px 0; }
-#plot-page-right { margin-left:190px; }
-
-#land-plot { text-align:center; background-color:#abcdef; padding:6px; border-radius:6px; }
-#land-plot>img { max-width:100%; }
-
-.lp-bold { font-weight:bold; font-size:1.1em; }
-.lp-note { font-size:0.8em; }
-
-#lp-caretaker { text-align:center; background-color:#abcdef; padding:6px; border-radius:6px; margin-top:12px; }
-#lp-caretaker img { max-width:100%; }
-
-.plot-pet { display:inline-block; text-align:center; }
-.plot-pet-inner { display:table-cell; vertical-align:bottom; width:140px; height:140px; overflow:hidden; }
-.plot-pet img { max-width:140px; max-height:140px; }
-
-/**************************
-****** Special Pages ******
-**************************/
-
-.dual-col-item {  }
+/* Responsive Design (Slim Sidebars) */
+@media screen and (min-width:575px) {
+	#uc-left { float:left; width:180px; margin:0 10px 10px 0; }
+	#uc-right { margin-left:190px; }
+}
 
 
 /**********************

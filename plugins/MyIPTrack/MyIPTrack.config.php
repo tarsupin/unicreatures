@@ -1,17 +1,17 @@
 <?php if(!defined("CONF_PATH")) { die("No direct script access allowed."); } 
 
-class MyEnergy_config {
+class MyIPTrack_config {
 	
 	
 /****** Plugin Variables ******/
 	public $pluginType = "standard";
 	public $pluginName = "MyEnergy";
-	public $title = "Energy Plugin";
+	public $title = "IP Tracking Plugin";
 	public $version = 1.0;
 	public $author = "Brint Paris";
 	public $license = "UniFaction License";
 	public $website = "http://unifaction.com";
-	public $description = "Allows the system to use and work with energy.";
+	public $description = "Allows the system to use and work with IP tracking (for pet bonuses, etc).";
 	
 	public $data = array();
 	

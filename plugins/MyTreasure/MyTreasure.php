@@ -188,12 +188,16 @@ abstract class MyTreasure {
 	
 	// $treasureData = MyTreasure::acquire($uniID, $treasure = "", [$count]);
 	{
+		// Assign random treasure (if applicable)
+		if($treasure == "random")
+		{
+			$treasure = MyTreasure::random($uniID);
+		}
+		
 		// If no treasure was assigned, end here
-		if($treasure == "")
+		else if($treasure == "")
 		{
 			return array();
-			
-			//$treasure = MyTreasure::random($uniID);
 		}
 		
 		$treasureData = array();
@@ -247,7 +251,7 @@ abstract class MyTreasure {
 		// Provide the user with the relevant treasures
 		foreach($treasures as $key => $count)
 		{
-			self::acquire($uniID, $key, $count);
+			self::acquire($uniID, $key, (int) $count);
 		}
 		
 		return true;

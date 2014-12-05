@@ -3,11 +3,11 @@
 // Must Log In
 if(!Me::$loggedIn)
 {
-	Me::redirectLogin("/land-plots");
+	Me::redirectLogin("/uc-static-blocks");
 }
 
 // Make sure pet exists
-if(!isset($url[2]) or !$pet = MyCreatures::petData($url[2], "id, uni_id, type_id, nickname, experience, total_points, activity, active_until"))
+if(!isset($url[2]) or !$pet = MyCreatures::petData((int) $url[2], "id, uni_id, type_id, nickname, experience, total_points, activity, active_until"))
 {
 	header("Location: /"); exit;
 }
@@ -15,10 +15,10 @@ if(!isset($url[2]) or !$pet = MyCreatures::petData($url[2], "id, uni_id, type_id
 // Make sure you own the pet
 if($pet['uni_id'] != Me::$id)
 {
-	header("Location: /land-plots"); exit;
+	header("Location: /uc-static-blocks"); exit;
 }
 
-if($isBusy = MyCreatures::isBusy($pet['activity'], $pet['active_until']))
+if($isBusy = MyCreatures::isBusy($pet['activity'], (int) $pet['active_until']))
 {
 	Alert::saveError("Cannot Join Herd", "A pet cannot join a herd while it is busy with another activity.");
 	
@@ -57,14 +57,15 @@ require(SYS_PATH . "/controller/includes/header.php");
 require(SYS_PATH . "/controller/includes/side-panel.php");
 
 echo '
-<div id="content" style="overflow:hidden;">' . Alert::display();
+<div id="panel-right"></div>
+<div id="content">' . Alert::display();
 
 echo '
-<div id="pet-page-left">
-	<div id="pet"><a href="/pet/' . $pet['id'] . '"><img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" /></a><div class="lp-bold">' . $pet['nickname'] . '</div><div class="lp-note">Level ' . MyTraining::getLevel($pet['experience']) . ' ' . $petType['name'] . '</div><div style="font-size:0.8em;">' . $pet['total_points'] . ' Evolution Points</div></div>
-	<div id="pet-rare-act"><img src="' . MyCreatures::imgSrc($petType['family'], $petType['family'], "") . '" /><div class="lp-bold">The ' . $petType['family'] . ' Herd</div><div class="lp-note">Population: ' . $population . '</div></div>
+<div id="uc-left-wide">
+	<div id="pet"><a href="/pet/' . $pet['id'] . '"><img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" /></a><div class="uc-bold">' . $pet['nickname'] . '</div><div class="uc-note">Level ' . MyTraining::getLevel((int) $pet['experience']) . ' ' . $petType['name'] . '</div><div style="font-size:0.8em;">' . $pet['total_points'] . ' Evolution Points</div></div>
+	<div class="uc-action-block"><img src="' . MyCreatures::imgSrc($petType['family'], $petType['family'], "") . '" /><div class="uc-bold">The ' . $petType['family'] . ' Herd</div><div class="uc-note">Population: ' . $population . '</div></div>
 </div>
-<div id="pet-page-right">
+<div id="uc-right-wide">
 	<h2>Send ' . $pet['nickname'] . ' to the Herd</h2>
 	<div style="color:red; font-size:1.1em;"><span class="icon-flag"></span> Warning: Creatures that get sent to the herd CANNOT be returned, train, play in games, or be used in any other way. They become permanently associated with their family herd.</div>
 	<div style="margin-top:22px; font-size:1.1em;">Are you sure you want to send this creature to the herd?</div>

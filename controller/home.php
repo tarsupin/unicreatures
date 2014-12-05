@@ -4,6 +4,7 @@
 if(!Me::$loggedIn)
 {
 	// Redirect to a welcome page
+	// Once I build this, change the section below that prevents guests from taking eggs (will be irrelevant)
 }
 
 // Prepare Values
@@ -22,23 +23,30 @@ if($checkLastGather != $dateCheck)
 	// If the user is attempting to gather an egg from the caretaker hut
 	if(isset($_GET['gather']))
 	{
-		$gatherID = (int) $_GET['gather'];
-		
-		// Check if the type is in the caretaker hut
-		if(in_array($gatherID, $basket))
+		if(Me::$loggedIn)
 		{
-			// Acquire the Egg
-			if($creatureID = MyCreatures::acquireCreature(Me::$id, $gatherID))
+			$gatherID = (int) $_GET['gather'];
+			
+			// Check if the type is in the caretaker hut
+			if(in_array($gatherID, $basket))
 			{
-				// Prevent user from acquiring another for the next hour
-				Cache::set("user_gathered_hut:" . Me::$id, $dateCheck, 60 * 61);
-				
-				header("Location: /pet/" . $creatureID);
+				// Acquire the Egg
+				if($creatureID = MyCreatures::acquireCreature(Me::$id, $gatherID))
+				{
+					// Prevent user from acquiring another for the next hour
+					Cache::set("user_gathered_hut:" . Me::$id, $dateCheck, 60 * 61);
+					
+					header("Location: /pet/" . $creatureID);
+				}
+				else
+				{
+					Alert::error("Egg Error", "An error has occurred while trying to gather a pet.", 1);
+				}
 			}
-			else
-			{
-				Alert::error("Egg Error", "An error has occurred while trying to gather a pet.", 1);
-			}
+		}
+		else
+		{
+			Alert::error("Guest Account", "You'll have to log in to collect an egg.");
 		}
 	}
 }
@@ -54,7 +62,15 @@ require(SYS_PATH . "/controller/includes/header.php");
 require(SYS_PATH . "/controller/includes/side-panel.php");
 
 echo '
+<div id="panel-right"></div>
 <div id="content">' . Alert::display();
+
+echo '
+<div id="uc-left-wide">
+	<div class="uc-static-block uc-bold">The Caretaker Hut</div>
+	<div class="uc-bold-block">You can collect ONE egg here every hour. Choose wisely!</div>
+</div>
+<div id="uc-right-wide">';
 
 if($showHut == true)
 {
@@ -81,6 +97,8 @@ else
 }
 
 echo '
+</div>
+
 	</div>
 </div>';
 

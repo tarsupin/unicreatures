@@ -53,7 +53,8 @@ require(SYS_PATH . "/controller/includes/header.php");
 require(SYS_PATH . "/controller/includes/side-panel.php");
 
 echo '
-<div id="content" style="overflow:hidden;">' . Alert::display() . '
+<div id="panel-right"></div>
+<div id="content">' . Alert::display() . '
 
 <h2>Pet Shop</h2>
 <p>You have ' . number_format($coins) . ' Coins. Click on a pet to purchase it.</p>';

@@ -1,17 +1,17 @@
 <?php if(!defined("CONF_PATH")) { die("No direct script access allowed."); } 
 
-class MyAchievements_config {
+class MyAreas_config {
 	
 	
 /****** Plugin Variables ******/
 	public $pluginType = "standard";
-	public $pluginName = "MyAchievements";
-	public $title = "Achievement System";
+	public $pluginName = "MyAreas";
+	public $title = "Area System";
 	public $version = 1.0;
 	public $author = "Brint Paris";
 	public $license = "UniFaction License";
 	public $website = "http://unifaction.com";
-	public $description = "Provides an achievement system for UniCreatures.";
+	public $description = "Provides methods to work with land plots and areas for UniCreatures.";
 	
 	public $data = array();
 	

@@ -76,6 +76,12 @@ abstract class MyAchievements {
 	
 	// MyAchievements::set($uniID, $creatureFamily, $type, $value);
 	{
+		// Make sure there is a creature family provided
+		if(!$creatureFamily)
+		{
+			return false;
+		}
+		
 		// Check if the user has any achievements of this family
 		if(!$achievementData = Database::selectOne("SELECT * FROM achievements WHERE uni_id=? AND creature_family=? LIMIT 1", array($uniID, $creatureFamily)))
 		{

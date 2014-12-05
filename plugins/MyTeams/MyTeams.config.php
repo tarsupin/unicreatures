@@ -22,6 +22,8 @@ class MyTeams_config {
 	
 	// $plugin->install();
 	{
+		return true;
+		
 		Database::exec("
 		CREATE TABLE IF NOT EXISTS `teams`
 		(
@@ -44,7 +46,7 @@ class MyTeams_config {
 			`uni_id`				int(10)			unsigned	NOT NULL	DEFAULT '0',
 			`team_id`				int(10)			unsigned	NOT NULL	DEFAULT '0',
 			
-			UNIQUE (`uni_id`, `herd_id`)
+			UNIQUE (`uni_id`, `team_id`)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8 PARTITION BY KEY(uni_id) PARTITIONS 7;
 		");
 		

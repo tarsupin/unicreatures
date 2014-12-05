@@ -35,14 +35,15 @@ require(SYS_PATH . "/controller/includes/header.php");
 require(SYS_PATH . "/controller/includes/side-panel.php");
 
 echo '
-<div id="content" style="overflow:hidden;">' . Alert::display();
+<div id="panel-right"></div>
+<div id="content">' . Alert::display();
 
 echo '
-<div id="plot-page-left"><div id="lp-caretaker" style="margin-top:0px;">
+<div id="uc-left"><div class="uc-static-block" style="margin-top:0px;">
 	<img src="' . ProfilePic::image((int) $userData['uni_id'], "huge") . '" />
-	<div class="lp-bold">' . $userData['display_name'] . '</div>
+	<div class="uc-bold">' . $userData['display_name'] . '</div>
 </div></div>
-<div id="plot-page-right">';
+<div id="uc-right">';
 
 if(count($herds) > 0)
 {
@@ -50,8 +51,8 @@ if(count($herds) > 0)
 	foreach($herds as $herd)
 	{
 		echo '
-		<div class="plot-pet">
-			<div class="plot-pet-inner"><a href="' . $urlAdd . '/herds/' . $herd['family'] . '"><img src="/creatures/' . $herd['family'] . '/' . strtolower($herd['family']) . '.png" /></a></div>
+		<div class="pet-cube">
+			<div class="pet-cube-inner"><a href="' . $urlAdd . '/herds/' . $herd['family'] . '"><img src="/creatures/' . $herd['family'] . '/' . strtolower($herd['family']) . '.png" /></a></div>
 			<div>' . $herd['family'] . ' Herd</div>
 			<div style="font-size:0.9em;">Pop: ' . $herd['population'] . '</div>
 		</div>';

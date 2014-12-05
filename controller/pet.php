@@ -1,7 +1,7 @@
 <?php if(!defined("CONF_PATH")) { die("No direct script access allowed."); }
 
 // Make sure pet exists
-if(!isset($url[1]) or !$pet = MyCreatures::petData($url[1], "id, uni_id, area_id, type_id, nickname, gender, activity, active_until, experience, total_points, date_acquired"))
+if(!isset($url[1]) or !$pet = MyCreatures::petData((int) $url[1], "id, uni_id, area_id, type_id, nickname, gender, activity, active_until, experience, total_points, date_acquired"))
 {
 	header("Location: /"); exit;
 }
@@ -50,7 +50,7 @@ else
 $isBusy = MyCreatures::isBusy($pet['activity'], $pet['active_until']);
 
 // Get the Pet Type Data
-$petType = MyCreatures::petTypeData($pet['type_id'], "family, name, evolution_level, required_points, rarity, blurb, description, evolves_from, prefix");
+$petType = MyCreatures::petTypeData((int) $pet['type_id'], "family, name, evolution_level, required_points, rarity, blurb, description, evolves_from, prefix");
 
 // Get Components
 $components = MySupplies::getSupplies(Me::$id, "components");
@@ -95,7 +95,7 @@ if(!$isBusy and Me::$id == $pet['uni_id'])
 
 // Prepare Values
 $linkProtect = Link::prepare("uc-pet-page-" . $pet['id']);
-$level = MyTraining::getLevel($pet['experience']);
+$level = MyTraining::getLevel((int) $pet['experience']);
 
 // Run Global Script
 require(APP_PATH . "/includes/global.php");
@@ -108,24 +108,25 @@ require(SYS_PATH . "/controller/includes/header.php");
 require(SYS_PATH . "/controller/includes/side-panel.php");
 
 echo '
+<div id="panel-right"></div>
 <div id="content">' . Alert::display();
 
 echo '
-<div id="pet-page-left">
-	<div id="pet">
+<div id="uc-left-wide">
+	<div class="uc-static-block">
 		<img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" />
-		<div id="pet-nickname">' . (($pet['nickname'] == "Egg" and $petType['evolution_level'] == 1) ? $petType['family'] . ' ' . $pet['nickname'] : $pet['nickname']) . '</div>
-		<div style="font-size:0.9em;">' . $pet['total_points'] . ($petType['required_points'] ? '/' . $petType['required_points'] : '') . ' Evolution Points</div>
+		<div class="uc-bold">' . (($pet['nickname'] == "Egg" and $petType['evolution_level'] == 1) ? $petType['family'] . ' ' . $pet['nickname'] : $pet['nickname']) . '</div>
+		<div class="uc-note">' . $pet['total_points'] . ($petType['required_points'] ? '/' . $petType['required_points'] : '') . ' Evolution Points</div>
 	</div>
-	<div id="pet-blurb">' . $petType['blurb'] . '</div>
-	<div id="pet-rare-act">
+	<div class="uc-bold-block">' . $petType['blurb'] . '</div>
+	<div class="uc-action-block">
 		<div style="margin-bottom:10px;">Components Available: ' . $components . '</div>
-		<div class="pet-rare-bub"><a href="/pet/' . $pet['id'] . '?feed=1&' . $linkProtect . '"><img src="/assets/supplies/sunnyseed.png" /></a><div class="pet-rare-title">Feed Pet</div><div class="pet-rare-note">&nbsp;</div></div>
-		<div class="pet-rare-bub"><a href="/pet/' . $pet['id'] . '?feed=10&' . $linkProtect . '"><img src="/assets/supplies/component_bag.png" /></a><div class="pet-rare-title">Feed Pet x10</div><div class="pet-rare-note">&nbsp;</div></div>
-		<div class="pet-rare-bub"><a href="' . $areaLink . '"><img src="/assets/areas/' . $areaData['type'] . '.png"  style="max-height:70px;" /></a><div class="pet-rare-title">To Area</div><div class="pet-rare-note">' . $areaData['name'] . '</div></div>
-		<div class="pet-rare-bub"><a href="/' . $userData['handle'] . '"><img src="' . ProfilePic::image($pet['uni_id'], "medium") . '" style="border-radius:6px;" /></a><div class="pet-rare-title">Visit Center</div><div class="pet-rare-note">&nbsp;</div></div>
+		<div class="uc-action-inline"><a href="/pet/' . $pet['id'] . '?feed=1&' . $linkProtect . '"><img src="/assets/supplies/sunnyseed.png" /></a><div class="uc-note-bold">Feed Pet</div><div class="uc-note">&nbsp;</div></div>
+		<div class="uc-action-inline"><a href="/pet/' . $pet['id'] . '?feed=10&' . $linkProtect . '"><img src="/assets/supplies/component_bag.png" /></a><div class="uc-note-bold">Feed Pet x10</div><div class="uc-note">&nbsp;</div></div>
+		<div class="uc-action-inline"><a href="' . $areaLink . '"><img src="/assets/areas/' . $areaData['type'] . '.png"  style="max-height:70px;" /></a><div class="uc-note-bold">To Area</div><div class="uc-note">' . $areaData['name'] . '</div></div>
+		<div class="uc-action-inline"><a href="/' . $userData['handle'] . '"><img src="' . ProfilePic::image($pet['uni_id'], "medium") . '" style="border-radius:6px;" /></a><div class="uc-note-bold">Visit Center</div><div class="uc-note">&nbsp;</div></div>
 	</div>
-	<div id="pet-details">
+	<div class="uc-static-block">
 		<div style="text-align:center; font-weight:bold;">' . ($level ? 'Level ' . $level . ' ' : '') . ($pet['gender'] == "m" ? "Male" : "Female") . ' ' . $petType['family'] . '</div>
 		<div style="text-align:center;">' . number_format($pet['experience']) . ' EXP</div>
 		<div style="margin-top:12px;">';
@@ -147,7 +148,7 @@ echo '
 if(!$isBusy)
 {
 	echo '
-	<div id="pet-page-right">';
+	<div id="uc-right-wide">';
 	
 	if(Me::$id == $pet['uni_id'])
 	{
@@ -155,26 +156,26 @@ if(!$isBusy)
 		list($trainCost, $expGain) = MyTraining::getTrainingData($level);
 		
 		echo '
-		<div id="pet-rare-act">';
+		<div class="uc-action-block">';
 		
 		if(!$petType['required_points'] == 0)
 		{
 			$evolve = $pet['total_points'] >= $petType['required_points'] ? true : false;
 			
 			echo '
-			<div class="pet-rare-bub">' . ($evolve ? '<a href="/action/evolve/' . $pet['id'] . '?' . $linkProtect . '"><img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" style="max-height:70px;" /></a>' : '<img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '"  style="max-height:70px; opacity:0.5;" />') . '<div class="pet-rare-title">Evolve</div><div class="pet-rare-note">' . ($evolve ? 'Can Evolve!' : '&nbsp;') . '</div></div>';
+			<div class="uc-action-inline">' . ($evolve ? '<a href="/action/evolve/' . $pet['id'] . '?' . $linkProtect . '"><img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" style="max-height:70px;" /></a>' : '<img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '"  style="max-height:70px; opacity:0.5;" />') . '<div class="uc-note-bold">Evolve</div><div class="uc-note">' . ($evolve ? 'Can Evolve!' : '&nbsp;') . '</div></div>';
 		}
 		
 		echo '
-			<div class="pet-rare-bub"><a href="/action/send-trainer?pet=' . $pet['id'] . '"><img src="/assets/items/training_manual2.png" /></a><div class="pet-rare-title">Train</div><div class="pet-rare-note">' . $trainCost . ' Coins</div></div>
-			<div class="pet-rare-bub"><a href="/action/move-pet/' . $pet['id'] . '"><img src="/assets/icons/backpack.png" /></a><div class="pet-rare-title">Move Pet</div><div class="pet-rare-note">&nbsp;</div></div>
-			<div class="pet-rare-bub"><a href="/action/join-herd/' . $pet['id'] . '"><img src="/assets/icons/herd.png" /></a><div class="pet-rare-title">Send to Herd</div><div class="pet-rare-note">&nbsp;</div></div>
-			<div class="pet-rare-bub"><a href="/action/release-pet/' . $pet['id'] . '"><img src="/assets/icons/abandoned.png" /></a><div class="pet-rare-title">Release Pet</div><div class="pet-rare-note">&nbsp;</div></div><div class="pet-rare-bub"><a href="/action/change-gender/' . $pet['id'] . '"><img src="/assets/items/genx_' . ($pet['gender'] == "m" ? 'female' : 'male') . '.png" /></a><div class="pet-rare-title">Change Gender</div><div class="pet-rare-note">5 Alchemy</div></div>
-			<div class="pet-rare-bub"><a href="/action/reverse-evolve/' . $pet['id'] . '"><img src="/assets/items/watch_warp.png" /></a><div class="pet-rare-title">Reverse-Evolve</div><div class="pet-rare-note">10 Alchemy</div></div>
-			<div class="pet-rare-bub"><a href="/action/write-story/' . $pet['id'] . '"><img src="/assets/items/scroll_words.png" /></a><div class="pet-rare-title">Record History</div><div class="pet-rare-note">20 Coins</div></div>
+			<div class="uc-action-inline"><a href="/action/send-trainer?pet=' . $pet['id'] . '"><img src="/assets/items/training_manual.png" /></a><div class="uc-note-bold">Train</div><div class="uc-note">' . $trainCost . ' Coins</div></div>
+			<div class="uc-action-inline"><a href="/action/move-pet/' . $pet['id'] . '"><img src="/assets/icons/backpack.png" /></a><div class="uc-note-bold">Move Pet</div><div class="uc-note">&nbsp;</div></div>
+			<div class="uc-action-inline"><a href="/action/join-herd/' . $pet['id'] . '"><img src="/assets/icons/herd.png" /></a><div class="uc-note-bold">Send to Herd</div><div class="uc-note">&nbsp;</div></div>
+			<div class="uc-action-inline"><a href="/action/release-pet/' . $pet['id'] . '"><img src="/assets/icons/abandoned.png" /></a><div class="uc-note-bold">Release Pet</div><div class="uc-note">&nbsp;</div></div><div class="uc-action-inline"><a href="/action/change-gender/' . $pet['id'] . '"><img src="/assets/items/genx_' . ($pet['gender'] == "m" ? 'female' : 'male') . '.png" /></a><div class="uc-note-bold">Change Gender</div><div class="uc-note">5 Alchemy</div></div>
+			<div class="uc-action-inline"><a href="/action/reverse-evolve/' . $pet['id'] . '"><img src="/assets/items/watch_warp.png" /></a><div class="uc-note-bold">Reverse-Evolve</div><div class="uc-note">10 Alchemy</div></div>
+			<div class="uc-action-inline"><a href="/action/write-story/' . $pet['id'] . '"><img src="/assets/items/scroll_words.png" /></a><div class="uc-note-bold">Record History</div><div class="uc-note">20 Coins</div></div>
 		</div>';
 	}
-		
+	
 	echo '
 		<div id="pet-desc">' . nl2br(MyCreatures::descMarkup($petType['description'], $pet['nickname'], $pet['gender'])) . '</div>
 	</div>';

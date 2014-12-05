@@ -154,7 +154,7 @@ abstract class MyExotic {
 	public static function countMyAvailableCredits
 	(
 		$uniID		// <int> The UniID that is having their exotic credits counted.
-	)				// RETURNS <bool> TRUE on successful purchase, FALSE on failure.
+	)				// RETURNS <int> the number of available credits.
 	
 	// $creditCount = MyExotic::countMyAvailableCredits($uniID);
 	{

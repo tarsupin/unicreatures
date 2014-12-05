@@ -92,6 +92,16 @@ class MyCreatures_config {
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8 PARTITION BY KEY(area_id) PARTITIONS 61;
 		");
 		
+		Database::exec("
+		CREATE TABLE IF NOT EXISTS `basket_creatures`
+		(
+			`rarity`				tinyint(1)		unsigned	NOT NULL	DEFAULT '0',
+			`type_id`				smallint(6)		unsigned	NOT NULL	DEFAULT '0',
+			
+			UNIQUE (`rarity`, `type_id`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+		");
+		
 		return $this->isInstalled();
 	}
 	
@@ -107,8 +117,9 @@ class MyCreatures_config {
 		$pass2 = DatabaseAdmin::columnsExist("creatures_owned", array("id", "type_id"));
 		$pass3 = DatabaseAdmin::columnsExist("creatures_user", array("uni_id", "creature_id"));
 		$pass4 = DatabaseAdmin::columnsExist("creatures_area", array("area_id", "creature_id"));
+		$pass5 = DatabaseAdmin::columnsExist("basket_creatures", array("rarity", "type_id"));
 		
-		return ($pass1 and $pass2 and $pass3 and $pass4);
+		return ($pass1 and $pass2 and $pass3 and $pass4 and $pass5);
 	}
 	
 }

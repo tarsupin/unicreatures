@@ -97,6 +97,7 @@ require(SYS_PATH . "/controller/includes/header.php");
 require(SYS_PATH . "/controller/includes/side-panel.php");
 
 echo '
+<div id="panel-right"></div>
 <div id="content">' . Alert::display();
 
 echo '
@@ -130,7 +131,7 @@ foreach($shopExotics as $exoticPet)
 			if($exoticPet['date_end'] > -1)
 			{
 				echo '
-				<div class="shop-block-leave">Leaves ' . Time::fuzzy($exoticPet['date_end']) . '</div>';
+				<div class="shop-block-leave">Leaves ' . Time::fuzzy((int) $exoticPet['date_end']) . '</div>';
 			}
 			
 			echo '

@@ -32,12 +32,13 @@ require(SYS_PATH . "/controller/includes/header.php");
 require(SYS_PATH . "/controller/includes/side-panel.php");
 
 echo '
+<div id="panel-right"></div>
 <div id="content">' . Alert::display();
 
 echo '
-<div id="plot-page-left">
-	<div id="land-plot"><img src="/assets/areas/' . $area['type'] . '.png" /><div class="lp-bold">' . $area['name'] . '</div><div class="lp-note">' . $area['population'] . ' / ' . $area['max_population'] . '</div></div>
-	<div id="lp-caretaker"><img src="' . ($userData['avatar_opt'] ? Avatar::image((int) $userData['uni_id'], (int) $userData['avatar_opt']) : ProfilePic::image((int) $userData['uni_id'], "huge")) . '" /><div class="lp-bold">' . $userData['display_name'] . '</div></div>';
+<div id="uc-left">
+	<div class="uc-static-block"><img src="/assets/areas/' . $area['type'] . '.png" /><div class="uc-bold">' . $area['name'] . '</div><div class="uc-note">' . $area['population'] . ' / ' . $area['max_population'] . '</div></div>
+	<div class="uc-static-block"><img src="' . ($userData['avatar_opt'] ? Avatar::image((int) $userData['uni_id'], (int) $userData['avatar_opt']) : ProfilePic::image((int) $userData['uni_id'], "huge")) . '" /><div class="uc-bold">' . $userData['display_name'] . '</div></div>';
 
 if(Me::$id == $userData['uni_id'])
 {
@@ -48,12 +49,12 @@ if(Me::$id == $userData['uni_id'])
 
 echo '
 </div>
-<div id="plot-page-right">';
+<div id="uc-right">';
 
 foreach($pets as $pet)
 {
 	echo '
-	<div class="plot-pet"><div class="plot-pet-inner"><a href="/pet/' . $pet['id'] . '"><img src="' . MyCreatures::imgSrc($pet['family'], $pet['name'], $pet['prefix']) . '" /></a></div><div>' . $pet['nickname'] . '</div></div>';
+	<div class="pet-cube"><div class="pet-cube-inner"><a href="/pet/' . $pet['id'] . '"><img src="' . MyCreatures::imgSrc($pet['family'], $pet['name'], $pet['prefix']) . '" /></a></div><div>' . $pet['nickname'] . '</div></div>';
 	
 	// Prepare a line break after this creature if necessary
 	if($pet['special'])

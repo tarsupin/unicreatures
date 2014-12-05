@@ -20,6 +20,7 @@ require(SYS_PATH . "/controller/includes/header.php");
 require(SYS_PATH . "/controller/includes/side-panel.php");
 
 echo '
+<div id="panel-right"></div>
 <div id="content">' . Alert::display();
 
 echo '
@@ -37,7 +38,7 @@ foreach($petList as $pets)
 	<div class="pet">
 		<a href="/pet/' . $pets['id'] . '"><img src="' . MyCreatures::imgSrc($pets['family'], $pets['name'], $pets['prefix']) . '" /></a>
 		<div class="pet-name">' . ($pets['name'] == "Egg" ? $pets['family'] . " Egg" : $pets['name']) . '</div>
-		<div class="pet-note">Training ends ' . Time::fuzzy($pets['active_until']) . '</div>
+		<div class="pet-note">Training ends ' . Time::fuzzy((int) $pets['active_until']) . '</div>
 	</div>';
 }
 

@@ -107,7 +107,7 @@ abstract class MyTraining {
 	
 	// $level = MyTraining::getLevel($exp);
 	{
-		return floor($exp / 10000);
+		return (int) floor($exp / 10000);
 	}
 	
 	

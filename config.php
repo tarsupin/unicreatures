@@ -19,7 +19,7 @@
 
 // Set a Site-Wide Salt between 60 and 68 characters
 // NOTE: Only change this value ONCE after installing a new copy. It will affect all passwords created in the meantime.
-define("SITE_SALT", "4(P~QCi{1>F_j?vT*@ytY5hv0&hkZ<]/0ERT.q'@i.<hSf>r!n|:<>i^wrir6ool6M");
+define("SITE_SALT", "pKm;.ap4AfzMlJd1eTBuQhKB8@XbEeXucmlNuh*~cBKc;-BtINgeBrFur=kqr5*C1TL9*w");
 //					|    5   10   15   20   25   30   35   40   45   50   55   60   65   |
 
 // Set a unique 10 to 22 character keycode (alphanumeric) to prevent code overlap on databases & shared servers
@@ -29,10 +29,6 @@ define("SITE_HANDLE", "unicreatures");
 
 // Set the Application Path (in most cases, this is the same as CONF_PATH)
 define("APP_PATH", CONF_PATH);
-
-
-// Prepare Default Theme
-Theme::set("default");
 
 // Site-Wide Configurations
 $config['site-name'] = "UniCreatures";

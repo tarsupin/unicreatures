@@ -13,7 +13,7 @@ if(!isset($url[2]))
 }
 
 // Get Pet Data
-$pet = MyCreatures::petData($url[2], "id, uni_id, type_id, nickname, gender, total_points");
+$pet = MyCreatures::petData((int) $url[2], "id, uni_id, type_id, nickname, gender, total_points");
 
 if(!$pet or $pet['uni_id'] != Me::$id)
 {
@@ -21,7 +21,7 @@ if(!$pet or $pet['uni_id'] != Me::$id)
 }
 
 // Get the Pet Type Data
-$petType = MyCreatures::petTypeData($pet['type_id'], "family, name, prefix, required_points");
+$petType = MyCreatures::petTypeData((int) $pet['type_id'], "family, name, prefix, required_points");
 
 $evolvedTypes = Database::selectMultiple("SELECT id, description, family, name, prefix, evolution_level FROM creatures_types WHERE evolves_from=?", array($pet['type_id']));
 
@@ -47,7 +47,7 @@ if($pet['total_points'] < $petType['required_points'])
 
 // Update the Pet Type
 $newType = $evolvedTypes[0];
-MyCreatures::changePetType($pet['id'], (int) $newType['id']);
+MyCreatures::changePetType((int) $pet['id'], (int) $newType['id']);
 
 // Update the Pet Name, if original was default
 if($pet['nickname'] == $petType['name'])
@@ -71,19 +71,20 @@ require(SYS_PATH . "/controller/includes/header.php");
 require(SYS_PATH . "/controller/includes/side-panel.php");
 
 echo '
-<div id="content" style="overflow:hidden;">' . Alert::display();
+<div id="panel-right"></div>
+<div id="content">' . Alert::display();
 
 echo '
-<div id="pet-page-left">
-	<div id="pet">
+<div id="uc-left-wide">
+	<div class="uc-static-block">
 		<img src="' . MyCreatures::imgSrc($newType['family'], $newType['name'], $newType['prefix']) . '" />
 	</div>
-	<div id="pet-blurb">' . $petType['name'] . ' has evolved into ' . $newType['name'] . '!</div>
-	<div id="pet-details" style="text-align:center; font-size:1.2em;">
+	<div class="uc-bold-block">' . $petType['name'] . ' has evolved into ' . $newType['name'] . '!</div>
+	<div class="uc-action-block" style="text-align:center; font-size:1.2em;">
 		<a href="/pet/' . $pet['id'] . '" style="display:block;">Return to Pet</a>
 	</div>
 </div>
-<div id="pet-page-right">' . nl2br(MyCreatures::descMarkup($newType['description'], $newType['name'], $pet['gender'])) . '</div>';
+<div id="uc-right-wide">' . nl2br(MyCreatures::descMarkup($newType['description'], $newType['name'], $pet['gender'])) . '</div>';
 
 echo '
 </div>';

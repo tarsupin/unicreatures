@@ -3,7 +3,7 @@
 // Must Log In
 if(!Me::$loggedIn)
 {
-	Me::redirectLogin("/land-plots");
+	Me::redirectLogin("/uc-static-blocks");
 }
 
 // Make sure pet exists
@@ -17,7 +17,7 @@ $pet = MyCreatures::petData($url[2], "id, uni_id, type_id, nickname, experience,
 
 if(!$pet or $pet['uni_id'] != Me::$id)
 {
-	header("Location: /land-plots"); exit;
+	header("Location: /uc-static-blocks"); exit;
 }
 
 if($isBusy = MyCreatures::isBusy($pet['activity'], $pet['active_until']))
@@ -61,17 +61,18 @@ require(SYS_PATH . "/controller/includes/header.php");
 require(SYS_PATH . "/controller/includes/side-panel.php");
 
 echo '
-<div id="content" style="overflow:hidden;">' . Alert::display();
+<div id="panel-right"></div>
+<div id="content">' . Alert::display();
 
 echo '
-<div id="pet-page-left">
-	<div id="pet"><a href="/pet/' . $pet['id'] . '"><img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" /></a><div class="lp-bold">' . $pet['nickname'] . '</div><div class="lp-note">Level ' . MyTraining::getLevel($pet['experience']) . ' ' . $petType['name'] . '</div></div>
+<div id="uc-left-wide">
+	<div id="pet"><a href="/pet/' . $pet['id'] . '"><img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" /></a><div class="uc-bold">' . $pet['nickname'] . '</div><div class="uc-note">Level ' . MyTraining::getLevel($pet['experience']) . ' ' . $petType['name'] . '</div></div>
 	<div id="pet-blurb">Choose a herd to add this pet to.</div>
 	<div id="pet-details" style="text-align:center; font-size:1.2em;">
 		<a href="/action/start-herd/' . $pet['id'] . '" style="display:block;">Start a new herd with ' . $pet['nickname'] . '</a>
 	</div>
 </div>
-<div id="pet-page-right">';
+<div id="uc-right-wide">';
 
 if(count($herds) > 0)
 {
@@ -79,8 +80,8 @@ if(count($herds) > 0)
 	foreach($herds as $herd)
 	{
 		echo '
-		<div class="plot-pet">
-			<div class="plot-pet-inner"><a href="/action/join-herd/' . $pet['id'] . '?to=' . $herd['id'] . '&' . $linkProtect . '"><img src="' . $herd['image'] . '" /></a></div>
+		<div class="pet-cube">
+			<div class="pet-cube-inner"><a href="/action/join-herd/' . $pet['id'] . '?to=' . $herd['id'] . '&' . $linkProtect . '"><img src="' . $herd['image'] . '" /></a></div>
 			<div>' . $herd['name'] . '</div>
 		</div>';
 	}

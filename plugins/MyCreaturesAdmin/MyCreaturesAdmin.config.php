@@ -1,17 +1,17 @@
 <?php if(!defined("CONF_PATH")) { die("No direct script access allowed."); } 
 
-class MyEnergy_config {
+class MyCreaturesAdmin_config {
 	
 	
 /****** Plugin Variables ******/
 	public $pluginType = "standard";
-	public $pluginName = "MyEnergy";
+	public $pluginName = "MyCreaturesAdmin";
 	public $title = "Energy Plugin";
 	public $version = 1.0;
 	public $author = "Brint Paris";
 	public $license = "UniFaction License";
 	public $website = "http://unifaction.com";
-	public $description = "Allows the system to use and work with energy.";
+	public $description = "Allows the system to handle certain administrative functions.";
 	
 	public $data = array();
 	

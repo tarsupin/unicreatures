@@ -57,7 +57,7 @@ if($link = Link::clicked() and $link == "uc-connect-avatar")
 $linkPrepare = Link::prepare("uc-connect-avatar");
 
 // Check if the user has already visited this page
-if(MyIPTrack::userTracker($userData['uni_id']))
+if(Me::$id != $userData['uni_id'] and MyIPTrack::userTracker($userData['uni_id']))
 {
 	$dayCountData = MyIPTrack::getDayCount($userData['uni_id'], true);
 	$count = (int) $dayCountData['count'];
@@ -75,31 +75,11 @@ if(MyIPTrack::userTracker($userData['uni_id']))
 	
 	if($count <= 5)
 	{
-		$total = 50;	// 250
+		$total = 50;
 	}
-	else if($count <= 25)
+	else if($count <= 600)
 	{
-		$total = 10;	// 200
-	}
-	else if($count <= 100)
-	{
-		$total = 5;		// 375
-	}
-	else if($count <= 200)
-	{
-		$total = 4;		// 400
-	}
-	else if($count <= 300)
-	{
-		$total = 3;		// 300
-	}
-	else if($count <= 500)
-	{
-		$total = 2;		// 400
-	}
-	else if($count <= 800)
-	{
-		$total = 1;		// 300
+		$total = 3;
 	}
 	
 	// Grant supplies at random
@@ -145,6 +125,7 @@ require(SYS_PATH . "/controller/includes/header.php");
 require(SYS_PATH . "/controller/includes/side-panel.php");
 
 echo '
+<div id="panel-right"></div>
 <div id="content">' . Alert::display();
 
 // Display the left side of the page
@@ -153,21 +134,21 @@ echo '
 .dual-col-item { display:inline-block; width:45%; padding:1%; margin-bottom:12px; }
 </style>
 
-<div id="plot-page-left">
-	<div id="lp-caretaker" style="margin-top:0px;"><a href="' . URL::unifaction_social() . '/' . $userData['handle'] . '"><img src="' . ($userData['avatar_opt'] ? Avatar::image((int) $userData['uni_id'], (int) $userData['avatar_opt']) : ProfilePic::image((int) $userData['uni_id'], "huge")) . '" /></a><div class="lp-bold">' . $userData['display_name'] . '</div></div>
-	<div id="pet-rare-act" style="margin-top:12px;">
-		<div class="dual-col-item"><img src="/assets/supplies/component_bag.png" /><div class="pet-rare-title">Components</div><div class="pet-rare-note">' . number_format($supplies['components']) . '</div></div>
-		<div class="dual-col-item"><img src="/assets/supplies/coins_large.png" /><div class="pet-rare-title">Coins</div><div class="pet-rare-note">' . number_format($supplies['coins']) . '</div></div>
-		<div class="dual-col-item"><img src="/assets/supplies/supplies.png" /><div class="pet-rare-title">Crafting</div><div class="pet-rare-note">' . number_format($supplies['crafting']) . '</div></div>
-		<div class="dual-col-item"><img src="/assets/supplies/tree_seeds.png" /><div class="pet-rare-title">Alchemy</div><div class="pet-rare-note">' . number_format($supplies['alchemy']) . '</div></div>
+<div id="uc-left">
+	<div class="uc-static-block" style="margin-top:0px;"><a href="' . URL::unifaction_social() . '/' . $userData['handle'] . '"><img src="' . ($userData['avatar_opt'] ? Avatar::image((int) $userData['uni_id'], (int) $userData['avatar_opt']) : ProfilePic::image((int) $userData['uni_id'], "huge")) . '" /></a><div class="uc-bold">' . $userData['display_name'] . '</div></div>
+	<div class="uc-action-block" style="margin-top:12px;">
+		<div class="dual-col-item"><img src="/assets/supplies/component_bag.png" /><div class="uc-note-bold">Components</div><div class="uc-note">' . number_format($supplies['components']) . '</div></div>
+		<div class="dual-col-item"><img src="/assets/supplies/coins_large.png" /><div class="uc-note-bold">Coins</div><div class="uc-note">' . number_format($supplies['coins']) . '</div></div>
+		<div class="dual-col-item"><img src="/assets/supplies/supplies.png" /><div class="uc-note-bold">Crafting</div><div class="uc-note">' . number_format($supplies['crafting']) . '</div></div>
+		<div class="dual-col-item"><img src="/assets/supplies/tree_seeds.png" /><div class="uc-note-bold">Alchemy</div><div class="uc-note">' . number_format($supplies['alchemy']) . '</div></div>
 	</div>
 </div>
-<div id="plot-page-right">
-	<div id="pet-rare-act">
+<div id="uc-right">
+	<div class="uc-action-block">
 		<div style="font-size:1.1em; font-weight:bold; margin-bottom:12px;">Visit ' . $userData['display_name'] . '\'s Pages</div>
-		<div class="pet-rare-bub"><a href="' . $urlAdd . '/achievements"><img src="/assets/icons/trophy_gold.png" /></a><div class="pet-rare-title">Achievements</div><div class="pet-rare-note">&nbsp;</div></div>
-		<div class="pet-rare-bub"><a href="' . $urlAdd . '/land-plots"><img src="/assets/icons/cabin.png" /></a><div class="pet-rare-title">Pet Areas</div><div class="pet-rare-note">&nbsp;</div></div>
-		<div class="pet-rare-bub"><a href="' . $urlAdd . '/herd-list"><img src="/assets/icons/herd.png" /></a><div class="pet-rare-title">Herds</div><div class="pet-rare-note">&nbsp;</div></div>
+		<div class="uc-action-inline"><a href="' . $urlAdd . '/achievements"><img src="/assets/medals/trophy_gold.png" /></a><div class="uc-note-bold">Achievements</div><div class="uc-note">&nbsp;</div></div>
+		<div class="uc-action-inline"><a href="' . $urlAdd . '/uc-static-blocks"><img src="/assets/icons/cabin.png" /></a><div class="uc-note-bold">Pet Areas</div><div class="uc-note">&nbsp;</div></div>
+		<div class="uc-action-inline"><a href="' . $urlAdd . '/herd-list"><img src="/assets/icons/herd.png" /></a><div class="uc-note-bold">Herds</div><div class="uc-note">&nbsp;</div></div>
 	</div>
 	<div id="pet-desc">';
 	
@@ -175,7 +156,7 @@ echo '
 	if(MyTreasure::$treasure)
 	{
 		echo '
-		<h3>You gave ' . $userData['display_name'] . ' the following gifts:</h3>';
+		<h3>You just gave ' . $userData['display_name'] . ' the following gifts:</h3>';
 		
 		foreach(MyTreasure::$treasure as $treasureData)
 		{
@@ -185,10 +166,74 @@ echo '
 				<div style="display:inline-block; text-align:center; width:130px;"><img src="' . $treasureData['image'] . '" /><div style="font-size:0.9em;">' . $treasureData['title'] . '</div><div style="font-size:0.9em;">' . $treasureData['count'] . ' Given</div></div>';
 			}
 		}
+		
+		echo '
+		<div style="margin-bottom:10px;">&nbsp;</div>';
 	}
 	
 	echo '
-	<div style="margin-top:22px;">So far, ' . ($count == 1 ? '1 person has' : $count . ' people have') . " given gifts to " . $userData['display_name'] . " today.</div>";
+		<div style="font-weight:bold; font-size:1.2em;">Welcome to ' . $userData['display_name'] . '\'s Visitation Page!</div>
+		<div>Every visitor grants three goodies to ' . $userData['display_name'] . ', up to once per day. The first five visitors grant fifty goodies! So far, ' . ($count == 1 ? 'one person has' : Number::toWord($count) . ' people have') . " given gifts to " . $userData['display_name'] . ' today!</div>';
+	
+	// Show off Pets
+	echo '
+	<div style="font-weight:bold; font-size:1.2em; margin-top:22px;">Some of ' . $userData['display_name'] . '\'s pets come visit you!</div>';
+	
+	// Get a list of Pet ID's
+	$getPets = Database::selectMultiple("SELECT creature_id FROM creatures_user WHERE uni_id=? ORDER BY creature_id DESC LIMIT 25", array($userData['uni_id']));
+	
+	shuffle($getPets);
+	
+	$getPets = array_splice($getPets, 0, mt_rand(4, 6));
+	$petIDs = array();
+	$eggVisit = false;
+	
+	foreach($getPets as $pid)
+	{
+		$petIDs[] = (int) $pid['creature_id'];
+	}
+	
+	list($sqlWhere, $sqlArray) = Database::sqlFilters(array("co.id" => $petIDs));
+	
+	$pets = Database::selectMultiple("SELECT co.id, co.nickname, ct.family, ct.name, ct.prefix FROM creatures_owned co INNER JOIN creatures_types ct ON co.type_id=ct.id WHERE " . $sqlWhere, $sqlArray);
+	
+	foreach($pets as $pet)
+	{
+		if($pet['name'] == "Egg") { $eggVisit = true; }
+		
+		echo '
+		<div class="pet-cube"><div class="pet-cube-inner"><a href="/pet/' . $pet['id'] . '"><img src="' . MyCreatures::imgSrc($pet['family'], $pet['name'], $pet['prefix']) . '" /></a></div><div>' . $pet['nickname'] . '</div></div>';
+	}
+	
+	if($eggVisit)
+	{
+		echo '
+		<div class="uc-note" style="margin-top:22px;">Yes, an egg just visited you. Deal with it.</div>';
+	}
+	
+	
+	// If you're logged in to your own profile page
+	if(Me::$id == $userData['uni_id'])
+	{
+		echo '
+		<div style="font-weight:bold; font-size:1.2em; margin-top:22px;">Attract Users For Free Goodies</div>
+		<div>Use these links to bring people to this page. Everyone that visits your page will earn you free components, coins, or other supplies!</div>
+		
+		<form class="uniform">
+		<div style="margin-top:10px;">
+			<div class="uc-note" style="font-weight:bold;">Direct Link To Your Visitation Page:</div>
+			<input type="text" name="dir_link" value="' . URL::unicreatures_com() . '/' . Me::$vals['handle'] . '" style="width:100%;" readonly onclick="this.select();" />
+		</div>
+		<div style="margin-top:16px;">
+			<div class="uc-note" style="font-weight:bold;">BBCode For Visitation Page:</div>
+			<input type="text" name="bb_link" value="[url=' . URL::unicreatures_com() . '/' . Me::$vals['handle'] . ']' . URL::unicreatures_com() . '/' . Me::$vals['handle'] . '[/url]" style="width:100%;" readonly onclick="this.select();" />
+		</div>
+		<div style="margin-top:16px;">
+			<div class="uc-note" style="font-weight:bold;">HTML Link To Visitation Page:</div>
+			<input type="text" name="bb_link" value=\'<a href="' . URL::unicreatures_com() . '/' . Me::$vals['handle'] . '">' . URL::unicreatures_com() . '/' . Me::$vals['handle'] . '</a>\' style="width:100%;" readonly onclick="this.select();" />
+		</div>
+		</form>';
+	}
 	
 echo '
 	</div>

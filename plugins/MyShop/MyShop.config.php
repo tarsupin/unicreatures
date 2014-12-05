@@ -32,24 +32,11 @@ class MyShop_config {
 			
 			`score_required`		smallint(5)		unsigned	NOT NULL	DEFAULT '0',
 			
-			`day_start`				smallint(3)					NOT NULL	DEFAULT '',
-			`day_end`				smallint(3)					NOT NULL	DEFAULT '',
+			`day_start`				smallint(3)					NOT NULL	DEFAULT '0',
+			`day_end`				smallint(3)					NOT NULL	DEFAULT '0',
 			
 			PRIMARY KEY (`id`),
 			INDEX (`day_start`)
-		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-		");
-		
-		Database::exec("
-		CREATE TABLE IF NOT EXISTS `exotic_shop_creatures`
-		(
-			`type_id`				mediumint(6)	unsigned	NOT NULL	DEFAULT '0',
-			
-			`stock`					tinyint(1)					NOT NULL	DEFAULT '0',
-			`cost`					float(6,2)		unsigned	NOT NULL	DEFAULT '0',
-			
-			`date_leaves`			int(10)			unsigned	NOT NULL	DEFAULT '0',
-			
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		");
 		
@@ -65,9 +52,8 @@ class MyShop_config {
 	{
 		// Make sure the newly installed tables exist
 		$pass1 = DatabaseAdmin::columnsExist("shop_creatures", array("id", "type_id"));
-		$pass2 = DatabaseAdmin::columnsExist("exotic_shop_creatures", array("type_id", "stock"));
 		
-		return ($pass1 and $pass2);
+		return ($pass1);
 	}
 	
 }

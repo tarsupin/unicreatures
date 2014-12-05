@@ -28,7 +28,7 @@ if(isset($_GET['release']) && Link::clicked())
 {
 	MyCreatures::deleteCreature($pet['id']);
 	Alert::saveSuccess("Released Pet", "You have released " . $pet['nickname'] . " back to Esme!");
-	header("Location: /land-plots"); exit;
+	header("Location: /uc-static-blocks"); exit;
 }
 
 // Run Global Script
@@ -42,8 +42,8 @@ require(SYS_PATH . "/controller/includes/header.php");
 require(SYS_PATH . "/controller/includes/side-panel.php");
 
 echo '
-<div id="content">
-' . Alert::display();
+<div id="panel-right"></div>
+<div id="content">' . Alert::display();
 
 echo '
 <div>

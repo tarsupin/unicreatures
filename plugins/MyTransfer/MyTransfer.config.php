@@ -1,17 +1,17 @@
 <?php if(!defined("CONF_PATH")) { die("No direct script access allowed."); } 
 
-class MySupplies_config {
+class MyTransfer_config {
 	
 	
 /****** Plugin Variables ******/
 	public $pluginType = "standard";
-	public $pluginName = "MySupplies";
-	public $title = "Supply Plugin";
+	public $pluginName = "MyTransfer";
+	public $title = "Transfer Plugin";
 	public $version = 1.0;
 	public $author = "Brint Paris";
 	public $license = "UniFaction License";
 	public $website = "http://unifaction.com";
-	public $description = "Provides methods to work with the user's UniCreatures supplies.";
+	public $description = "Provides methods to transfer UniCreature data from the old system.";
 	
 	public $data = array();
 	

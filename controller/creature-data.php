@@ -35,10 +35,11 @@ require(SYS_PATH . "/controller/includes/header.php");
 require(SYS_PATH . "/controller/includes/side-panel.php");
 
 echo '
-<div id="content" style="overflow:hidden;">' . Alert::display();
+<div id="panel-right"></div>
+<div id="content">' . Alert::display();
 
 echo '
-<div id="pet-page-left">
+<div id="uc-left-wide">
 	<div id="pet">
 		<img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], "") . '" />
 		<div id="pet-nickname">' . (($petType['name'] == "Egg" and $petType['evolution_level'] == 1) ? $petType['family'] . ' Egg' : $petType['name']) . '</div>
@@ -64,7 +65,7 @@ echo '
 	</div>
 </div>
 
-<div id="pet-page-right">
+<div id="uc-right-wide">
 	<div id="pet-actions">
 		<a href="/creature-database" style="display:block; padding:10px 0 10px 0;">Back to Creature Database</a>
 	</div>

@@ -7,6 +7,19 @@ define("SYS_PATH", 		dirname(CONF_PATH) . "/system");
 // Load phpTesla
 require(SYS_PATH . "/phpTesla.php");
 
+if(ENVIRONMENT == "production")
+{
+	if(isset($_GET['u6access']))
+	{
+		$_SESSION['u6access'] = true;
+	}
+
+	if(!isset($_SESSION['u6access']))
+	{
+		header("Location: http://orig.unicreatures.com"); exit;
+	}
+}
+
 // Prepare Value
 $urlAdd = "";
 

@@ -21,7 +21,7 @@ if(!$pet or $pet['uni_id'] != Me::$id)
 }
 
 // Make sure your pet isn't already busy
-if($isBusy = MyCreatures::isBusy($pet['activity'], $pet['active_until']))
+if($isBusy = MyCreatures::isBusy($pet['activity'], (int) $pet['active_until']))
 {
 	Alert::saveError("Already Busy", "That pet is busy.");
 	
@@ -29,7 +29,7 @@ if($isBusy = MyCreatures::isBusy($pet['activity'], $pet['active_until']))
 }
 
 // Get the Pet Type Data
-$petType = MyCreatures::petTypeData($pet['type_id'], "family, name, prefix, evolution_level");
+$petType = MyCreatures::petTypeData((int) $pet['type_id'], "family, name, prefix, evolution_level");
 
 // Make sure your pet is trainable
 if($petType['evolution_level'] < 2)
@@ -40,7 +40,7 @@ if($petType['evolution_level'] < 2)
 }
 
 // Get the creature's level
-$level = MyTraining::getLevel($pet['experience']);
+$level = MyTraining::getLevel((int) $pet['experience']);
 
 // Determine cost of training
 list($trainCost, $expGain) = MyTraining::getTrainingData($level);
@@ -58,13 +58,13 @@ if($link = Link::clicked())
 		{
 			if(Database::query("UPDATE creatures_owned SET activity=?, active_until=? WHERE id=? LIMIT 1", array("training", time() + (60 * 60 * 20), $pet['id'])))
 			{
-				$expGained = MyTraining::gainExp($pet['id'], $expGain);
+				$expGained = MyTraining::gainExp((int) $pet['id'], $expGain);
 				$newLevel = MyTraining::getLevel($expGained + $pet['experience']);
 				
 				// Provide an achievement if you made level 5 or level 10
 				if($newLevel > $level and $newLevel >= 5)
 				{
-					MyAchievements::set($pet['uni_id'], $petType['family'], "trained", ($newLevel >= 10 ? 2 : 1));
+					MyAchievements::set((int) $pet['uni_id'], $petType['family'], "trained", ($newLevel >= 10 ? 2 : 1));
 				}
 				
 				Alert::saveSuccess("Sent to Training", "This creature has been sent to the training center.");
@@ -86,6 +86,7 @@ require(SYS_PATH . "/controller/includes/header.php");
 require(SYS_PATH . "/controller/includes/side-panel.php");
 
 echo '
+<div id="panel-right"></div>
 <div id="content">' . Alert::display();
 
 echo '

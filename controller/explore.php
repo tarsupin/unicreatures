@@ -39,7 +39,7 @@ $explored = false;
 // Check if Exploration Value was set
 if($link = Link::clicked() and $link == $zone)
 {
-	$treasureData = MyTreasure::acquire(Me::$id);
+	$treasureData = MyTreasure::acquire(Me::$id, "random");
 	
 	if(!$energy = MyEnergy::change(Me::$id, -1))
 	{
@@ -66,6 +66,7 @@ require(SYS_PATH . "/controller/includes/header.php");
 require(SYS_PATH . "/controller/includes/side-panel.php");
 
 echo '
+<div id="panel-right"></div>
 <div id="content" style="overflow:hidden;">' . Alert::display();
 
 // Can see if there are any pets here
@@ -98,9 +99,9 @@ if($treasureData)
 	{
 		echo '
 		<div style="text-align:center;">
-			<img src="/assets/supplies/' . $treasureData['image'] . '" /><br />
+			<img src="' . $treasureData['image'] . '" /><br />
 			' . $treasureData['title'] . '
-			<div style="font-size:0.8em;">Current: ' . $treasureData['count'] . '</div>
+			<div style="font-size:0.8em;">Current: ' . $treasureData['total'] . '</div>
 		</div>';
 	}
 	

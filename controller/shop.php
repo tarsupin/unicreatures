@@ -17,8 +17,8 @@ require(SYS_PATH . "/controller/includes/header.php");
 require(SYS_PATH . "/controller/includes/side-panel.php");
 
 echo '
-<div id="content">
-' . Alert::display() . '
+<div id="panel-right"></div>
+<div id="content">' . Alert::display() . '
 
 <h3>UniFaction Shop</h3>
 <p><a href="/shop-pets">Pets</a></p>

@@ -35,7 +35,8 @@ require(SYS_PATH . "/controller/includes/header.php");
 require(SYS_PATH . "/controller/includes/side-panel.php");
 
 echo '
-<div id="content" style="overflow:hidden;">' . Alert::display();
+<div id="panel-right"></div>
+<div id="content">' . Alert::display();
 
 echo '
 <div style="float:left; text-align:center; background-color:#abcdef; padding:6px; border-radius:6px;">
@@ -49,8 +50,8 @@ if(count($herds) > 0)
 	foreach($herds as $herd)
 	{
 		echo '
-		<div class="plot-pet">
-			<div class="plot-pet-inner"><a href="/herds/' . $herd['id'] . '"><img src="' . $herd['image'] . '" /></a></div>
+		<div class="pet-cube">
+			<div class="pet-cube-inner"><a href="/herds/' . $herd['id'] . '"><img src="' . $herd['image'] . '" /></a></div>
 			<div>' .$herd['name'] . '</div>
 		</div>';
 	}

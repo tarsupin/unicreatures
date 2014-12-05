@@ -99,7 +99,7 @@ if($link = Link::clicked() and $link == "edit-area-uc" and isset($_GET['upgrade'
 			{
 				Alert::saveSuccess("Area Deleted", "The area was successfully deleted.");
 				
-				header("Location: /land-plots"); exit;
+				header("Location: /uc-static-blocks"); exit;
 			}
 		}
 	}
@@ -135,6 +135,7 @@ require(SYS_PATH . "/controller/includes/header.php");
 require(SYS_PATH . "/controller/includes/side-panel.php");
 
 echo '
+<div id="panel-right"></div>
 <div id="content">' . Alert::display() . '
 
 <style>
@@ -142,15 +143,15 @@ echo '
 </style>';
 
 echo '
-<div id="plot-page-left">
-	<div id="lp-caretaker" style="margin-top:0px;"><a href="' . URL::unifaction_social() . '/' . Me::$vals['handle'] . '"><img src="' . (Me::$vals['avatar_opt'] ? Avatar::image((int) Me::$vals['uni_id'], (int) Me::$vals['avatar_opt']) : ProfilePic::image((int) Me::$vals['uni_id'], "huge")) . '" /></a><div class="lp-bold">' . Me::$vals['display_name'] . '</div></div>
-	<div id="pet-rare-act" style="margin-top:12px;"><div class="pet-rare-bub"><img src="/assets/supplies/supplies.png" /></div><div class="pet-rare-title">Crafting Supplies</div><div class="pet-rare-note">' . number_format($craftingSupplies) . ' Available</div></div>
+<div id="uc-left">
+	<div class="uc-static-block" style="margin-top:0px;"><a href="' . URL::unifaction_social() . '/' . Me::$vals['handle'] . '"><img src="' . (Me::$vals['avatar_opt'] ? Avatar::image((int) Me::$vals['uni_id'], (int) Me::$vals['avatar_opt']) : ProfilePic::image((int) Me::$vals['uni_id'], "huge")) . '" /></a><div class="uc-bold">' . Me::$vals['display_name'] . '</div></div>
+	<div class="uc-action-block" style="margin-top:12px;"><div class="uc-action-inline"><img src="/assets/supplies/supplies.png" /></div><div class="uc-note-bold">Crafting Supplies</div><div class="uc-note">' . number_format($craftingSupplies) . ' Available</div></div>
 </div>
-<div id="plot-page-right">
+<div id="uc-right">
 	<div class="area">
 		<a href="/area/' . $area['id'] . '"><img src="/assets/areas/' . $area['type'] . '.png" /></a>
-		<div class="lp-bold">' . $area['name'] . '</div>
-		<div class="lp-note">Pop: ' . $area['population'] . ' / ' . $area['max_population'] . '</div>
+		<div class="uc-bold">' . $area['name'] . '</div>
+		<div class="uc-note">Pop: ' . $area['population'] . ' / ' . $area['max_population'] . '</div>
 	</div>';
 	
 	if($upgradedArea)
@@ -158,8 +159,8 @@ echo '
 		echo '
 		<div class="area">
 			<a href="/action/edit-area/' . $area['id'] . '?upgrade=plot&' . $linkProtect . '"><img src="/assets/areas/' . $upgradedArea['type'] . '.png" /></a>
-			<div class="lp-bold">Upgrade Plot</div>
-			<div class="lp-note">' . $upgradedArea['upgrade_cost'] . ' Crafting Supplies</div>
+			<div class="uc-bold">Upgrade Plot</div>
+			<div class="uc-note">' . $upgradedArea['upgrade_cost'] . ' Crafting Supplies</div>
 		</div>';
 	}
 	

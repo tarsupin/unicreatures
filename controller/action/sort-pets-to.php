@@ -74,6 +74,7 @@ require(SYS_PATH . "/controller/includes/header.php");
 require(SYS_PATH . "/controller/includes/side-panel.php");
 
 echo '
+<div id="panel-right"></div>
 <div id="content">' . Alert::display();
 
 echo '
@@ -82,7 +83,7 @@ echo '
 foreach($pets as $pet)
 {
 	echo '
-	<div class="plot-pet"><div class="plot-pet-inner"><a href="/action/sort-pets-to?area=' . $area['id'] . '&s=' . $_GET['s'] . '&to=' . $pet['sort_order'] . '"><img src="' . MyCreatures::imgSrc($pet['family'], $pet['name'], $pet['prefix']) . '" style="max-width:50%;" /></a></div><div>' . $pet['nickname'] . '</div></div>';
+	<div class="pet-cube"><div class="pet-cube-inner"><a href="/action/sort-pets-to?area=' . $area['id'] . '&s=' . $_GET['s'] . '&to=' . $pet['sort_order'] . '"><img src="' . MyCreatures::imgSrc($pet['family'], $pet['name'], $pet['prefix']) . '" style="max-width:50%;" /></a></div><div>' . $pet['nickname'] . '</div></div>';
 	
 	// Prepare a line break after this creature if necessary
 	if($pet['special'])

@@ -14,7 +14,7 @@ if(count($areas) <= 1)
 {
 	Alert::saveError("No Plots", "You don't currently have any plots that you can edit.");
 	
-	header("Location: /land-plots"); exit;
+	header("Location: /uc-static-blocks"); exit;
 }
 
 Alert::info("Click Plot", "Click on the plot that you would like to rename or upgrade.");
@@ -30,6 +30,7 @@ require(SYS_PATH . "/controller/includes/header.php");
 require(SYS_PATH . "/controller/includes/side-panel.php");
 
 echo '
+<div id="panel-right"></div>
 <div id="content">' . Alert::display() . '
 
 <style>
@@ -41,8 +42,8 @@ foreach($areas as $area)
 	echo '
 	<div class="area">
 		<a href="/action/edit-area/' . $area['id'] . '"><img src="/assets/areas/' . $area['type'] . '.png" /></a>
-		<div class="lp-bold">' . $area['name'] . '</div>
-		<div class="lp-note">Pop: ' . $area['population'] . ' / ' . $area['max_population'] . '</div>
+		<div class="uc-bold">' . $area['name'] . '</div>
+		<div class="uc-note">Pop: ' . $area['population'] . ' / ' . $area['max_population'] . '</div>
 	</div>';
 }
 

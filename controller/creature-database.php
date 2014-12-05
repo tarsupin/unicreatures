@@ -63,8 +63,8 @@ echo '
 	.pet:hover { background-color:#789abc; }
 </style>
 
-<div id="content">
-' . Alert::display();
+<div id="panel-right"></div>
+<div id="content">' . Alert::display();
 
 echo $pageDiv;
 

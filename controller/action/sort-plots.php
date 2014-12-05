@@ -20,7 +20,7 @@ if(count($areas) <= 1)
 {
 	Alert::saveError("No Plots", "You need more plots to reorder them.");
 	
-	header("Location: /land-plots"); exit;
+	header("Location: /uc-static-blocks"); exit;
 }
 
 // Update the plot location
@@ -48,8 +48,8 @@ require(SYS_PATH . "/controller/includes/header.php");
 require(SYS_PATH . "/controller/includes/side-panel.php");
 
 echo '
-<div id="content">
-' . Alert::display() . '
+<div id="panel-right"></div>
+<div id="content">' . Alert::display() . '
 
 <style>
 .area { display:inline-block; padding:8px; text-align:center; }
