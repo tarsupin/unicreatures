@@ -131,7 +131,7 @@ echo '
 </style>
 
 <h2>Supply Shop</h2>
-<p>You have ' . $supplies['coins'] . ' Coins. Click on the supply you would like to purchase.</p>
+<p>You have ' . number_format($supplies['coins']) . ' Coins. Click on the supply you would like to purchase.</p>
 
 <div class="sup-block">
 	<a href="/shop-supplies?purchase=crafting&' . $linkProtect . '"><img src="/assets/supplies/supplies.png" /></a><br />

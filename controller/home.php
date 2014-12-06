@@ -1,55 +1,29 @@
 <?php if(!defined("CONF_PATH")) { die("No direct script access allowed."); }
 
-// Unregistered users are directed to a welcome page
+// If you're a guest, point them to the welcome page.
 if(!Me::$loggedIn)
 {
-	// Redirect to a welcome page
-	// Once I build this, change the section below that prevents guests from taking eggs (will be irrelevant)
+	header("Location: /welcome"); exit;
 }
 
-// Prepare Values
-$showHut = false;
-
-// Make sure the user hasn't gathered an egg this hour
-$checkLastGather = Cache::get("user_gathered_hut:" . Me::$id);
-$dateCheck = date("zH");
-
-// If you haven't gathered this hour
-if($checkLastGather != $dateCheck)
+// Get the active user
+if(!isset($userData))
 {
-	$showHut = true;
-	$basket = MyAreas::checkBasket(Me::$id);
-	
-	// If the user is attempting to gather an egg from the caretaker hut
-	if(isset($_GET['gather']))
+	// If you're not viewing someone and not logged in yourself
+	if(!Me::$loggedIn)
 	{
-		if(Me::$loggedIn)
-		{
-			$gatherID = (int) $_GET['gather'];
-			
-			// Check if the type is in the caretaker hut
-			if(in_array($gatherID, $basket))
-			{
-				// Acquire the Egg
-				if($creatureID = MyCreatures::acquireCreature(Me::$id, $gatherID))
-				{
-					// Prevent user from acquiring another for the next hour
-					Cache::set("user_gathered_hut:" . Me::$id, $dateCheck, 60 * 61);
-					
-					header("Location: /pet/" . $creatureID);
-				}
-				else
-				{
-					Alert::error("Egg Error", "An error has occurred while trying to gather a pet.", 1);
-				}
-			}
-		}
-		else
-		{
-			Alert::error("Guest Account", "You'll have to log in to collect an egg.");
-		}
+		Me::redirectLogin("/uc-static-blocks");
 	}
+	
+	$userData = Me::$vals;
+	$userData['uni_id'] = (int) $userData['uni_id'];
 }
+
+// Retrieve the list of areas
+$areas = MyAreas::areas($userData['uni_id']);
+
+// Supply List
+$supplies = MySupplies::getSupplyList($userData['uni_id']);
 
 // Run Global Script
 require(APP_PATH . "/includes/global.php");
@@ -63,43 +37,62 @@ require(SYS_PATH . "/controller/includes/side-panel.php");
 
 echo '
 <div id="panel-right"></div>
-<div id="content">' . Alert::display();
+<div id="content">' . Alert::display() . '
 
-echo '
-<div id="uc-left-wide">
-	<div class="uc-static-block uc-bold">The Caretaker Hut</div>
-	<div class="uc-bold-block">You can collect ONE egg here every hour. Choose wisely!</div>
-</div>
-<div id="uc-right-wide">';
+<style>
+.dual-col-item { display:inline-block; width:45%; padding:1%; margin-bottom:12px; }
+.area { display:inline-block; padding:8px; text-align:center; }
+</style>
 
-if($showHut == true)
-{
-	// Caretaker Pets
-	echo '
-	<div style="text-align:center;">';
+<div id="uc-left">
+	<div class="uc-static-block" style="margin-top:0px;"><a href="' . URL::unifaction_social() . '/' . $userData['handle'] . '"><img src="' . ($userData['avatar_opt'] ? Avatar::image((int) $userData['uni_id'], (int) $userData['avatar_opt']) : ProfilePic::image((int) $userData['uni_id'], "huge")) . '" /></a><div class="uc-bold">' . $userData['display_name'] . '</div></div>
 	
-	foreach($basket as $typeID)
-	{
-		$typeData = MyCreatures::petTypeData($typeID, "family, name, prefix, blurb");
-		
-		echo '
-		<p>
-			<a href="/?gather=' . $typeID . '"><img src="' . MyCreatures::imgSrc($typeData['family'], $typeData['name'], $typeData['prefix']) . '" /></a>
-			<div style="font-size:1.1em;">' . $typeData['blurb'] . '</div>
-			' . ($typeData['prefix'] != "" ? '<div style="font-size:0.9em; background-color:#abcdef; display:inline-block; padding:2px 6px 2px 6px; border-radius:6px;">' . $typeData['prefix'] . '</div>' : '') . '
-		</p>';
-	}
-}
-else
+	<div class="uc-action-block hide-600">
+		<div class="dual-col-item"><img src="/assets/supplies/component_bag.png" /><div class="uc-note-bold">Components</div><div class="uc-note">' . number_format($supplies['components']) . '</div></div>
+		<div class="dual-col-item"><img src="/assets/supplies/coins_large.png" /><div class="uc-note-bold">Coins</div><div class="uc-note">' . number_format($supplies['coins']) . '</div></div>
+		<div class="dual-col-item"><img src="/assets/supplies/supplies.png" /><div class="uc-note-bold">Crafting</div><div class="uc-note">' . number_format($supplies['crafting']) . '</div></div>
+		<div class="dual-col-item"><img src="/assets/supplies/tree_seeds.png" /><div class="uc-note-bold">Alchemy</div><div class="uc-note">' . number_format($supplies['alchemy']) . '</div></div>
+	</div>
+</div>
+
+<div id="uc-right">
+	<div class="uc-action-block">
+		<div class="uc-action-inline" style="opacity:0.7;"><img src="/assets/icons/button_hut.png" /><div class="uc-note-bold">Pet Areas</div></div>
+		<div class="uc-action-inline"><a href="/' . $userData['handle'] . '"><img src="/assets/icons/button_visit.png" /></a><div class="uc-note-bold">Visit Center</div></div>
+		<div class="uc-action-inline"><a href="' . $urlAdd . '/achievements"><img src="/assets/icons/button_trophy.png" /></a><div class="uc-note-bold">Achievements</div></div>
+		<div class="uc-action-inline"><a href="' . $urlAdd . '/training-center"><img src="/assets/icons/button_course.png" /></a><div class="uc-note-bold">Training</div></div>
+		<div class="uc-action-inline"><a href="' . $urlAdd . '/herd-list"><img src="/assets/icons/button_herds.png" /></a><div class="uc-note-bold">Herds</div></div>
+	</div>
+	
+	<div class="area">
+		<a href="' . $urlAdd . '/wild"><img src="/assets/areas/wild.png" /></a>
+		<div class="uc-bold">Wild Area</div>
+		<div class="uc-note">Unlimited</div>
+	</div>';
+
+foreach($areas as $area)
 {
 	echo '
-	You\'ve already chosen a pet from the caretaker hut this hour. You can return next hour.';
+	<div class="area">
+		<a href="' . $urlAdd . '/area/' . $area['id'] . '"><img src="/assets/areas/' . $area['type'] . '.png" /></a>
+		<div class="uc-bold">' . $area['name'] . '</div>
+		<div class="uc-note">' . $area['population'] . ' / ' . $area['max_population'] . '</div>
+	</div>';
+}
+
+// Display options that only the user can see.
+if(Me::$id == $userData['uni_id'])
+{
+	echo '
+	<div class="uc-action-block" style="margin-top:42px;">
+		<div class="uc-action-inline"><a href="' . $urlAdd . '/treasure-chest"><img src="/assets/icons/button_chest.png" /></a><div class="uc-note-bold">My Treasure</div></div>
+		<div class="uc-action-inline"><a href="' . $urlAdd . '/"><img src="/assets/icons/button_area_edit.png" /></a><div class="uc-note-bold">Edit Areas</div></div>
+		<div class="uc-action-inline"><a href="' . $urlAdd . '/"><img src="/assets/icons/button_area_move.png" /></a><div class="uc-note-bold">Sort Areas</div></div>
+	</div>';
 }
 
 echo '
 </div>
-
-	</div>
 </div>';
 
 // Display the Footer

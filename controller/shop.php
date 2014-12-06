@@ -21,9 +21,10 @@ echo '
 <div id="content">' . Alert::display() . '
 
 <h3>UniFaction Shop</h3>
-<p><a href="/shop-pets">Pets</a></p>
-<p><a href="/shop-supplies">Supplies</a></p>
-<p><a href="/shop-deeds">Land Deeds</a></p>
+<div class="pet-cube"><div class="pet-cube-inner"><a href="/shop-pets"><img src="/assets/icons/button_hut.png" /></a><div class="uc-bold">Pets</div></div></div>
+<div class="pet-cube"><div class="pet-cube-inner"><a href="/shop-pets"><img src="/assets/icons/button_hut.png" /></a><div class="uc-bold">Exotic Pets</div></div></div>
+<div class="pet-cube"><div class="pet-cube-inner"><a href="/shop-supplies"><img src="/assets/icons/button_items.png" /></a><div class="uc-bold">Supplies</div></div></div>
+<div class="pet-cube"><div class="pet-cube-inner"><a href="/shop-deeds"><img src="/assets/icons/button_forest.png" /></a><div class="uc-bold">Land Deeds</div></div></div>
 
 </div>';
 

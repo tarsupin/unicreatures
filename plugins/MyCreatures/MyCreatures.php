@@ -238,14 +238,15 @@ abstract class MyCreatures {
 /****** Get a list of creatures doing a chosen activity ******/
 	public static function activityList
 	(
-		$uniID			// <int> The UniID to get the training creatures from.
-	,	$activity		// <str> The activity to look for.
-	)					// RETURNS <int:[str:mixed]> the list of pets that are busy with this action.
+		$uniID					// <int> The UniID to get the training creatures from.
+	,	$activity				// <str> The activity to look for.
+	,	$forceUpdate = false	// <bool> TRUE if we're going to force the training update (if one exists)
+	)							// RETURNS <int:[str:mixed]> the list of pets that are busy with this action.
 	
-	// $petList = MyCreatures::activityList($uniID, $activity);
+	// $petList = MyCreatures::activityList($uniID, $activity, [$forceUpdate]);
 	{
 		// Check if data is already cached
-		$petList = Cache::get("pet-" . $activity . ":" . $uniID);
+		$petList = $forceUpdate ? false : Cache::get("pet-" . $activity . ":" . $uniID);
 		
 		if($petList === false)
 		{
@@ -253,7 +254,7 @@ abstract class MyCreatures {
 			$timestamp = time();
 			
 			// Get the list of pets in training
-			$petList = Database::selectMultiple("SELECT co.id, co.active_until, ct.family, ct.name, ct.prefix FROM creatures_user cu INNER JOIN creatures_owned co ON cu.creature_id=co.id INNER JOIN creatures_types ct ON co.type_id=ct.id WHERE cu.uni_id=? AND co.activity=?", array($uniID, "training"));
+			$petList = Database::selectMultiple("SELECT co.id, co.active_until, co.nickname, ct.family, ct.name, ct.prefix FROM creatures_user cu INNER JOIN creatures_owned co ON cu.creature_id=co.id INNER JOIN creatures_types ct ON co.type_id=ct.id WHERE cu.uni_id=? AND co.activity=?", array($uniID, "training"));
 			
 			// Loop through each pet
 			foreach($petList as $key => $val)

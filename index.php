@@ -35,7 +35,7 @@ require(SYS_PATH . "/routes.php");
 // If a page hasn't loaded yet, check if there is a dynamic load
 if($url[0] != '')
 {
-	require(APP_PATH . '/controller/profile.php'); exit;
+	require(APP_PATH . '/controller/visit-center.php'); exit;
 }
 //*/
 

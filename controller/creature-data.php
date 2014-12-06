@@ -40,11 +40,11 @@ echo '
 
 echo '
 <div id="uc-left-wide">
-	<div id="pet">
+	<div class="uc-static-block">
 		<img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], "") . '" />
-		<div id="pet-nickname">' . (($petType['name'] == "Egg" and $petType['evolution_level'] == 1) ? $petType['family'] . ' Egg' : $petType['name']) . '</div>
+		<div class="uc-bold">' . (($petType['name'] == "Egg" and $petType['evolution_level'] == 1) ? $petType['family'] . ' Egg' : $petType['name']) . '</div>
 	</div>
-	<div id="pet-details">
+	<div class="uc-static-block">
 		<div style="text-align:center; font-weight:bold;"></div>
 		<div style="text-align:center; font-weight:bold;">The ' . $petType['family'] . ' Family</div>
 		<div style="margin-top:12px;">Rarity: ' . $petType['rarity'] . '</div>
@@ -66,7 +66,7 @@ echo '
 </div>
 
 <div id="uc-right-wide">
-	<div id="pet-actions">
+	<div class="uc-action-block">
 		<a href="/creature-database" style="display:block; padding:10px 0 10px 0;">Back to Creature Database</a>
 	</div>
 	<div id="pet-blurb">' . $petType['blurb'] . '</div>

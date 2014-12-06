@@ -3,17 +3,7 @@
 ****** Page Layout ******
 ************************/
 
-@media screen and (min-width:921px) {
-	#content { padding:14px; }
-}
-
-@media screen and (max-width:920px) {
-	#content { padding:10px; }
-}
-
-#panel-nav { width:245px; }
-
-#content { background-color:white; overflow:hidden; }
+#content { padding:6px; background-color:white; overflow:hidden; }
 
 
 /*****************************

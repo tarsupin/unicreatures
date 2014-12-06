@@ -43,13 +43,26 @@ echo '
 if(Me::$id == $userData['uni_id'])
 {
 	echo '
-	<div style="margin-top:10px; text-align:center; font-size:1.1em;"><a href="/action/sort-pets?area=' . $area['id'] . '">Sort Pets in this Area</a></div>
-	<div style="margin-top:10px; text-align:center; font-size:1.1em;"><a href="/action/edit-area/' . $area['id'] . '">Edit Area</a></div>';
+	<div class="uc-bold-block"><a href="/action/sort-pets?area=' . $area['id'] . '">Sort Pets in this Area</a></div>
+	<div class="uc-bold-block"><a href="/action/edit-area/' . $area['id'] . '">Edit Area</a></div>';
 }
 
 echo '
 </div>
-<div id="uc-right">';
+<div id="uc-right">
+	<div class="uc-action-block">
+		<div class="uc-action-inline"><a href="' . $urlAdd . '/home"><img src="/assets/icons/button_hut.png" /></a><div class="uc-note-bold">Pet Areas</div></div>
+		<div class="uc-action-inline"><a href="/' . $userData['handle'] . '"><img src="/assets/icons/button_visit.png" /></a><div class="uc-note-bold">Visit Center</div></div>
+		<div class="uc-action-inline"><a href="' . $urlAdd . '/achievements"><img src="/assets/icons/button_trophy.png" /></a><div class="uc-note-bold">Achievements</div></div>
+		<div class="uc-action-inline"><a href="' . $urlAdd . '/training-center"><img src="/assets/icons/button_course.png" /></a><div class="uc-note-bold">Training</div></div>
+		<div class="uc-action-inline"><a href="' . $urlAdd . '/herd-list"><img src="/assets/icons/button_herds.png" /></a><div class="uc-note-bold">Herds</div></div>
+	</div>';
+
+if(!$pets)
+{
+	echo '
+	<div>There are no pets in the "' . $area['name'] . '" area right now.</div>';
+}
 
 foreach($pets as $pet)
 {

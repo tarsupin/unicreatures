@@ -1,7 +1,7 @@
 <?php if(!defined("CONF_PATH")) { die("No direct script access allowed."); }
 
 // Make sure a url handle was provided
-if(!isset($url[0]) or $url[0] == "profile")
+if(!isset($url[0]) or $url[0] == "visit-center")
 {
 	header("Location: /"); exit;
 }
@@ -16,11 +16,15 @@ if(!$userData = User::getDataByHandle($url[0], "uni_id, handle, display_name, av
 
 // Prepare Values
 $userData['uni_id'] = (int) $userData['uni_id'];
-$urlAdd = "/" . $userData['handle'];
 
-You::$id = $userData['uni_id'];
-You::$handle = $userData['handle'];
-You::$name = $userData['display_name'];
+if($userData['uni_id'] != Me::$id)
+{
+	$urlAdd = "/" . $userData['handle'];
+	
+	You::$id = $userData['uni_id'];
+	You::$handle = $userData['handle'];
+	You::$name = $userData['display_name'];
+}
 
 // If this is one of the user's pages, load the page with the user as the first information
 if(isset($url[1]))
@@ -111,9 +115,6 @@ else
 	$count = (int) $dayCountData['count'];
 }
 
-// Supply List
-$supplies = MySupplies::getSupplyList($userData['uni_id']);
-
 // Run Global Script
 require(APP_PATH . "/includes/global.php");
 
@@ -136,19 +137,15 @@ echo '
 
 <div id="uc-left">
 	<div class="uc-static-block" style="margin-top:0px;"><a href="' . URL::unifaction_social() . '/' . $userData['handle'] . '"><img src="' . ($userData['avatar_opt'] ? Avatar::image((int) $userData['uni_id'], (int) $userData['avatar_opt']) : ProfilePic::image((int) $userData['uni_id'], "huge")) . '" /></a><div class="uc-bold">' . $userData['display_name'] . '</div></div>
-	<div class="uc-action-block" style="margin-top:12px;">
-		<div class="dual-col-item"><img src="/assets/supplies/component_bag.png" /><div class="uc-note-bold">Components</div><div class="uc-note">' . number_format($supplies['components']) . '</div></div>
-		<div class="dual-col-item"><img src="/assets/supplies/coins_large.png" /><div class="uc-note-bold">Coins</div><div class="uc-note">' . number_format($supplies['coins']) . '</div></div>
-		<div class="dual-col-item"><img src="/assets/supplies/supplies.png" /><div class="uc-note-bold">Crafting</div><div class="uc-note">' . number_format($supplies['crafting']) . '</div></div>
-		<div class="dual-col-item"><img src="/assets/supplies/tree_seeds.png" /><div class="uc-note-bold">Alchemy</div><div class="uc-note">' . number_format($supplies['alchemy']) . '</div></div>
-	</div>
 </div>
 <div id="uc-right">
 	<div class="uc-action-block">
 		<div style="font-size:1.1em; font-weight:bold; margin-bottom:12px;">Visit ' . $userData['display_name'] . '\'s Pages</div>
-		<div class="uc-action-inline"><a href="' . $urlAdd . '/achievements"><img src="/assets/medals/trophy_gold.png" /></a><div class="uc-note-bold">Achievements</div><div class="uc-note">&nbsp;</div></div>
-		<div class="uc-action-inline"><a href="' . $urlAdd . '/uc-static-blocks"><img src="/assets/icons/cabin.png" /></a><div class="uc-note-bold">Pet Areas</div><div class="uc-note">&nbsp;</div></div>
-		<div class="uc-action-inline"><a href="' . $urlAdd . '/herd-list"><img src="/assets/icons/herd.png" /></a><div class="uc-note-bold">Herds</div><div class="uc-note">&nbsp;</div></div>
+		<div class="uc-action-inline"><a href="' . $urlAdd . '/home"><img src="/assets/icons/button_hut.png" /></a><div class="uc-note-bold">Pet Areas</div></div>
+		<div class="uc-action-inline" style="opacity:0.7;"><img src="/assets/icons/button_visit.png" /><div class="uc-note-bold">Visit Center</div></div>
+		<div class="uc-action-inline"><a href="' . $urlAdd . '/achievements"><img src="/assets/icons/button_trophy.png" /></a><div class="uc-note-bold">Achievements</div></div>
+		<div class="uc-action-inline"><a href="' . $urlAdd . '/training-center"><img src="/assets/icons/button_course.png" /></a><div class="uc-note-bold">Training</div></div>
+		<div class="uc-action-inline"><a href="' . $urlAdd . '/herd-list"><img src="/assets/icons/button_herds.png" /></a><div class="uc-note-bold">Herds</div></div>
 	</div>
 	<div id="pet-desc">';
 	
@@ -212,7 +209,7 @@ echo '
 	}
 	
 	
-	// If you're logged in to your own profile page
+	// If you're logged in to your own visit-center page
 	if(Me::$id == $userData['uni_id'])
 	{
 		echo '
@@ -242,22 +239,7 @@ echo '
 // echo '<br /><a href="/' . $userData['handle'] . '?' . $linkPrepare . '">Connect Your Avatar</a>';
 
 /*
-
-// <h3>A pet challenges you to a game of UniBall. Do you accept the challenge? (You\'re on, PET!)</h3>
-
-echo '
-<br /><a href="/training-center">View Training Center</a>
-
-<br />
-<br />Direct Link to My UC Page:<br /><textarea style="min-width:300px; min-height:50px;">' . htmlspecialchars(SITE_URL . '/visit/' . $userData['handle']) . '</textarea>
-<br />(Note: every visitor to this page earns you a gift)
-
-<br />
-<br />HTML Tag to My UC Page:<br /><textarea style="min-width:300px; min-height:50px;">' . htmlspecialchars('<a href="' . SITE_URL . '/visit/' . $userData['handle'] . '">Visit My UniCreatures</a>') . '</textarea>
-<br />(Note: every visitor to this page earns you a gift)
-
-';
-
+	// <h3>A pet challenges you to a game of UniBall. Do you accept the challenge? (You\'re on, PET!)</h3>
 */
 
 echo '

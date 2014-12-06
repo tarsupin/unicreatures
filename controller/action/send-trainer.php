@@ -58,6 +58,9 @@ if($link = Link::clicked())
 		{
 			if(Database::query("UPDATE creatures_owned SET activity=?, active_until=? WHERE id=? LIMIT 1", array("training", time() + (60 * 60 * 20), $pet['id'])))
 			{
+				// Update the training center (in case they go visit it)
+				MyCreatures::activityList(Me::$id, "training", true);
+				
 				$expGained = MyTraining::gainExp((int) $pet['id'], $expGain);
 				$newLevel = MyTraining::getLevel($expGained + $pet['experience']);
 				
@@ -67,7 +70,7 @@ if($link = Link::clicked())
 					MyAchievements::set((int) $pet['uni_id'], $petType['family'], "trained", ($newLevel >= 10 ? 2 : 1));
 				}
 				
-				Alert::saveSuccess("Sent to Training", "This creature has been sent to the training center.");
+				Alert::saveSuccess("Sent to Training", 'This creature has been sent to the <a href="/training-center">training center</a>.');
 				
 				header("Location: /pet/" . $pet['id']); exit;
 			}
