@@ -13,7 +13,7 @@ if(!isset($url[2]))
 }
 
 // Get Pet Data
-$pet = MyCreatures::petData($url[2], "id, area_id, uni_id, type_id, nickname, gender, experience, total_points, date_acquired");
+$pet = MyCreatures::petData((int) $url[2], "id, area_id, uni_id, type_id, nickname, gender, experience, total_points, date_acquired");
 
 if(!$pet or $pet['uni_id'] != Me::$id)
 {
@@ -44,6 +44,9 @@ if(isset($_GET['area']))
 	}
 }
 
+// Get details about pet
+$level = MyTraining::getLevel((int) $pet['experience']);
+
 // Run Global Script
 require(APP_PATH . "/includes/global.php");
 
@@ -61,14 +64,14 @@ echo '
 echo '
 <style>
 .area { display:inline-block; padding:8px; text-align:center; }
-</style>';
+</style>
 
-echo '
-<div class="pet">
-	<img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" />
-	<br />' . $pet['nickname'] . '
-	<br />' . ($pet['gender'] == "m" ? "Male" : "Female") . '
-</div>';
+<div id="uc-left">
+	<div class="uc-static-block" style="margin-top:0px;"><img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" /><div class="uc-bold">' . $pet['nickname'] . '</div><div class="uc-note">Level ' . $level . " " . ($pet['gender'] == "m" ? "Male" : "Female") . '</div></div>
+</div>
+
+<div id="uc-right">
+	<h2>Where would you like to move ' . $pet['nickname'] . '?</h2>';
 
 // List the areas you can move it to
 $areas = MyAreas::areas(Me::$id);
@@ -81,12 +84,14 @@ foreach($areas as $area)
 		echo '
 		<div class="area">
 			<a href="/action/move-pet/' . $pet['id'] . '?area=' . $area['id'] . '"><img src="/assets/areas/' . $area['type'] . '.png" /></a>
-			<br />' . $area['name'] . '
+			<div class="uc-bold">' . $area['name'] . '</div>
+			<div class="uc-note">Pop: ' . $area['population'] . ' / ' . $area['max_population'] . '</div>
 		</div>';
 	}
 }
 
 echo '
+</div>
 </div>';
 
 // Display the Footer
