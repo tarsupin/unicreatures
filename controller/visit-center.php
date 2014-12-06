@@ -140,7 +140,6 @@ echo '
 </div>
 <div id="uc-right">
 	<div class="uc-action-block">
-		<div style="font-size:1.1em; font-weight:bold; margin-bottom:12px;">Visit ' . $userData['display_name'] . '\'s Pages</div>
 		<div class="uc-action-inline"><a href="' . $urlAdd . '/home"><img src="/assets/icons/button_hut.png" /></a><div class="uc-note-bold">Pet Areas</div></div>
 		<div class="uc-action-inline" style="opacity:0.7;"><img src="/assets/icons/button_visit.png" /><div class="uc-note-bold">Visit Center</div></div>
 		<div class="uc-action-inline"><a href="' . $urlAdd . '/achievements"><img src="/assets/icons/button_trophy.png" /></a><div class="uc-note-bold">Achievements</div></div>
@@ -205,9 +204,8 @@ echo '
 	if($eggVisit)
 	{
 		echo '
-		<div class="uc-note" style="margin-top:22px;">Yes, an egg just visited you. Deal with it.</div>';
+		<div class="uc-note" style="margin-top:22px;">Yes, an egg just visited you. Eggs can do that here.</div>';
 	}
-	
 	
 	// If you're logged in to your own visit-center page
 	if(Me::$id == $userData['uni_id'])

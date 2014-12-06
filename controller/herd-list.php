@@ -1,24 +1,16 @@
 <?php if(!defined("CONF_PATH")) { die("No direct script access allowed."); }
 
-// Determine the user being viewed
-if(isset($url[1]))
+// Get the active user
+if(!isset($userData))
 {
-	if(!$userData = User::getDataByHandle(Sanitize::variable($url[1]), "uni_id, handle, display_name"))
-	{
-		header("Location: /"); exit;
-	}
-	
-	You::$id = (int) $userData['uni_id'];
-	You::$handle = $userData['handle'];
-}
-else
-{
+	// If you're not viewing someone and not logged in yourself
 	if(!Me::$loggedIn)
 	{
-		header("Location: /"); exit;
+		Me::redirectLogin("/training-center");
 	}
 	
 	$userData = Me::$vals;
+	$userData['uni_id'] = (int) $userData['uni_id'];
 }
 
 // Get your list of herds

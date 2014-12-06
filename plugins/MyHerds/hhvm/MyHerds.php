@@ -30,6 +30,24 @@ MyHerds::sendToHerd($creatureID);
 abstract class MyHerds {
 	
 	
+/****** Plugin Variables ******/
+	public static int $scoreAchieve2 = 100;		// <int> The number of points required to get level 2 achievement.
+	public static int $scoreAchieve1 = 30;		// <int> The number of points required to get level 1 achievement.
+	
+	
+/****** Get data from a herd ******/
+	public static function getData
+	(
+		int $uniID		// <int> The UniID that you're pulling the herd from.
+	,	string $family		// <str> The creature family's herd to identify.
+	): array <str, mixed>				// RETURNS <str:mixed> the data about the herd.
+	
+	// $herdData = MyHerds::getData($uniID, $family);
+	{
+		return Database::selectOne("SELECT population, score FROM herds WHERE uni_id=? AND family=? LIMIT 1", array($uniID, $family));
+	}
+	
+	
 /****** Get population from a herd ******/
 	public static function population
 	(
@@ -40,6 +58,33 @@ abstract class MyHerds {
 	// $population = MyHerds::population($uniID, $family);
 	{
 		return (int) Database::selectValue("SELECT population FROM herds WHERE uni_id=? AND family=? LIMIT 1", array($uniID, $family));
+	}
+	
+	
+/****** Get score of a herd ******/
+	public static function getScore
+	(
+		int $uniID		// <int> The UniID that you're pulling the herd from.
+	,	string $family		// <str> The creature family's herd to get the score of.
+	): int				// RETURNS <int> the score of the herd.
+	
+	// $score = MyHerds::getScore($uniID, $family);
+	{
+		return (int) Database::selectValue("SELECT score FROM herds WHERE uni_id=? AND family=? LIMIT 1", array($uniID, $family));
+	}
+	
+	
+/****** Update the score of a herd ******/
+	public static function updateScore
+	(
+		int $uniID		// <int> The UniID that you're pulling the herd from.
+	,	string $family		// <str> The creature family's herd to get the score of.
+	,	int $score		// <int> The amount of points to add to the herd score.
+	): bool				// RETURNS <bool> TRUE on success, FALSE on failure.
+	
+	// MyHerds::updateScore($uniID, $family, $score);
+	{
+		return Database::query("UPDATE herds SET score=score+? WHERE uni_id=? AND family=? LIMIT 1", array($score, $uniID, $family));
 	}
 	
 	
@@ -138,14 +183,14 @@ abstract class MyHerds {
 		}
 		
 		// Get the pet type data
-		$petTypeData = MyCreatures::petTypeData((int) $petData['type_id'], "family");
+		$petTypeData = MyCreatures::petTypeData((int) $petData['type_id'], "family, evolution_level");
 		
 		// Check if a herd currently exists
-		if(!$population = MyHerds::population($uniID, $petTypeData['family']))
+		if(!$population = self::population($uniID, $petTypeData['family']))
 		{
 			Database::query("REPLACE INTO herds (uni_id, family, population) VALUES (?, ?, ?)", array($uniID, $petTypeData['family'], 1));
 			
-			if(!$population = MyHerds::population($uniID, $petTypeData['family']))
+			if(!$population = self::population($uniID, $petTypeData['family']))
 			{
 				return false;
 			}
@@ -168,6 +213,25 @@ abstract class MyHerds {
 			}
 		}
 		
-		return Database::endTransaction($pass);
+		// If adding the pet to the herd is successful, attempt to update the achievements
+		if(Database::endTransaction($pass))
+		{
+			// Update the score
+			if(self::updateScore($uniID, $petTypeData['family'], ($petTypeData['evolution_level'] - 1)))
+			{
+				$score = self::getScore($uniID, $petTypeData['family']);
+				
+				if($score >= self::$scoreAchieve2)
+				{
+					MyAchievements::set($uniID, $petTypeData['family'], "herd", 2);
+				}
+				else if($score >= self::$scoreAchieve1)
+				{
+					MyAchievements::set($uniID, $petTypeData['family'], "herd", 1);
+				}
+			}
+		}
+		
+		return $pass;
 	}
 }

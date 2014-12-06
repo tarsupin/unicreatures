@@ -62,15 +62,15 @@ echo '
 
 echo '
 <div id="uc-left-wide">
-	<div id="pet"><a href="/pet/' . $pet['id'] . '"><img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" /></a><div class="uc-bold">' . $pet['nickname'] . '</div><div class="uc-note">Level ' . MyTraining::getLevel((int) $pet['experience']) . ' ' . $petType['name'] . '</div><div style="font-size:0.8em;">' . $pet['total_points'] . ' Evolution Points</div></div>
+	<div class="uc-static-block"><a href="/pet/' . $pet['id'] . '"><img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" /></a><div class="uc-bold">' . $pet['nickname'] . '</div><div class="uc-note">Level ' . MyTraining::getLevel((int) $pet['experience']) . ' ' . $petType['name'] . '</div><div style="font-size:0.8em;">' . $pet['total_points'] . ' Evolution Points</div></div>
 	<div class="uc-action-block"><img src="' . MyCreatures::imgSrc($petType['family'], $petType['family'], "") . '" /><div class="uc-bold">The ' . $petType['family'] . ' Herd</div><div class="uc-note">Population: ' . $population . '</div></div>
 </div>
 <div id="uc-right-wide">
-	<h2>Send ' . $pet['nickname'] . ' to the Herd</h2>
+	<h1>Send ' . $pet['nickname'] . ' to the Herd</h1>
 	<div style="color:red; font-size:1.1em;"><span class="icon-flag"></span> Warning: Creatures that get sent to the herd CANNOT be returned, train, play in games, or be used in any other way. They become permanently associated with their family herd.</div>
 	<div style="margin-top:22px; font-size:1.1em;">Are you sure you want to send this creature to the herd?</div>
-	<div id="pet-details" style="text-align:center; font-size:1.2em;">
-		<a href="/action/join-herd/' . $pet['id'] . '?confirm=true&' . $linkProtect . '" style="display:block;">I\'m certain - add ' . $pet['nickname'] . ' to the Herd</a>
+	<div class="uc-action-block">
+		<a href="/action/join-herd/' . $pet['id'] . '?confirm=true&' . $linkProtect . '" style="display:block; font-size:1.2em;">I\'m certain - add ' . $pet['nickname'] . ' to the Herd</a>
 	</div>
 </div>
 

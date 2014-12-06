@@ -343,7 +343,7 @@ abstract class MyAreas {
 			return array();
 		}
 		
-		return Database::selectMultiple("SELECT c.id, c.nickname, ct.family, ct.name, ct.prefix FROM creatures_user cu INNER JOIN creatures_owned c ON cu.creature_id=c.id INNER JOIN creatures_types ct ON ct.id=c.type_id WHERE c.uni_id=? AND c.area_id=? LIMIT " . (($page - 1) * $showNum) . ", " . ($showNum + 1), array($uniID, $wildID));
+		return Database::selectMultiple("SELECT c.id, c.nickname, ct.family, ct.name, ct.prefix FROM creatures_user cu INNER JOIN creatures_owned c ON cu.creature_id=c.id INNER JOIN creatures_types ct ON ct.id=c.type_id WHERE c.uni_id=? AND c.area_id=? ORDER BY id DESC LIMIT " . (($page - 1) * $showNum) . ", " . ($showNum + 1), array($uniID, $wildID));
 	}
 	
 	

@@ -28,6 +28,7 @@ class MyHerds_config {
 			`uni_id`				int(10)			unsigned	NOT NULL	DEFAULT '0',
 			`family`				varchar(22)					NOT NULL	DEFAULT '',
 			`population`			tinyint(3)		unsigned	NOT NULL	DEFAULT '0',
+			`score`					smallint(5)		unsigned	NOT NULL	DEFAULT '0',
 			
 			UNIQUE (`uni_id`, `family`)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8 PARTITION BY KEY(uni_id) PARTITIONS 23;

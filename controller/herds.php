@@ -6,11 +6,24 @@ if(!isset($url[1]))
 	header("Location: /"); exit;
 }
 
+// Get the active user
+if(!isset($userData))
+{
+	// If you're not viewing someone and not logged in yourself
+	if(!Me::$loggedIn)
+	{
+		Me::redirectLogin("/training-center");
+	}
+	
+	$userData = Me::$vals;
+	$userData['uni_id'] = (int) $userData['uni_id'];
+}
+
 // Prepare Values
 $family = Sanitize::variable($url[1]);
 
 // Check the herd
-if(!$population = MyHerds::population(Me::$id, $family))
+if(!$herdData = MyHerds::getData(Me::$id, $family))
 {
 	header("Location: /herd-list"); exit;
 }
@@ -42,6 +55,7 @@ echo '
 		<img src="' . ProfilePic::image((int) $userData['uni_id'], "huge") . '" />
 		<div class="uc-bold">' . $userData['display_name'] . '</div>
 	</div>
+	<div class="uc-bold-block">Herd Score: ' . $herdData['score'] . '</div>
 </div>
 <div id="uc-right">
 	<div class="uc-action-block">

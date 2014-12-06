@@ -1,9 +1,16 @@
 <?php if(!defined("CONF_PATH")) { die("No direct script access allowed."); }
 
-// Make sure the user is logged in
-if(!Me::$loggedIn)
+// Get the active user
+if(!isset($userData))
 {
-	Me::redirectLogin("/training-center");
+	// If you're not viewing someone and not logged in yourself
+	if(!Me::$loggedIn)
+	{
+		Me::redirectLogin("/training-center");
+	}
+	
+	$userData = Me::$vals;
+	$userData['uni_id'] = (int) $userData['uni_id'];
 }
 
 // Get a list of pets actively training
