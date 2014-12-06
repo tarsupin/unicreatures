@@ -41,7 +41,7 @@ if($areaData = MyAreas::areaData((int) $pet['area_id']))
 }
 else
 {
-	$areaLink = $urlAdd . "/wild" . ($userData['uni_id'] == Me::$id ? '' : '/' . $userData['handle']);
+	$areaLink = $urlAdd . "/wild";
 	$areaData['type'] = "wild";
 	$areaData['name'] = "The Wild";
 }

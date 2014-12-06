@@ -6,6 +6,12 @@ if(!Me::$loggedIn)
 	Me::redirectLogin("/explore-zones"); exit;
 }
 
+// Make sure the appropriate information is provided
+if(!isset($url[1]))
+{
+	header("Location: /explore-zones"); exit;
+}
+
 // Prepare Variables
 $zone = $url[1];
 $zoneList = MyExplore::zoneList();

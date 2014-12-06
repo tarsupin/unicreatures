@@ -14,7 +14,7 @@ if(!isset($userData))
 }
 
 // Get your list of herds
-$herds = MyHerds::herdList(Me::$id);
+$herds = MyHerds::herdList($userData['uni_id']);
 
 // Run Global Script
 require(APP_PATH . "/includes/global.php");
@@ -44,7 +44,9 @@ echo '
 		<div class="uc-action-inline"><a href="' . $urlAdd . '/achievements"><img src="/assets/icons/button_trophy.png" /></a><div class="uc-note-bold">Achievements</div></div>
 		<div class="uc-action-inline"><a href="' . $urlAdd . '/training-center"><img src="/assets/icons/button_course.png" /></a><div class="uc-note-bold">Training</div></div>
 		<div class="uc-action-inline" style="opacity:0.7;"><img src="/assets/icons/button_herds.png" /><div class="uc-note-bold">Herds</div></div>
-	</div>';
+	</div>
+	
+	<h1>' . $userData['display_name'] . '\'s Herds</h1>';
 
 if(count($herds) > 0)
 {
@@ -61,7 +63,7 @@ if(count($herds) > 0)
 }
 else
 {
-	echo "You do not currently have any herds.";
+	echo (Me::$id == $userData['uni_id'] ? "You do" : $userData['display_name'] . " does") . " not currently have any herds.";
 }
 
 echo '

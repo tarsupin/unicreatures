@@ -14,7 +14,7 @@ if(!isset($userData))
 }
 
 // Get a list of pets actively training
-$petList = MyCreatures::activityList(Me::$id, "training");
+$petList = MyCreatures::activityList($userData['uni_id'], "training");
 
 // Run Global Script
 require(APP_PATH . "/includes/global.php");
@@ -57,7 +57,7 @@ echo '
 if(!$petList)
 {
 	echo '
-	<div>You do not have any pets in the training center at this time.</div>';
+	<div>' . (Me::$id == $userData['uni_id'] ? 'You do' : $userData['display_name'] . ' does') . ' not have any pets in the training center at this time.</div>';
 }
 
 foreach($petList as $pet)

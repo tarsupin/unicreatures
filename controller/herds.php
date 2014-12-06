@@ -23,13 +23,13 @@ if(!isset($userData))
 $family = Sanitize::variable($url[1]);
 
 // Check the herd
-if(!$herdData = MyHerds::getData(Me::$id, $family))
+if(!$herdData = MyHerds::getData($userData['uni_id'], $family))
 {
 	header("Location: /herd-list"); exit;
 }
 
 // Get the list of the user's pets
-$herdPets = MyHerds::getPets(Me::$id, $family);
+$herdPets = MyHerds::getPets($userData['uni_id'], $family);
 
 // Run Global Script
 require(APP_PATH . "/includes/global.php");

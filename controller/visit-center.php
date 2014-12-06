@@ -176,35 +176,36 @@ echo '
 	<div style="font-weight:bold; font-size:1.2em; margin-top:22px;">Some of ' . $userData['display_name'] . '\'s pets come visit you!</div>';
 	
 	// Get a list of Pet ID's
-	$getPets = Database::selectMultiple("SELECT creature_id FROM creatures_user WHERE uni_id=? ORDER BY creature_id DESC LIMIT 25", array($userData['uni_id']));
-	
-	shuffle($getPets);
-	
-	$getPets = array_splice($getPets, 0, mt_rand(4, 6));
-	$petIDs = array();
-	$eggVisit = false;
-	
-	foreach($getPets as $pid)
+	if($getPets = Database::selectMultiple("SELECT creature_id FROM creatures_user WHERE uni_id=? ORDER BY creature_id DESC LIMIT 25", array($userData['uni_id'])))
 	{
-		$petIDs[] = (int) $pid['creature_id'];
-	}
-	
-	list($sqlWhere, $sqlArray) = Database::sqlFilters(array("co.id" => $petIDs));
-	
-	$pets = Database::selectMultiple("SELECT co.id, co.nickname, ct.family, ct.name, ct.prefix FROM creatures_owned co INNER JOIN creatures_types ct ON co.type_id=ct.id WHERE " . $sqlWhere, $sqlArray);
-	
-	foreach($pets as $pet)
-	{
-		if($pet['name'] == "Egg") { $eggVisit = true; }
+		shuffle($getPets);
 		
-		echo '
-		<div class="pet-cube"><div class="pet-cube-inner"><a href="/pet/' . $pet['id'] . '"><img src="' . MyCreatures::imgSrc($pet['family'], $pet['name'], $pet['prefix']) . '" /></a></div><div>' . $pet['nickname'] . '</div></div>';
-	}
-	
-	if($eggVisit)
-	{
-		echo '
-		<div class="uc-note" style="margin-top:22px;">Yes, an egg just visited you. Eggs can do that here.</div>';
+		$getPets = array_splice($getPets, 0, mt_rand(4, 6));
+		$petIDs = array();
+		$eggVisit = false;
+		
+		foreach($getPets as $pid)
+		{
+			$petIDs[] = (int) $pid['creature_id'];
+		}
+		
+		list($sqlWhere, $sqlArray) = Database::sqlFilters(array("co.id" => $petIDs));
+		
+		$pets = $sqlWhere ? Database::selectMultiple("SELECT co.id, co.nickname, ct.family, ct.name, ct.prefix FROM creatures_owned co INNER JOIN creatures_types ct ON co.type_id=ct.id WHERE " . $sqlWhere, $sqlArray) : array();
+		
+		foreach($pets as $pet)
+		{
+			if($pet['name'] == "Egg") { $eggVisit = true; }
+			
+			echo '
+			<div class="pet-cube"><div class="pet-cube-inner"><a href="/pet/' . $pet['id'] . '"><img src="' . MyCreatures::imgSrc($pet['family'], $pet['name'], $pet['prefix']) . '" /></a></div><div>' . $pet['nickname'] . '</div></div>';
+		}
+		
+		if($eggVisit)
+		{
+			echo '
+			<div class="uc-note" style="margin-top:22px;">Yes, an egg just visited you. Eggs can do that here.</div>';
+		}
 	}
 	
 	// If you're logged in to your own visit-center page
