@@ -44,6 +44,9 @@ if($checkLastGather != $dateCheck)
 	}
 }
 
+// Prepare the Page's Active Hashtag
+$config['active-hashtag'] = "UniCreatures";
+
 // Run Global Script
 require(APP_PATH . "/includes/global.php");
 

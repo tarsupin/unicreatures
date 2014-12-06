@@ -97,6 +97,9 @@ if(!$isBusy and Me::$id == $pet['uni_id'])
 $linkProtect = Link::prepare("uc-pet-page-" . $pet['id']);
 $level = MyTraining::getLevel((int) $pet['experience']);
 
+// Prepare the Page's Active Hashtag
+$config['active-hashtag'] = "UniCreatures";
+
 // Run Global Script
 require(APP_PATH . "/includes/global.php");
 

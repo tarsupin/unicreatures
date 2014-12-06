@@ -12,6 +12,9 @@ if(!$achievements = MySupplies::getSupplies(Me::$id, "achievements"))
 // Get a list of the user's supplies
 $energy = MyEnergy::get(Me::$id);
 
+// Prepare the Page's Active Hashtag
+$config['active-hashtag'] = "UniCreatures";
+
 // Run Global Script
 require(APP_PATH . "/includes/global.php");
 

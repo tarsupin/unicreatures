@@ -18,6 +18,9 @@ $achievements = MyAchievements::getList($userData['uni_id']);
 
 $score = MySupplies::getSupplies($userData['uni_id'], "achievements");
 
+// Prepare the Page's Active Hashtag
+$config['active-hashtag'] = "UniCreatures";
+
 // Run Global Script
 require(APP_PATH . "/includes/global.php");
 

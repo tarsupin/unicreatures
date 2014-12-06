@@ -34,6 +34,9 @@ if(count($areas) < 1)
 // Supply List
 $supplies = MySupplies::getSupplyList($userData['uni_id']);
 
+// Prepare the Page's Active Hashtag
+$config['active-hashtag'] = "UniCreatures";
+
 // Run Global Script
 require(APP_PATH . "/includes/global.php");
 

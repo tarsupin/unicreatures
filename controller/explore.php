@@ -72,7 +72,6 @@ require(SYS_PATH . "/controller/includes/header.php");
 require(SYS_PATH . "/controller/includes/side-panel.php");
 
 echo '
-<div id="panel-right"></div>
 <div id="content" style="overflow:hidden;">' . Alert::display();
 
 // Can see if there are any pets here

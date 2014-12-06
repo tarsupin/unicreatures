@@ -1,11 +1,5 @@
 <?php if(!defined("CONF_PATH")) { die("No direct script access allowed."); }
 
-// Prepare the Page's Active Hashtag
-if(!isset($config['active-hashtag']))
-{
-	$config['active-hashtag'] = "UniCreatures";
-}
-
 // Base style sheet for this site
 Metadata::addHeader('<link rel="stylesheet" href="' . CDN . '/css/unifaction-2col.css" />');
 
