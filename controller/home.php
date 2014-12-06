@@ -22,6 +22,15 @@ if(!isset($userData))
 // Retrieve the list of areas
 $areas = MyAreas::areas($userData['uni_id']);
 
+// If there are no plots, generate one automatically for the player (a free meadow)
+if(count($areas) < 1)
+{
+	if(MyAreas::acquireDeed($userData['uni_id'], 1))
+	{
+		$areas = MyAreas::areas($userData['uni_id']);
+	}
+}
+
 // Supply List
 $supplies = MySupplies::getSupplyList($userData['uni_id']);
 
