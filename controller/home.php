@@ -46,8 +46,9 @@ require(SYS_PATH . "/controller/includes/side-panel.php");
 
 echo '
 <div id="panel-right"></div>
-<div id="content">' . Alert::display() . '
+<div id="content">' . Alert::display();
 
+echo '
 <style>
 .dual-col-item { display:inline-block; width:45%; padding:1%; margin-bottom:12px; }
 .area { display:inline-block; padding:8px; text-align:center; }

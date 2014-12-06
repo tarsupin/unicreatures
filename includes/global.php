@@ -9,6 +9,9 @@ if(!isset($config['active-hashtag']))
 // Base style sheet for this site
 Metadata::addHeader('<link rel="stylesheet" href="' . CDN . '/css/unifaction-2col.css" />');
 
+// Update the user activity module
+UserActivity::update();
+
 // Load the Social Menu
 require(SYS_PATH . "/controller/includes/social-menu.php");
 

@@ -16,6 +16,13 @@ echo '
 <!-- Content gets dynamically shifted to this section -->
 <div id="dynamic-content-loader"></div>';
 
+// User Activity
+$guestCount = UserActivity::getGuestsOnlineCount(900);
+$userCount = UserActivity::getUsersOnlineCount(900);
+
+echo '
+<div style="background-color:white; padding:6px; border-radius:6px;"><div style="display:table; width:100%; text-align:center;"><div style="display:table-cell; width:50%;"><div class="uc-bold">Users Online</div><div>' . $userCount . '</div></div><div class="uc-bold">Guests Online</div><div>' . $guestCount . '</div></div></div>';
+
 /*
 // Prepare the Featured Widget Data
 $categories = array("articles", "people");
