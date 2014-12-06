@@ -37,7 +37,7 @@ if($link = Link::clicked() and $link == "shop-deeds" and isset($_GET['buy']))
 					
 					if($newCoins = MySupplies::changeSupplies(Me::$id, "coins", 0 - $deedList[$_GET['buy']]['cost']))
 					{
-						$pass = MyAreas::acquireDeed(Me::$id, $typeData['id']);
+						$pass = MyAreas::acquireDeed(Me::$id, (int) $typeData['id']);
 					}
 					
 					if(Database::endTransaction($pass))

@@ -61,7 +61,7 @@ if($link = Link::clicked())
 				// Update the training center (in case they go visit it)
 				MyCreatures::activityList(Me::$id, "training", true);
 				
-				$expGained = MyTraining::gainExp((int) $pet['id'], $expGain);
+				$expGained = MyTraining::gainExp((int) $pet['id'], (int) $expGain);
 				$newLevel = MyTraining::getLevel($expGained + $pet['experience']);
 				
 				// Provide an achievement if you made level 5 or level 10

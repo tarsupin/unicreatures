@@ -99,7 +99,7 @@ if($link = Link::clicked() and $link == "edit-area-uc" and isset($_GET['upgrade'
 			{
 				Alert::saveSuccess("Area Deleted", "The area was successfully deleted.");
 				
-				header("Location: /uc-static-blocks"); exit;
+				header("Location: /"); exit;
 			}
 		}
 	}
@@ -165,7 +165,7 @@ echo '
 	}
 	
 	echo '
-	<div style="text-align:center; width:160px; margin-top:22px;"><a href="/action/edit-area/' . $area['id'] . '?upgrade=engineering&' . $linkProtect . '"><img src="/assets/tech/architecture.png" /></a><div style="font-size:0.9em; font-weight:bold;">Engineering</div><div style="font-size:0.9em;">+5 Max. Population</div><div style="font-size:0.8em;">' . $engCost . ' Crafting Supplies</div></div>
+	<div style="text-align:center; width:160px; margin-top:22px;"><a href="/action/edit-area/' . $area['id'] . '?upgrade=engineering&' . $linkProtect . '"><img src="/assets/icons/button_supplies.png" /></a><div style="font-size:0.9em; font-weight:bold;">Engineering</div><div style="font-size:0.9em;">+5 Max. Population</div><div style="font-size:0.8em;">' . $engCost . ' Crafting Supplies</div></div>
 	
 	<div style="margin-top:22px;">
 		<strong>Rename the Area</strong>

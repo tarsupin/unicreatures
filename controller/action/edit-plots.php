@@ -14,7 +14,7 @@ if(count($areas) <= 1)
 {
 	Alert::saveError("No Plots", "You don't currently have any plots that you can edit.");
 	
-	header("Location: /uc-static-blocks"); exit;
+	header("Location: /"); exit;
 }
 
 Alert::info("Click Plot", "Click on the plot that you would like to rename or upgrade.");

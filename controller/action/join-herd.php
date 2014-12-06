@@ -15,7 +15,7 @@ if(!isset($url[2]) or !$pet = MyCreatures::petData((int) $url[2], "id, uni_id, t
 // Make sure you own the pet
 if($pet['uni_id'] != Me::$id)
 {
-	header("Location: /uc-static-blocks"); exit;
+	header("Location: /"); exit;
 }
 
 if($isBusy = MyCreatures::isBusy($pet['activity'], (int) $pet['active_until']))

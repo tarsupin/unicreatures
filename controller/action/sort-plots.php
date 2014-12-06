@@ -20,7 +20,7 @@ if(count($areas) <= 1)
 {
 	Alert::saveError("No Plots", "You need more plots to reorder them.");
 	
-	header("Location: /uc-static-blocks"); exit;
+	header("Location: /"); exit;
 }
 
 // Update the plot location

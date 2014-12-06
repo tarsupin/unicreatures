@@ -13,7 +13,7 @@ if(!isset($url[2]))
 }
 
 // Get Pet Data
-$pet = MyCreatures::petData($url[2], "id, uni_id, type_id, nickname");
+$pet = MyCreatures::petData((int) $url[2], "id, uni_id, type_id, nickname");
 
 if(!$pet or $pet['uni_id'] != Me::$id)
 {
@@ -25,7 +25,7 @@ $swapCost = 10;
 $alchemy = MySupplies::getSupplies(Me::$id, "alchemy");
 
 // Get the Pet Type Data
-$petType = MyCreatures::petTypeData($pet['type_id'], "evolves_from, family, name, prefix");
+$petType = MyCreatures::petTypeData((int) $pet['type_id'], "evolves_from, family, name, prefix");
 
 if($petType['evolves_from'] == 0)
 {
@@ -34,12 +34,12 @@ if($petType['evolves_from'] == 0)
 }
 
 // If you reversed this pet's evolution
-if(isset($_GET['reverse']) && Link::clicked())
+if(isset($_GET['reverse']) and $value = Link::clicked() and $value == "reverse-evolve-uc")
 {
 	if($alchemy >= $swapCost)
 	{
 		// Get the Changed Type
-		$newType = MyCreatures::petTypeData($petType['evolves_from'], "id, name, prefix");
+		$newType = MyCreatures::petTypeData((int) $petType['evolves_from'], "id, name, prefix");
 		
 		if($newType)
 		{
@@ -61,6 +61,9 @@ if(isset($_GET['reverse']) && Link::clicked())
 	}
 }
 
+// Prepare Link Protection
+$linkProtect = Link::prepare("reverse-evolve-uc");
+
 // Run Global Script
 require(APP_PATH . "/includes/global.php");
 
@@ -75,11 +78,14 @@ echo '
 <div id="panel-right"></div>
 <div id="content">' . Alert::display() . '
 
-You currently have ' . $alchemy . ' alchemy ingredients.
 <div>
-	Are you sure you want to reverse evolve ' . $pet['nickname'] . ' to its earlier stage? This effect will require ' . $swapCost . ' alchemy ingredients.<br />
+	<div class="uc-bold">Are you sure you want to reverse evolve ' . $pet['nickname'] . ' to its earlier stage? This effect will require ' . $swapCost . ' alchemy ingredients.</div>
+	
+	<div class="uc-note">You currently have ' . $alchemy . ' alchemy ingredients.</div>
+	
 	<img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" />
-	<br /><br /><a href="/action/reverse-evolve/' . $pet['id'] . '?reverse=true&' . Link::prepare() . '">Yes, reverse-evolve this pet.</a>
+	
+	<div class="uc-action-block"><a href="/action/reverse-evolve/' . $pet['id'] . '?reverse=true&' . $linkProtect . '" style="display:block; padding:4px;">Yes, reverse-evolve this pet.</a></div>
 </div>
 
 </div>';

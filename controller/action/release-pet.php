@@ -13,7 +13,7 @@ if(!isset($url[2]))
 }
 
 // Get Pet Data
-$pet = MyCreatures::petData($url[2], "id, uni_id, type_id, nickname, gender");
+$pet = MyCreatures::petData((int) $url[2], "id, uni_id, type_id, nickname, gender");
 
 if(!$pet or $pet['uni_id'] != Me::$id)
 {
@@ -21,15 +21,18 @@ if(!$pet or $pet['uni_id'] != Me::$id)
 }
 
 // Get the Pet Type Data
-$petType = MyCreatures::petTypeData($pet['type_id'], "family, name, prefix");
+$petType = MyCreatures::petTypeData((int) $pet['type_id'], "family, name, prefix");
 
 // If you moved the pet into an area
-if(isset($_GET['release']) && Link::clicked())
+if(isset($_GET['release']) and $value = Link::clicked() and $value == "release-pet-uc")
 {
-	MyCreatures::deleteCreature($pet['id']);
+	MyCreatures::deleteCreature((int) $pet['id']);
 	Alert::saveSuccess("Released Pet", "You have released " . $pet['nickname'] . " back to Esme!");
-	header("Location: /uc-static-blocks"); exit;
+	header("Location: /"); exit;
 }
+
+// Prepare Link Protection
+$linkProtect = Link::prepare("release-pet-uc");
 
 // Run Global Script
 require(APP_PATH . "/includes/global.php");
@@ -47,9 +50,11 @@ echo '
 
 echo '
 <div>
-	Are you sure you want to release ' . $pet['nickname'] . ' back into Esme? ' . ($pet['gender'] == 'm' ? "He" : "She") . ' will be free to roam the world of Esme, but will be impossible to track down again.<br />
+	<div class="uc-bold">Are you sure you want to release ' . $pet['nickname'] . ' back into Esme? ' . ($pet['gender'] == 'm' ? "He" : "She") . ' will be free to roam the world of Esme, but will be impossible to track down again.</div>
+	
 	<img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" />
-	<br /><br /><a href="/action/release-pet/' . $pet['id'] . '?release=true&' . Link::prepare() . '">Yes, I understand ' . $pet['nickname'] . ' will be released forever.</a>
+	
+	<div class="uc-action-block"><a href="/action/release-pet/' . $pet['id'] . '?release=true&' . $linkProtect . '" style="display:block; padding:4px;">Yes, I understand ' . $pet['nickname'] . ' will be released forever.</a></div>
 </div>';
 
 echo '

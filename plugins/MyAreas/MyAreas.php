@@ -132,7 +132,7 @@ abstract class MyAreas {
 /****** Get data about a Pet Area Type (pen type) ******/
 	public static function areaTypeData
 	(
-		$type			// <int> The ID or Type of the area.
+		$type			// <mixed> The ID or type of the area.
 	)					// RETURNS <str:mixed> the data about the area type.
 	
 	// $areaTypeData = MyAreas::areaTypeData($type);

@@ -60,15 +60,15 @@ abstract class MyTraining {
 		$multiplier = (50 + ($level * 5) + $bonus) / 100;
 		
 		return array(
-			'strength'		=> round($attr['strength'] * $multiplier)
-		,	'agility'		=> round($attr['agility'] * $multiplier)
-		,	'speed'			=> round($attr['speed'] * $multiplier)
-		,	'intelligence'	=> round($attr['intelligence'] * $multiplier)
-		,	'wisdom'		=> round($attr['wisdom'] * $multiplier)
-		,	'charisma'		=> round($attr['charisma'] * $multiplier)
-		,	'creativity'	=> round($attr['creativity'] * $multiplier)
-		,	'willpower'		=> round($attr['willpower'] * $multiplier)
-		,	'focus'			=> round($attr['focus'] * $multiplier)
+			'strength'		=> (int) round($attr['strength'] * $multiplier)
+		,	'agility'		=> (int) round($attr['agility'] * $multiplier)
+		,	'speed'			=> (int) round($attr['speed'] * $multiplier)
+		,	'intelligence'	=> (int) round($attr['intelligence'] * $multiplier)
+		,	'wisdom'		=> (int) round($attr['wisdom'] * $multiplier)
+		,	'charisma'		=> (int) round($attr['charisma'] * $multiplier)
+		,	'creativity'	=> (int) round($attr['creativity'] * $multiplier)
+		,	'willpower'		=> (int) round($attr['willpower'] * $multiplier)
+		,	'focus'			=> (int) round($attr['focus'] * $multiplier)
 		);
 	}
 	
@@ -86,7 +86,7 @@ abstract class MyTraining {
 		$currentEXP = (int) Database::selectValue("SELECT experience FROM creatures_owned WHERE id=? LIMIT 1", array($creatureID));
 		
 		// Assign a random fluctuation of exp gained from this encounter
-		$exp = floor($exp * mt_rand(95, 110) / 100);
+		$exp = (int) floor($exp * mt_rand(95, 110) / 100);
 		
 		// Assign the actual amount that will be acquired, minimum of 1
 		// $level = self::getLevel($currentEXP);

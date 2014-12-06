@@ -77,12 +77,14 @@ if(Form::submitted("exotic-pets-uc"))
 		
 		if(Database::endTransaction($pass))
 		{
-			Alert::success("Credits Purchased", "You have successfully purchased " . $ecsToPurchase . " Exotic Credits!"); 
+			Alert::saveSuccess("Credits Purchased", "You have successfully purchased " . $ecsToPurchase . " Exotic Credits!"); 
 		}
 		else
 		{
-			Alert::error("Credits Failed", "The system was unable to process " . $ecsToPurchase . " Exotic Credits at this time.");
+			Alert::saveError("Credits Failed", "The system was unable to process " . $ecsToPurchase . " Exotic Credits at this time.");
 		}
+		
+		header("Location: /exotic-pets"); exit;
 	}
 }
 

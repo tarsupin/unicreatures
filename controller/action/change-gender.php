@@ -13,7 +13,7 @@ if(!isset($url[2]))
 }
 
 // Get Pet Data
-$pet = MyCreatures::petData($url[2], "id, uni_id, type_id, nickname, gender");
+$pet = MyCreatures::petData((int) $url[2], "id, uni_id, type_id, nickname, gender");
 
 if(!$pet or $pet['uni_id'] != Me::$id)
 {
@@ -25,10 +25,10 @@ $swapCost = 5;
 $alchemy = MySupplies::getSupplies(Me::$id, "alchemy");
 
 // Get the Pet Type Data
-$petType = MyCreatures::petTypeData($pet['type_id'], "family, name, prefix");
+$petType = MyCreatures::petTypeData((int) $pet['type_id'], "family, name, prefix");
 
 // If you changed the gender of the pet
-if(isset($_GET['gender']) && Link::clicked())
+if(isset($_GET['gender']) and $value = Link::clicked() and $value == "change-gender-uc")
 {
 	if($alchemy >= $swapCost)
 	{
@@ -49,6 +49,9 @@ if(isset($_GET['gender']) && Link::clicked())
 	}
 }
 
+// Prepare Link Protection
+$linkProtect = Link::prepare("change-gender-uc");
+
 // Run Global Script
 require(APP_PATH . "/includes/global.php");
 
@@ -64,11 +67,14 @@ echo '
 <div id="content">' . Alert::display();
 
 echo '
-You currently have ' . $alchemy . ' alchemy ingredients.
 <div>
-	Are you sure you want to change ' . $pet['nickname'] . '\'s gender to ' . ($pet['gender'] == 'm' ? 'female' : 'male') . '? This effect will require ' . $swapCost . ' alchemy ingredients.<br />
+	<div class="uc-bold">Are you sure you want to change ' . $pet['nickname'] . '\'s gender to ' . ($pet['gender'] == 'm' ? 'female' : 'male') . '? This effect will require ' . $swapCost . ' alchemy ingredients.</div>
+	
+	<div class="uc-note">You currently have ' . $alchemy . ' alchemy ingredients.</div>
+	
 	<img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" />
-	<br /><br /><a href="/action/change-gender/' . $pet['id'] . '?gender=true&' . Link::prepare() . '">Yes, change ' . ($pet['gender'] == 'm' ? 'his' : 'her') . ' gender.</a>
+	
+	<div class="uc-action-block"><a href="/action/change-gender/' . $pet['id'] . '?gender=true&' . $linkProtect . '" style="display:block; padding:4px;">Yes, change ' . ($pet['gender'] == 'm' ? 'his' : 'her') . ' gender to ' . ($pet['gender'] == 'm' ? 'female' : 'male') . '.</a></div>
 </div>';
 
 echo '

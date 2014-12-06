@@ -95,9 +95,9 @@ if(Me::$id == $userData['uni_id'])
 {
 	echo '
 	<div class="uc-action-block" style="margin-top:42px;">
-		<div class="uc-action-inline"><a href="' . $urlAdd . '/treasure-chest"><img src="/assets/icons/button_chest.png" /></a><div class="uc-note-bold">My Treasure</div></div>
-		<div class="uc-action-inline"><a href="' . $urlAdd . '/"><img src="/assets/icons/button_area_edit.png" /></a><div class="uc-note-bold">Edit Areas</div></div>
-		<div class="uc-action-inline"><a href="' . $urlAdd . '/"><img src="/assets/icons/button_area_move.png" /></a><div class="uc-note-bold">Sort Areas</div></div>
+		<div class="uc-action-inline"><a href="/treasure-chest"><img src="/assets/icons/button_chest.png" /></a><div class="uc-note-bold">My Treasure</div></div>
+		<div class="uc-action-inline"><a href="/action/edit-plots"><img src="/assets/icons/button_area_edit.png" /></a><div class="uc-note-bold">Edit Areas</div></div>
+		<div class="uc-action-inline"><a href="/action/sort-plots"><img src="/assets/icons/button_area_move.png" /></a><div class="uc-note-bold">Sort Areas</div></div>
 	</div>';
 }
 

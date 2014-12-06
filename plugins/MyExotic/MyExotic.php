@@ -28,7 +28,7 @@ abstract class MyExotic {
 	
 	// $shopExotics = MyExotic::getShopList();
 	{
-		return Database::selectMultiple("SELECT ec.date_start, ec.date_end, ct.* FROM exotic_creatures ec INNER JOIN creatures_types ct ON ec.type_id=ct.id WHERE ec.date_end > ? ORDER BY ec.date_end ASC", array(time()));
+		return Database::selectMultiple("SELECT ec.date_start, ec.date_end, ct.* FROM exotic_creatures ec INNER JOIN creatures_types ct ON ec.type_id=ct.id WHERE ec.date_end >= ? ORDER BY ec.date_end ASC", array(time()));
 	}
 	
 	

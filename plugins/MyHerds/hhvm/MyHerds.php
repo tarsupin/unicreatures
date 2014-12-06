@@ -93,7 +93,7 @@ abstract class MyHerds {
 	(
 		int $uniID		// <int> The UniID that you're pulling herds from.
 	,	string $family		// <str> The creature family's herd to count the creatures of.
-	): array <int, array<str, mixed>>				// RETURNS <int:[str:mixed]> the list of user's herds.
+	): int				// RETURNS <int> the list of user's herds.
 	
 	// $creatureCount = MyHerds::countCreatures($uniID, $family);
 	{
@@ -173,7 +173,7 @@ abstract class MyHerds {
 			return false;
 		}
 		
-		$isBusy = MyCreatures::isBusy($petData['activity'], $petData['active_until']);
+		$isBusy = MyCreatures::isBusy($petData['activity'], (int) $petData['active_until']);
 		
 		// Pets that are currently active cannot be moved
 		if($isBusy)

@@ -7,7 +7,7 @@ if(!isset($url[1]))
 }
 
 // Get necessary area data
-if(!$area = MyAreas::areaData($url[1]))
+if(!$area = MyAreas::areaData((int) $url[1]))
 {
 	header("Location: /"); exit;
 }
@@ -19,7 +19,7 @@ if(!$userData = User::get((int) $area['uni_id'], "uni_id, handle, display_name, 
 }
 
 // Get pets from the area
-$pets = MyAreas::areaPets($area['id']);
+$pets = MyAreas::areaPets((int) $area['id']);
 
 // Run Global Script
 require(APP_PATH . "/includes/global.php");

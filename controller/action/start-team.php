@@ -9,7 +9,7 @@ if(!Me::$loggedIn)
 // Make sure pet exists
 if(!isset($url[2]))
 {
-	header("Location: /uc-static-blocks"); exit;
+	header("Location: /"); exit;
 }
 
 // Get Pet Data
@@ -17,7 +17,7 @@ $pet = MyCreatures::petData($url[2]);
 
 if(!$pet or $pet['uni_id'] != Me::$id)
 {
-	header("Location: /uc-static-blocks"); exit;
+	header("Location: /"); exit;
 }
 
 if($isBusy = MyCreatures::isBusy($pet['activity'], $pet['active_until']))
