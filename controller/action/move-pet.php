@@ -63,7 +63,7 @@ echo '
 
 echo '
 <div id="uc-left">
-	<div class="uc-static-block" style="margin-top:0px;"><img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" /><div class="uc-bold">' . $pet['nickname'] . '</div><div class="uc-note">Level ' . $level . " " . ($pet['gender'] == "m" ? "Male" : "Female") . '</div></div>
+	<div class="uc-static-block" style="margin-top:0px;"><a href="/pet/' . $pet['id'] . '"><img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" /></a><div class="uc-bold">' . $pet['nickname'] . '</div><div class="uc-note">Level ' . $level . " " . ($pet['gender'] == "m" ? "Male" : "Female") . '</div></div>
 </div>
 
 <div id="uc-right">

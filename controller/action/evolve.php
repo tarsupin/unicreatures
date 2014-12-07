@@ -84,7 +84,7 @@ echo '
 
 <div id="uc-left-wide">
 	<div class="uc-static-block">
-		<img src="' . MyCreatures::imgSrc($newType['family'], $newType['name'], $newType['prefix']) . '" />
+		<a href="/pet/' . $pet['id'] . '"><img src="' . MyCreatures::imgSrc($newType['family'], $newType['name'], $newType['prefix']) . '" /></a>
 	</div>
 	<div class="uc-bold-block">' . $petType['name'] . ' has evolved into ' . $newType['name'] . '!</div>
 	<div class="uc-action-block">

@@ -101,9 +101,6 @@ if(Me::$loggedIn)
 $linkProtect = Link::prepare("uc-pet-page-" . $pet['id']);
 $level = MyTraining::getLevel((int) $pet['experience']);
 
-// Prepare the Page's Active Hashtag
-$config['active-hashtag'] = "UniCreatures";
-
 // Run Global Script
 require(APP_PATH . "/includes/global.php");
 
@@ -122,14 +119,30 @@ echo '
 <div id="uc-left-wide">
 	<div class="uc-static-block">
 		<img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" />
-		<div class="uc-bold">' . (($pet['nickname'] == "Egg" and $petType['evolution_level'] == 1) ? $petType['family'] . ' ' . $pet['nickname'] : $pet['nickname']) . '</div>
+		<div class="uc-bold">' . (($pet['nickname'] == "Egg" and $petType['evolution_level'] == 1) ? $petType['family'] . ' ' . $pet['nickname'] : $pet['nickname']) . '</div>';
+	
+	switch($petType['prefix'])
+	{
+		case "Exalted":
+		case "Noble":
+			echo '<div class="uc-bold"><img src="/assets/medals/' . $petType['prefix'] . '.png" /> ' . $petType['prefix'] . ' Pet <img src="/assets/medals/' . $petType['prefix'] . '.png" /></div>';
+	}
+	
+	echo '
 		<div class="uc-note">' . $pet['total_points'] . ($petType['required_points'] ? '/' . $petType['required_points'] : '') . ' Evolution Points</div>
 	</div>
 	<div class="uc-bold-block">' . $petType['blurb'] . '</div>
-	<div class="uc-action-block">
+	<div class="uc-action-block">';
+	
+	if(!$isBusy)
+	{
+		echo '
 		<div style="margin-bottom:10px;">Components Available: ' . $components . '</div>
 		<div class="uc-action-inline"><a href="/pet/' . $pet['id'] . '?feed=1&' . $linkProtect . '"><img src="/assets/supplies/sunnyseed.png" /></a><div class="uc-note-bold">Feed Pet</div><div class="uc-note">&nbsp;</div></div>
-		<div class="uc-action-inline"><a href="/pet/' . $pet['id'] . '?feed=10&' . $linkProtect . '"><img src="/assets/supplies/component_bag.png" /></a><div class="uc-note-bold">Feed Pet x10</div><div class="uc-note">&nbsp;</div></div>
+		<div class="uc-action-inline"><a href="/pet/' . $pet['id'] . '?feed=10&' . $linkProtect . '"><img src="/assets/supplies/component_bag.png" /></a><div class="uc-note-bold">Feed Pet x10</div><div class="uc-note">&nbsp;</div></div>';
+	}
+	
+	echo '
 		<div class="uc-action-inline"><a href="' . $areaLink . '"><img src="/assets/areas/' . $areaData['type'] . '.png"  style="max-height:70px;" /></a><div class="uc-note-bold">To Area</div><div class="uc-note">' . $areaData['name'] . '</div></div>
 		<div class="uc-action-inline"><a href="/' . $userData['handle'] . '"><img src="' . ProfilePic::image($pet['uni_id'], "medium") . '" style="border-radius:6px;" /></a><div class="uc-note-bold">Visit Center</div><div class="uc-note">&nbsp;</div></div>
 	</div>

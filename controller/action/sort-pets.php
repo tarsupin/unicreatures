@@ -21,7 +21,7 @@ if($area['uni_id'] != Me::$id)
 }
 
 // Get pets from the area
-$pets = MyAreas::areaPets($area['id']);
+$pets = MyAreas::areaPets((int) $area['id']);
 
 // Supply List
 $supplies = MySupplies::getSupplyList(Me::$id);
