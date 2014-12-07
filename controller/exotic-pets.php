@@ -120,6 +120,7 @@ echo '
 			<option value="24">Buy 24 exotic credits (60.00 UniJoule)</option>
 		</select> <input type="submit" name="submit" value="Get Exotic Credits" />
 	</form>
+	<div><a class="button" href="' . URL::unijoule_com() . Me::$slg . '">Click here to purchase UniJoule</a></div>
 </p>';
 
 // Display Exotics

@@ -177,9 +177,7 @@ if(!$isBusy)
 			<div class="uc-action-inline"><a href="/action/send-trainer?pet=' . $pet['id'] . '"><img src="/assets/items/training_manual.png" /></a><div class="uc-note-bold">Train</div><div class="uc-note">' . $trainCost . ' Coins</div></div>
 			<div class="uc-action-inline"><a href="/action/move-pet/' . $pet['id'] . '"><img src="/assets/icons/backpack.png" /></a><div class="uc-note-bold">Move Pet</div><div class="uc-note">&nbsp;</div></div>
 			<div class="uc-action-inline"><a href="/action/join-herd/' . $pet['id'] . '"><img src="/assets/icons/herd.png" /></a><div class="uc-note-bold">Send to Herd</div><div class="uc-note">&nbsp;</div></div>
-			<div class="uc-action-inline"><a href="/action/release-pet/' . $pet['id'] . '"><img src="/assets/icons/abandoned.png" /></a><div class="uc-note-bold">Release Pet</div><div class="uc-note">&nbsp;</div></div><div class="uc-action-inline"><a href="/action/change-gender/' . $pet['id'] . '"><img src="/assets/items/genx_' . ($pet['gender'] == "m" ? 'female' : 'male') . '.png" /></a><div class="uc-note-bold">Change Gender</div><div class="uc-note">5 Alchemy</div></div>
-			<div class="uc-action-inline"><a href="/action/reverse-evolve/' . $pet['id'] . '"><img src="/assets/items/watch_warp.png" /></a><div class="uc-note-bold">Reverse-Evolve</div><div class="uc-note">10 Alchemy</div></div>
-			<div class="uc-action-inline"><a href="/action/write-story/' . $pet['id'] . '"><img src="/assets/items/scroll_words.png" /></a><div class="uc-note-bold">Record History</div><div class="uc-note">20 Coins</div></div>
+			<div class="uc-action-inline"><a href="/action/pet-options/' . $pet['id'] . '"><img src="/assets/items/notes_diagram.png" /></a><div class="uc-note-bold">More Options</div><div class="uc-note">&nbsp;</div></div>
 		</div>';
 	}
 	

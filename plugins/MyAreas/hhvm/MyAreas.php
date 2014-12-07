@@ -45,7 +45,7 @@ abstract class MyAreas {
 		{
 			$rarityList = array();
 			
-			for($eggs = 0; $eggs < 5; $eggs++)
+			for($eggs = 0; $eggs < 6; $eggs++)
 			{
 				$eggRarity = MyTreasure::randomEggRarity();
 				

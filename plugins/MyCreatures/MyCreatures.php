@@ -134,6 +134,19 @@ abstract class MyCreatures {
 	}
 	
 	
+/****** Update the pet's name ******/
+	public static function updateName
+	(
+		$petID			// <int> The pet that you want to evolve.
+	,	$newName		// <str> The new pet name to use.
+	)					// RETURNS <bool> TRUE on success, or FALSE on failure.
+	
+	// MyCreatures::updateName($petID, $newName);
+	{
+		return Database::query("UPDATE creatures_owned SET nickname=? WHERE id=? LIMIT 1", array($newName, $petID));
+	}
+	
+	
 /****** Delete a Creature ******/
 	public static function deleteCreature
 	(
