@@ -135,7 +135,7 @@ echo '
 // Display the left side of the page
 echo '
 <style>
-.dual-col-item { display:inline-block; width:45%; padding:1%; margin-bottom:12px; }
+.supply-block { display:inline-block; width:45%; padding:1%; margin-bottom:12px; }
 </style>
 
 <div id="uc-left">

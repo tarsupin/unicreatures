@@ -52,19 +52,14 @@ echo '
 <div id="content">' . Alert::display();
 
 echo '
-<style>
-.dual-col-item { display:inline-block; width:45%; padding:1%; margin-bottom:12px; }
-.area { display:inline-block; padding:8px; text-align:center; }
-</style>
-
 <div id="uc-left">
 	<div class="uc-static-block" style="margin-top:0px;"><a href="' . URL::unifaction_social() . '/' . $userData['handle'] . '"><img src="' . ($userData['avatar_opt'] ? Avatar::image((int) $userData['uni_id'], (int) $userData['avatar_opt']) : ProfilePic::image((int) $userData['uni_id'], "huge")) . '" /></a><div class="uc-bold">' . $userData['display_name'] . '</div></div>
 	
 	<div class="uc-action-block hide-600">
-		<div class="dual-col-item"><img src="/assets/supplies/component_bag.png" /><div class="uc-note-bold">Components</div><div class="uc-note">' . number_format($supplies['components']) . '</div></div>
-		<div class="dual-col-item"><img src="/assets/supplies/coins_large.png" /><div class="uc-note-bold">Coins</div><div class="uc-note">' . number_format($supplies['coins']) . '</div></div>
-		<div class="dual-col-item"><img src="/assets/supplies/supplies.png" /><div class="uc-note-bold">Crafting</div><div class="uc-note">' . number_format($supplies['crafting']) . '</div></div>
-		<div class="dual-col-item"><img src="/assets/supplies/tree_seeds.png" /><div class="uc-note-bold">Alchemy</div><div class="uc-note">' . number_format($supplies['alchemy']) . '</div></div>
+		<div class="supply-block"><img src="/assets/supplies/component_bag.png" /><div class="uc-note-bold">Components</div><div class="uc-note">' . number_format($supplies['components']) . '</div></div>
+		<div class="supply-block"><img src="/assets/supplies/coins_large.png" /><div class="uc-note-bold">Coins</div><div class="uc-note">' . number_format($supplies['coins']) . '</div></div>
+		<div class="supply-block"><img src="/assets/supplies/supplies.png" /><div class="uc-note-bold">Crafting</div><div class="uc-note">' . number_format($supplies['crafting']) . '</div></div>
+		<div class="supply-block"><img src="/assets/supplies/tree_seeds.png" /><div class="uc-note-bold">Alchemy</div><div class="uc-note">' . number_format($supplies['alchemy']) . '</div></div>
 	</div>
 </div>
 
@@ -77,7 +72,7 @@ echo '
 		<div class="uc-action-inline"><a href="' . $urlAdd . '/herd-list"><img src="/assets/icons/button_herds.png" /></a><div class="uc-note-bold">Herds</div></div>
 	</div>
 	
-	<div class="area">
+	<div class="area-cube">
 		<a href="' . $urlAdd . '/wild"><img src="/assets/areas/wild.png" /></a>
 		<div class="uc-bold">Wild Area</div>
 		<div class="uc-note">Unlimited</div>
@@ -86,7 +81,7 @@ echo '
 foreach($areas as $area)
 {
 	echo '
-	<div class="area">
+	<div class="area-cube">
 		<a href="' . $urlAdd . '/area/' . $area['id'] . '"><img src="/assets/areas/' . $area['type'] . '.png" /></a>
 		<div class="uc-bold">' . $area['name'] . '</div>
 		<div class="uc-note">' . $area['population'] . ' / ' . $area['max_population'] . '</div>

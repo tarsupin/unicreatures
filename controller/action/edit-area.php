@@ -23,7 +23,10 @@ $upgradedArea = MyAreas::upgradedAreaTypeData($area['type']);
 // Determine the cost to upgrade the population
 $engCost = (($area['max_population'] / 5) - 5) * 50;
 
-$craftingSupplies = MySupplies::getSupplies(Me::$id, "crafting");
+// Supply List
+$supplies = MySupplies::getSupplyList(Me::$id);
+
+$supplies['crafting'] = (int) $supplies['crafting'];
 
 // Check if a link was clicked
 if($link = Link::clicked() and $link == "edit-area-uc" and isset($_GET['upgrade']))
@@ -31,18 +34,15 @@ if($link = Link::clicked() and $link == "edit-area-uc" and isset($_GET['upgrade'
 	// Plot Upgrade
 	if($_GET['upgrade'] == "plot" and $upgradedArea)
 	{
-		if($craftingSupplies >= $upgradedArea['upgrade_cost'])
+		if($supplies['crafting'] >= $upgradedArea['upgrade_cost'])
 		{
-			$pass = false;
-			
 			Database::startTransaction();
 			
 			// Pay for the upgrade (in crafting supplies)
-			if($craftingSupplies = MySupplies::changeSupplies(Me::$id, "crafting", (int) (0 - $upgradedArea['upgrade_cost'])))
-			{
-				// Engineer the area (to upgrade to the next plot)
-				$pass = MyAreas::upgradeAreaType($areaID);
-			}
+			$supplies['crafting'] = MySupplies::changeSupplies(Me::$id, "crafting", (int) (0 - $upgradedArea['upgrade_cost']));
+			
+			// Engineer the area (to upgrade to the next plot)
+			$pass = MyAreas::upgradeAreaType($areaID);
 			
 			if(Database::endTransaction($pass))
 			{
@@ -60,14 +60,14 @@ if($link = Link::clicked() and $link == "edit-area-uc" and isset($_GET['upgrade'
 	// Engineering Upgrade
 	else if($_GET['upgrade'] == "engineering")
 	{
-		if($craftingSupplies >= $engCost)
+		if($supplies['crafting'] >= $engCost)
 		{
 			$pass = false;
 			
 			Database::startTransaction();
 			
 			// Pay for the upgrade (in crafting supplies)
-			if($craftingSupplies = MySupplies::changeSupplies(Me::$id, "crafting", (int) (0 - $engCost)))
+			if($supplies['crafting'] = MySupplies::changeSupplies(Me::$id, "crafting", (int) (0 - $engCost)))
 			{
 				// Engineer the area to grant +5 Maximum Population
 				$pass = MyAreas::engineerArea($areaID, 5);
@@ -136,19 +136,20 @@ require(SYS_PATH . "/controller/includes/side-panel.php");
 
 echo '
 <div id="panel-right"></div>
-<div id="content">' . Alert::display() . '
-
-<style>
-.area { display:inline-block; padding:8px; text-align:center; }
-</style>';
+<div id="content">' . Alert::display();
 
 echo '
 <div id="uc-left">
 	<div class="uc-static-block" style="margin-top:0px;"><a href="' . URL::unifaction_social() . '/' . Me::$vals['handle'] . '"><img src="' . (Me::$vals['avatar_opt'] ? Avatar::image((int) Me::$vals['uni_id'], (int) Me::$vals['avatar_opt']) : ProfilePic::image((int) Me::$vals['uni_id'], "huge")) . '" /></a><div class="uc-bold">' . Me::$vals['display_name'] . '</div></div>
-	<div class="uc-action-block" style="margin-top:12px;"><div class="uc-action-inline"><img src="/assets/supplies/supplies.png" /></div><div class="uc-note-bold">Crafting Supplies</div><div class="uc-note">' . number_format($craftingSupplies) . ' Available</div></div>
+	<div class="uc-action-block hide-600">
+		<div class="supply-block"><img src="/assets/supplies/component_bag.png" /><div class="uc-note-bold">Components</div><div class="uc-note">' . number_format($supplies['components']) . '</div></div>
+		<div class="supply-block"><img src="/assets/supplies/coins_large.png" /><div class="uc-note-bold">Coins</div><div class="uc-note">' . number_format($supplies['coins']) . '</div></div>
+		<div class="supply-block"><img src="/assets/supplies/supplies.png" /><div class="uc-note-bold">Crafting</div><div class="uc-note">' . number_format($supplies['crafting']) . '</div></div>
+		<div class="supply-block"><img src="/assets/supplies/tree_seeds.png" /><div class="uc-note-bold">Alchemy</div><div class="uc-note">' . number_format($supplies['alchemy']) . '</div></div>
+	</div>
 </div>
 <div id="uc-right">
-	<div class="area">
+	<div class="area-cube">
 		<a href="/area/' . $area['id'] . '"><img src="/assets/areas/' . $area['type'] . '.png" /></a>
 		<div class="uc-bold">' . $area['name'] . '</div>
 		<div class="uc-note">Pop: ' . $area['population'] . ' / ' . $area['max_population'] . '</div>
@@ -157,14 +158,15 @@ echo '
 	if($upgradedArea)
 	{
 		echo '
-		<div class="area">
+		<div class="area-cube">
 			<a href="/action/edit-area/' . $area['id'] . '?upgrade=plot&' . $linkProtect . '"><img src="/assets/areas/' . $upgradedArea['type'] . '.png" /></a>
 			<div class="uc-bold">Upgrade Plot</div>
-			<div class="uc-note">' . $upgradedArea['upgrade_cost'] . ' Crafting Supplies</div>
+			<div class="uc-note">' . $upgradedArea['upgrade_cost'] . '<span class="hide-800"> Crafting</span> Supplies</div>
 		</div>';
 	}
 	
 	echo '
+	
 	<div style="text-align:center; width:160px; margin-top:22px;"><a href="/action/edit-area/' . $area['id'] . '?upgrade=engineering&' . $linkProtect . '"><img src="/assets/icons/button_supplies.png" /></a><div style="font-size:0.9em; font-weight:bold;">Engineering</div><div style="font-size:0.9em;">+5 Max. Population</div><div style="font-size:0.8em;">' . $engCost . ' Crafting Supplies</div></div>
 	
 	<div style="margin-top:22px;">

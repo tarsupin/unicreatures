@@ -81,6 +81,11 @@ if(Form::submitted("exotic-pets-uc"))
 		}
 		else
 		{
+			if(Connect::$alert)
+			{
+				Alert::saveError("Connection Failure", Connect::$alert);
+			}
+			
 			Alert::saveError("Credits Failed", "The system was unable to process " . $ecsToPurchase . " Exotic Credits at this time.");
 		}
 		

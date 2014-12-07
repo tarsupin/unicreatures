@@ -103,7 +103,7 @@ abstract class MySupplies {
 			return 0;
 		}
 		
-		if($amount > 0 || ($amount < 0 && $has > abs($amount)))
+		if($amount > 0 || ($amount < 0 && $has >= abs($amount)))
 		{
 			// Run the Update
 			Database::query("UPDATE users_supplies SET `" . $supply . "`=`" . $supply . "`+? WHERE uni_id=? LIMIT 1", array($amount, $uniID));

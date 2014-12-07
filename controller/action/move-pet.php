@@ -62,15 +62,19 @@ echo '
 <div id="content">' . Alert::display();
 
 echo '
-<style>
-.area { display:inline-block; padding:8px; text-align:center; }
-</style>
-
 <div id="uc-left">
 	<div class="uc-static-block" style="margin-top:0px;"><img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" /><div class="uc-bold">' . $pet['nickname'] . '</div><div class="uc-note">Level ' . $level . " " . ($pet['gender'] == "m" ? "Male" : "Female") . '</div></div>
 </div>
 
 <div id="uc-right">
+	<div class="uc-action-block">
+		<div class="uc-action-inline"><a href="/"><img src="/assets/icons/button_hut.png" /></a><div class="uc-note-bold">Pet Areas</div></div>
+		<div class="uc-action-inline"><a href="/' . Me::$vals['handle'] . '"><img src="/assets/icons/button_visit.png" /></a><div class="uc-note-bold">Visit Center</div></div>
+		<div class="uc-action-inline"><a href="' . $urlAdd . '/achievements"><img src="/assets/icons/button_trophy.png" /></a><div class="uc-note-bold">Achievements</div></div>
+		<div class="uc-action-inline"><a href="' . $urlAdd . '/training-center"><img src="/assets/icons/button_course.png" /></a><div class="uc-note-bold">Training</div></div>
+		<div class="uc-action-inline"><a href="' . $urlAdd . '/herd-list"><img src="/assets/icons/button_herds.png" /></a><div class="uc-note-bold">Herds</div></div>
+	</div>
+	
 	<h2>Where would you like to move ' . $pet['nickname'] . '?</h2>';
 
 // List the areas you can move it to
@@ -82,7 +86,7 @@ foreach($areas as $area)
 	if($area['population'] < $area['max_population'] && $area['id'] != $pet['area_id'])
 	{
 		echo '
-		<div class="area">
+		<div class="area-cube">
 			<a href="/action/move-pet/' . $pet['id'] . '?area=' . $area['id'] . '"><img src="/assets/areas/' . $area['type'] . '.png" /></a>
 			<div class="uc-bold">' . $area['name'] . '</div>
 			<div class="uc-note">Pop: ' . $area['population'] . ' / ' . $area['max_population'] . '</div>

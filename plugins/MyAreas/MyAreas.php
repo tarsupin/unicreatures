@@ -58,8 +58,8 @@ abstract class MyAreas {
 			// Cycle through the basket options for rarity goods
 			foreach($rarityList as $rarity => $count)
 			{
-				$noNoble = (mt_rand(1, 100) > 40) ? " AND ct.prefix != 'noble' " : '';
-				$noExalted = (mt_rand(1, 100) > 20) ? " AND ct.prefix != 'Exalted' " : '';
+				$noNoble = (mt_rand(1, 100) > MyTreasure::$nobleChance) ? " AND ct.prefix != 'noble' " : '';
+				$noExalted = (mt_rand(1, 100) > MyTreasure::$exaltChance) ? " AND ct.prefix != 'Exalted' " : '';
 				
 				if($fetchBasket = Database::selectMultiple("SELECT bc.type_id FROM basket_creatures bc INNER JOIN creatures_types ct ON bc.type_id=ct.id WHERE bc.rarity=?" . $noNoble . $noExalted, array($rarity)))
 				{

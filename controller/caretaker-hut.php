@@ -1,5 +1,11 @@
 <?php if(!defined("CONF_PATH")) { die("No direct script access allowed."); }
 
+// If not logged in, go to the welcome page
+if(!Me::$loggedIn)
+{
+	header("Location: /welcome"); exit;
+}
+
 // Prepare Values
 $showHut = false;
 

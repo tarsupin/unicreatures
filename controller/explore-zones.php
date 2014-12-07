@@ -30,27 +30,24 @@ echo '
 <div id="content">' . Alert::display();
 
 echo '
-<style>
-.zone { display:inline-block; padding:8px; text-align:center; }
-</style>
-
 <h3>Exploration Zones</h3>
 <div>Achievements: ' . $achievements . '</div>
 <div>Current Energy: ' . $energy . '</div>
 <div style="margin-top:12px;">Click on the exploration zone you would like to explore:</div>
 
-<div class="zone">
+<div class="area-cube">
 	<a href="/explore-rush"><img src="/assets/explore_zones/great_plains.png" /></a>
-	<br />Speed Run<br />&nbsp;
+	<div class="uc-bold">Speed Run</div>
+	<div class="uc-note">&nbsp;</div>
 </div>';
 
 foreach($zones as $key => $zone)
 {
 	echo '
-	<div class="zone">
+	<div class="area-cube">
 		<a href="/explore/' . $key . '"><img src="/assets/explore_zones/' . $key. '.png" /></a>
-		<br /><span' . ($achievements < $zone['achievements'] ? ' style="color:red"' : '') . '>' . $zone['title']  . '</span>
-		' .  ($achievements < $zone['achievements'] ? '<br />' . $zone['achievements'] . '+' : '<br />&nbsp;') . '
+		<div class="uc-bold"><span' . ($achievements < $zone['achievements'] ? ' style="color:red"' : '') . '>' . $zone['title']  . '</span></div>
+		<div class="uc-note">' .  ($achievements < $zone['achievements'] ? $zone['achievements'] . '+' : '&nbsp;') . '</div>
 	</div>';
 }
 

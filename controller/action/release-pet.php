@@ -49,15 +49,28 @@ echo '
 <div id="content">' . Alert::display();
 
 echo '
-<div>
-	<div class="uc-bold">Are you sure you want to release ' . $pet['nickname'] . ' back into Esme? ' . ($pet['gender'] == 'm' ? "He" : "She") . ' will be free to roam the world of Esme, but will be impossible to track down again.</div>
-	
-	<img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" />
-	
-	<div class="uc-action-block"><a href="/action/release-pet/' . $pet['id'] . '?release=true&' . $linkProtect . '" style="display:block; padding:4px;">Yes, I understand ' . $pet['nickname'] . ' will be released forever.</a></div>
-</div>';
+<div id="uc-left">
+	<div class="uc-static-block" style="margin-top:0px;"><a href="' . URL::unifaction_social() . '/' . Me::$vals['handle'] . '"><img src="' . (Me::$vals['avatar_opt'] ? Avatar::image((int) Me::$id, (int) Me::$vals['avatar_opt']) : ProfilePic::image((int) Me::$id, "huge")) . '" /></a><div class="uc-bold">' . Me::$vals['display_name'] . '</div></div>
+</div>
 
-echo '
+<div id="uc-right">
+	<div class="uc-action-block">
+		<div class="uc-action-inline"><a href="/"><img src="/assets/icons/button_hut.png" /></a><div class="uc-note-bold">Pet Areas</div></div>
+		<div class="uc-action-inline"><a href="/' . Me::$vals['handle'] . '"><img src="/assets/icons/button_visit.png" /></a><div class="uc-note-bold">Visit Center</div></div>
+		<div class="uc-action-inline"><a href="' . $urlAdd . '/achievements"><img src="/assets/icons/button_trophy.png" /></a><div class="uc-note-bold">Achievements</div></div>
+		<div class="uc-action-inline"><a href="' . $urlAdd . '/training-center"><img src="/assets/icons/button_course.png" /></a><div class="uc-note-bold">Training</div></div>
+		<div class="uc-action-inline"><a href="' . $urlAdd . '/herd-list"><img src="/assets/icons/button_herds.png" /></a><div class="uc-note-bold">Herds</div></div>
+	</div>
+	
+	<div>
+		<div class="uc-bold">Are you sure you want to release ' . $pet['nickname'] . ' back into Esme? ' . ($pet['gender'] == 'm' ? "He" : "She") . ' will be free to roam the world of Esme, but will be impossible to track down again.</div>
+		
+		<img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" />
+		
+		<div class="uc-action-block"><a href="/action/release-pet/' . $pet['id'] . '?release=true&' . $linkProtect . '" style="display:block; padding:4px;">Yes, I understand ' . $pet['nickname'] . ' will be released forever.</a></div>
+	</div>
+
+</div>
 </div>';
 
 // Display the Footer

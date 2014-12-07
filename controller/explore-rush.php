@@ -11,10 +11,10 @@ $treasures = array();
 
 // Get the user's energy. You must have enough to go on a speed run.
 $energy = MyEnergy::get(Me::$id);
-$energy = 400;
-if($energy < 200)
+
+if($energy < 100)
 {
-	Alert::saveError("Insufficient Energy", "You must have at least 200 energy available to go on a speed run.");
+	Alert::saveError("Insufficient Energy", "You must have at least 100 energy available to go on a speed run.");
 	
 	header("Location: /explore-zones"); exit;
 }
@@ -28,11 +28,10 @@ if(Form::submitted("explore-zone-rush"))
 	MyTreasure::$exploreZone = $zoneExplored;
 	
 	// Determine how much energy is being used
-	if($_POST['energy_use'] == "200")
+	if(is_numeric($_POST['energy_use']) and $_POST['energy_use'] >= 100 and $energy >= $_POST['energy_use'])
 	{
-		// Remove 200 of the user's energy
-		$energyUsed = 200;
-		MyEnergy::set(Me::$id, $energy - 200);
+		$energyUsed = (int) $_POST['energy_use'];
+		MyEnergy::set(Me::$id, $energy - $_POST['energy_use']);
 	}
 	else
 	{
@@ -139,6 +138,7 @@ if($treasures !== array())
 	
 	echo '
 	<p>&nbsp;</p>
+	<p><a class="button" href="/explore-rush">Return to Speed Runs</a></p>
 	<p><a class="button" href="/explore-zones">Return to Exploration Zones</a></p>';
 }
 
@@ -166,9 +166,12 @@ else
 		<strong>How much energy to spend on this speed run?</strong><br />
 		<select name="energy_use">
 			<option value="">Use all of my available energy</option>
-			<option value="200">Use 200 energy</option>
+			' . ($energy >= 300 ? '<option value="300">Use 300 energy</option>' : '') . '
+			' . ($energy >= 200 ? '<option value="200">Use 200 energy</option>' : '') . '
+			<option value="100">Use 100 energy</option>
 		</select>
-	</p>';
+	</p>
+	<p>' . $energy . ' Energy Available</p>';
 	
 	foreach($zones as $key => $zone)
 	{

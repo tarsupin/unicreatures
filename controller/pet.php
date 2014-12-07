@@ -56,38 +56,42 @@ $petType = MyCreatures::petTypeData((int) $pet['type_id'], "family, name, evolut
 $components = MySupplies::getSupplies(Me::$id, "components");
 
 // If the pet is available (i.e. not busy with an activity), run several core functions (your pets only)
-if(!$isBusy and Me::$id == $pet['uni_id'])
+
+// Perform Actions on the Pet
+if(Me::$loggedIn)
 {
-	// Perform Actions on the Pet
-	if(Me::$loggedIn)
+	// Clicked on a link on this page (specific to this pet)
+	if($link = Link::clicked() and $link == "uc-pet-page-" . $pet['id'])
 	{
-		// Clicked on a link on this page (specific to this pet)
-		if($link = Link::clicked())
+		// Feed the pet
+		if(isset($_GET['feed']) && $_GET['feed'] > 0 && $_GET['feed'] < 50)
 		{
-			// Feed the pet
-			if($link == "uc-pet-page-" . $pet['id'])
+			// Make sure the pet can be fed now
+			if(!$isBusy)
 			{
-				// Feed the pet
-				if(isset($_GET['feed']) && $_GET['feed'] > 0 && $_GET['feed'] < 50)
+				$_GET['feed'] = (int) abs($_GET['feed'] + 0);
+				$components = MySupplies::getSupplies(Me::$id, "components");
+				
+				if($components >= $_GET['feed'])
 				{
-					$_GET['feed'] = (int) abs($_GET['feed'] + 0);
-					$components = MySupplies::getSupplies(Me::$id, "components");
+					Database::startTransaction();
 					
-					if($components >= $_GET['feed'])
-					{
-						Database::startTransaction();
-						
-						// Reduce your components
-						$components = MySupplies::changeSupplies(Me::$id, "components", 0 - $_GET['feed']);
-						
-						// Update the pet
-						MyCreatures::feedPet($pet['id'], $_GET['feed']);
-						
-						$pet['total_points'] += $_GET['feed'];
-						
-						Database::endTransaction();
-					}
+					// Reduce your components
+					$components = MySupplies::changeSupplies(Me::$id, "components", 0 - $_GET['feed']);
+					
+					// Update the pet
+					MyCreatures::feedPet($pet['id'], $_GET['feed']);
+					
+					$pet['total_points'] += $_GET['feed'];
+					
+					Database::endTransaction();
 				}
+			}
+			
+			// If the pet is busy, announce it
+			else
+			{
+				Alert::error("Pet Busy", "The pet is away, and cannot be fed right now.");
 			}
 		}
 	}
@@ -192,7 +196,7 @@ else
 	{
 		case "training":
 			echo $pet['nickname'] . ' is busy training. They will be available ' . Time::fuzzy($pet['active_until']);
-			echo '<br /><a href="/training-center">Visit Training Center</a>';
+			echo '<div style="margin-top:22px;"><a href="' . $urlAdd . '/training-center">Visit Training Center</a></div>';
 			break;
 		
 		default:

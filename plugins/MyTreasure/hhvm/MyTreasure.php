@@ -45,6 +45,9 @@ abstract class MyTreasure {
 	public static array <str, mixed> $treasure = array();		// <str:mixed> A list of treasures recovered.
 	public static int $locateEggBoost = 0;		// <int> A value of improved egg locating skills. (5 = low, 50 = v. high)
 	
+	public static int $nobleChance = 14;		// <int> The chance of a noble being allowed.
+	public static int $exaltChance = 7;			// <int> The chance of an exalted being allowed.
+	
 	
 /****** Retrieve treasures from an area ******/
 	public static function random
@@ -56,7 +59,7 @@ abstract class MyTreasure {
 	{
 		// Can get treasure (components, crafting, alchemy, items, etc)
 		$rand = (mt_rand(1, 1000));
-		//return "pet";
+		
 		// Energy regains 1 per 20 seconds.
 		// 2250 energy for 10 hours of full activity
 		// If acquiring a pet is 200 views, half supplies is 11 pets / 10 hours.
@@ -71,18 +74,18 @@ abstract class MyTreasure {
 			Nothing: 45%
 		*/
 		
-		// Receive a major bonus 1% of the time
-		if($rand >= 990)
+		// Receive a major bonus 2% of the time
+		if($rand >= 980)
 		{
-			// Special Item (0.6% chance)
-			if($rand >= 995) { /* Nothing Yet */ }
+			// Special Item (1.1% chance)
+			if($rand >= 990) { /* Nothing Yet */ }
 			
-			// Random Pet (0.5% chance)
-			else if($rand >= 990) { return "pet"; }
+			// Random Pet (1.0% chance)
+			else if($rand >= 980) { return "pet"; }
 		}
 		
 		// Receive a supply 54% of the time
-		else if($rand >= 450)
+		else if($rand >= 440)
 		{
 			// Alchemy (4% chance)
 			if($rand >= 950) { return "alchemy"; }
@@ -135,19 +138,19 @@ abstract class MyTreasure {
 			// Sparse (4): 77% to 89% chance (12% chance)
 			else if($chance <= 890) { $rarity = 4; }
 			
-			// Very Sparse (5): 89% to 95% chance (6% chance)
-			else if($chance <= 950) { $rarity = 5; }
+			// Very Sparse (5): (5.5% chance)
+			else if($chance <= 945) { $rarity = 5; }
 			
-			// Rare (6): 95% to 98% chance (3% chance)
-			else if($chance <= 980) { $rarity = 6; }
+			// Rare (6): (2.9% chance)
+			else if($chance <= 974) { $rarity = 6; }
 			
-			// Very Rare (7): (1.2% chance, 1 in 166)
-			else if($chance <= 992) { $rarity = 7; }
+			// Very Rare (7): (1.2% chance)
+			else if($chance <= 986) { $rarity = 7; }
 			
-			// Epic (8): (0.6% chance, 2 in 333)
-			else if($chance <= 998) { $rarity = 8; }
+			// Epic (8): (0.8% chance)
+			else if($chance <= 994) { $rarity = 8; }
 			
-			// Legendary (9): (0.2% chance, 1 in 500)
+			// Legendary (9): (0.6% chance)
 			else if($chance <= 1000) { $rarity = 9; }
 		}
 		
@@ -164,8 +167,8 @@ abstract class MyTreasure {
 	// $typeID = MyTreasure::randomExploreCreature($rarity);
 	{
 		// Set the likelihood of getting nobles and exalteds
-		$noNoble = (mt_rand(1, 100) > 40) ? " AND ct.prefix != 'noble' " : '';
-		$noExalted = (mt_rand(1, 100) > 20) ? " AND ct.prefix != 'Exalted' " : '';
+		$noNoble = (mt_rand(1, 100) > self::$nobleChance) ? " AND ct.prefix != 'noble' " : '';
+		$noExalted = (mt_rand(1, 100) > self::$exaltChance) ? " AND ct.prefix != 'Exalted' " : '';
 		
 		if($fetchOptions = Database::selectMultiple("SELECT ec.type_id FROM explore_creatures ec INNER JOIN creatures_types ct ON ec.type_id=ct.id WHERE ec.explore_zone=? AND ec.rarity=?" . $noNoble . $noExalted, array(self::$exploreZone, $rarity)))
 		{

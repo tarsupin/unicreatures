@@ -20,7 +20,7 @@ if(Me::$loggedIn)
 			
 			<li class="menu-slot"><a href="/caretaker-hut">Caretaker Hut</a></li><li class="menu-slot"><a href="/shop">Shop</a><ul><li class="dropdown-slot"><a href="/shop-pets">Pet Shop</a></li><li class="dropdown-slot"><a href="/exotic-pets">Exotic Pet Shop</a></li><li class="dropdown-slot"><a href="/shop-supplies">Supply Shop</a></li><li class="dropdown-slot"><a href="/shop-deeds">Land Plots</a></li></ul>
 			
-			<li class="menu-slot"><a href="/explore-zones">Explore</a></li><li class="menu-slot"><a href="javascript:void(0)">Info</a><ul><li class="dropdown-slot"><a href="/creature-database">Pet Database</a></li><li class="dropdown-slot"><a href="javascript:void(0);">Help &amp; Tutorial</a></li><li class="dropdown-slot"><a href="' . URL::avatar_unifaction_community() . '/unicreatures">UniCreatures Forum</a></li></ul>
+			<li class="menu-slot"><a href="/explore-zones">Explore</a></li><li class="menu-slot"><a href="javascript:void(0)">Info</a><ul><li class="dropdown-slot"><a href="/creature-database">Pet Database</a></li><li class="dropdown-slot"><a href="javascript:void(0);">Help &amp; Tutorial</a></li><li class="dropdown-slot"><a href="' . URL::avatar_unifaction_community() . '/unicreatures">UniCreatures Forum</a></li><li class="dropdown-slot"><a href="/tos">UniCreatures TOS</a></li></ul>
 		</ul>
 	</div>');
 	
@@ -37,6 +37,7 @@ if(Me::$loggedIn)
 			<li class="nav-slot' . ($url[0] == "training-center" ? " nav-active" : "") . '"><a href="/training-center">Training Center<span class="icon-circle-right nav-arrow"></span></a></li>
 			<li class="nav-slot' . ($url[0] == "herd-list" ? " nav-active" : "") . '"><a href="/herds">Herds<span class="icon-circle-right nav-arrow"></span></a></li>
 			<li class="nav-slot' . ($url[0] == "treasure-chest" ? " nav-active" : "") . '"><a href="/treasure-chest">Treasure Chest<span class="icon-circle-right nav-arrow"></span></a></li>
+			<li class="nav-slot' . ($url[0] == "tos" ? " nav-active" : "") . '"><a href="/tos">UniCreatures TOS<span class="icon-circle-right nav-arrow"></span></a></li>
 		</ul>
 	</div>');
 }
@@ -48,7 +49,7 @@ else
 		<ul class="menu">' . (isset($uniMenu) ? $uniMenu : '') . '
 			<li class="menu-slot"><a href="/login">My Profile</a></li><li class="menu-slot"><a href="/caretaker-hut">Caretaker Hut</a></li><li class="menu-slot"><a href="/shop">Shop</a><ul><li class="dropdown-slot"><a href="/shop-pets">Pet Shop</a></li><li class="dropdown-slot"><a href="/exotic-pets">Exotic Pet Shop</a></li><li class="dropdown-slot"><a href="/shop-supplies">Supply Shop</a></li><li class="dropdown-slot"><a href="/shop-deeds">Land Plots</a></li></ul>
 			
-			<li class="menu-slot"><a href="/explore-zones">Explore</a></li><li class="menu-slot"><a href="javascript:void(0)">Info</a><ul><li class="dropdown-slot"><a href="/creature-database">Pet Database</a></li><li class="dropdown-slot"><a href="javascript:void(0);">Help &amp; Tutorial</a></li><li class="dropdown-slot"><a href="' . URL::avatar_unifaction_community() . '/unicreatures">UniCreatures Forum</a></li></ul>
+			<li class="menu-slot"><a href="/explore-zones">Explore</a></li><li class="menu-slot"><a href="javascript:void(0)">Info</a><ul><li class="dropdown-slot"><a href="/creature-database">Pet Database</a></li><li class="dropdown-slot"><a href="javascript:void(0);">Help &amp; Tutorial</a></li><li class="dropdown-slot"><a href="' . URL::avatar_unifaction_community() . '/unicreatures">UniCreatures Forum</a></li><li class="dropdown-slot"><a href="/tos">UniCreatures TOS</a></li></ul>
 		</ul>
 	</div>');
 	
@@ -61,6 +62,7 @@ else
 			<li class="nav-slot' . ($url[0] == "login" ? " nav-active" : "") . '"><a href="/login">Join UniCreatures<span class="icon-circle-right nav-arrow"></span></a></li>
 			<li class="nav-slot"><a href="' . URL::avatar_unifaction_community() . '/unicreatures">UniCreatures Forum<span class="icon-circle-right nav-arrow"></span></a></li>
 			<li class="nav-slot' . ($url[0] == "creature-database" ? " nav-active" : "") . '"><a href="/creature-database">Creature Database<span class="icon-circle-right nav-arrow"></span></a></li>
+			<li class="nav-slot' . ($url[0] == "tos" ? " nav-active" : "") . '"><a href="/tos">UniCreatures TOS<span class="icon-circle-right nav-arrow"></span></a></li>
 		</ul>
 	</div>');
 }
