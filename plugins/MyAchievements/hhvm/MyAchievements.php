@@ -106,7 +106,7 @@ abstract class MyAchievements {
 			// Nobles can combine with exalted to get "3" points
 			if($value == 1)
 			{
-				$value = ($achivementData['royalty'] == 2 ? 3 : 1);
+				$value = ($achievementData['royalty'] == 2 ? 3 : 1);
 			}
 			
 			// Exalted can combine with noble to get "3" points"

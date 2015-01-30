@@ -24,6 +24,7 @@ $pets = MyAreas::wildPets($userData['uni_id'], $currentPage, $showNum);
 if(count($pets) == $showNum + 1)
 {
 	$morePages = true;
+	array_pop($pets);
 }
 
 // Run Global Script

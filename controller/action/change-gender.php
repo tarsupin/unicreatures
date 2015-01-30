@@ -38,7 +38,7 @@ if(isset($_GET['gender']) and $value = Link::clicked() and $value == "change-gen
 	{
 		// Update the gender of the pet
 		Database::startTransaction();
-		$supplies['alchemy'] = MySupplies::changeSupplies(Me::$id, "alchemy", $swapCost);
+		$supplies['alchemy'] = MySupplies::changeSupplies(Me::$id, "alchemy", -$swapCost);
 		Database::query("UPDATE creatures_owned SET gender=? WHERE id=? LIMIT 1", array(($pet['gender'] == "m" ? "f" : "m"), $pet['id']));
 		Database::endTransaction();
 		

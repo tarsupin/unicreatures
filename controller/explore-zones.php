@@ -45,7 +45,7 @@ foreach($zones as $key => $zone)
 {
 	echo '
 	<div class="area-cube">
-		<a href="/explore/' . $key . '"><img src="/assets/explore_zones/' . $key. '.png" /></a>
+		<a href="/explore/' . $key . '?' . Link::prepare($key) . '"><img src="/assets/explore_zones/' . $key. '.png" /></a>
 		<div class="uc-bold"><span' . ($achievements < $zone['achievements'] ? ' style="color:red"' : '') . '>' . $zone['title']  . '</span></div>
 		<div class="uc-note">' .  ($achievements < $zone['achievements'] ? $zone['achievements'] . '+' : '&nbsp;') . '</div>
 	</div>';

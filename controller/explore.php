@@ -60,7 +60,6 @@ else
 {
 	$energy = MyEnergy::get(Me::$id);
 }
-
 // Run Global Script
 require(APP_PATH . "/includes/global.php");
 
@@ -97,7 +96,7 @@ if($treasureData)
 		<div style="text-align:center;">
 			<img src="' . $treasureData['image'] . '" /><br />
 			' . $treasureData['title'] . '
-			<div style="font-size:0.8em; margin-top:20px;">This pet has been added to your treasure queue.</div>
+			<div style="font-size:0.8em; margin-top:20px;">This pet has been added to your treasure chest.</div>
 		</div>';
 	}
 	else

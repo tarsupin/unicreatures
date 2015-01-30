@@ -130,7 +130,7 @@ abstract class MyHerds {
 	
 	// $herdList = MyHerds::herdList($uniID, $page, $numRows);
 	{
-		return Database::selectMultiple("SELECT family, population FROM herds WHERE uni_id=? ORDER BY family ASC LIMIT " . (($page - 1) * $numRows) . ', ' . ($numRows + 0), array($uniID));
+		return Database::selectMultiple("SELECT family, population FROM herds WHERE uni_id=? ORDER BY family ASC LIMIT " . (($page - 1) * $numRows) . ', ' . ($numRows + 1), array($uniID));
 	}
 	
 	

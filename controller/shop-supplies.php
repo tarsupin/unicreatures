@@ -90,7 +90,7 @@ if($link = Link::clicked() and $link == "shop-supply-uc")
 				
 				if($supplies['components'] >= 10)
 				{
-					if($supplies['coins'] = MySupplies::changeSupplies(Me::$id, "coins", 15))
+					if($supplies['coins'] = MySupplies::changeSupplies(Me::$id, "coins", 25))
 					{
 						if($supplies['components'] = MySupplies::changeSupplies(Me::$id, "components", -10))
 						{

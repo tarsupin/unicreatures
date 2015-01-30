@@ -14,7 +14,18 @@ if(!isset($userData))
 }
 
 // Get your list of herds
-$herds = MyHerds::herdList($userData['uni_id']);
+$currentPage = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+$showNum = 30;
+$morePages = false;
+
+$herds = MyHerds::herdList($userData['uni_id'], $currentPage, $showNum);
+
+// Check if there are more pages to the right
+if(count($herds) == $showNum + 1)
+{
+	$morePages = true;
+	array_pop($herds);
+}
 
 // Prepare the Page's Active Hashtag
 $config['active-hashtag'] = "UniCreatures";
@@ -63,6 +74,22 @@ if(count($herds) > 0)
 			<div style="font-size:0.9em;">Pop: ' . $herd['population'] . '</div>
 		</div>';
 	}
+	
+	echo '
+	<div style="margin-top:12px;">';
+
+	if($currentPage > 1)
+	{
+		echo '<a class="button" href="' . $urlAdd . '/herd-list?page=' . ($currentPage - 1) . '">Previous Page</a>';
+	}
+
+	if($morePages == true)
+	{
+		echo ' <a class="button" href="' . $urlAdd . '/herd-list?page=' . ($currentPage + 1) . '">Next Page</a>';
+	}
+
+	echo '
+	</div>';
 }
 else
 {
