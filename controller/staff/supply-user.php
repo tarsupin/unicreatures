@@ -1,16 +1,16 @@
 <?php if(!defined("CONF_PATH")) { die("No direct script access allowed."); }
 
 // Staff Permissions Page
-require("/includes/staff_global.php");
+require(APP_PATH . "/includes/staff_global.php");
 
 // Check if a user was selected
 $userData = false;
 $userSupplies = false;
 $userEnergy = 0;
 
-if(isset($_POST['handle']))
+if(isset($_GET['handle']))
 {
-	$userData = User::getDataByHandle($_POST['handle'], "uni_id, handle");
+	$userData = User::getDataByHandle($_GET['handle'], "uni_id, handle");
 	
 	$userData['uni_id'] = (int) $userData['uni_id'];
 }
@@ -32,7 +32,10 @@ if($userData)
 		);
 		
 		// Update Supplies
-		Database::query("REPLACE INTO users_supplies (uni_id, coins, components, crafting, alchemy) VALUES (?, ?, ?, ?, ?)", array($userData['uni_id'], $userSupplies['coins'], $userSupplies['components'], $userSupplies['crafting'], $userSupplies['alchemy']));
+		MySupplies::setSupplies($userData['uni_id'], "coins", $userSupplies['coins']);
+		MySupplies::setSupplies($userData['uni_id'], "components", $userSupplies['components']);
+		MySupplies::setSupplies($userData['uni_id'], "crafting", $userSupplies['crafting']);
+		MySupplies::setSupplies($userData['uni_id'], "alchemy", $userSupplies['alchemy']);
 		
 		// Update Energy
 		$userEnergy = MyEnergy::set($userData['uni_id'], (int) $_POST['energy']);
@@ -53,9 +56,7 @@ echo '
 <div id="content">
 ' . Alert::display() . '
 
-<div class="uniform">
-' . Search::searchBarUserHandle() . '
-</div>
+<form class="uniform" method="get" action="/staff/supply-user"><input type="text" name="handle"/><br/><br/><input type="submit" value="Select User"/></form>
 
 <h2 style="margin-top:20px;">Supply User' . (isset($userData) ? ': ' . $userData['handle'] : '') . '</h2>
 <div>';
@@ -65,7 +66,6 @@ if($userData && $userSupplies)
 {
 	echo '
 	<form class="uniform" action="/staff/supply-user?handle=' . $userData['handle'] . '" method="post">' . Form::prepare("supply-user-uc") . '
-		<p>User: ' . $userData['handle'] . '</p>
 		<p>Energy: <input type="text" name="energy" value="' . ($userEnergy + 0) . '" maxlength="8" /></p>
 		<p>Coins: <input type="text" name="coins" value="' . ($userSupplies['coins'] + 0) . '" maxlength="8" /></p>
 		<p>Components: <input type="text" name="components" value="' . ($userSupplies['components'] + 0) . '" maxlength="8" /></p>
@@ -80,14 +80,6 @@ echo '
 </div>
 
 </div>';
-
-echo '
-<script>
-function UserHandle(handle)
-{
-	window.location = "/staff/supply-user?user=" + handle;
-}
-</script>';
 
 // Display the Footer
 require(SYS_PATH . "/controller/includes/footer.php");

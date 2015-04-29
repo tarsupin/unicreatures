@@ -1,10 +1,10 @@
 <?php if(!defined("CONF_PATH")) { die("No direct script access allowed."); }
 
 // Staff Permissions Page
-require("/includes/staff_global.php");
+require(APP_PATH . "/includes/staff_global.php");
 
 // Get the basket creature that you're editing
-if(!$creature = Database::selectOne("SELECT bc.*, ct.family, ct.name, ct.prefix FROM basket_creatures bc INNER JOIN creatures_types ct ON ct.id=bc.type_id WHERE bc.type_id=?", array($url[2])))
+if(!$creature = Database::selectOne("SELECT bc.*, ct.family, ct.name, ct.prefix FROM basket_creatures bc INNER JOIN creatures_types ct ON ct.id=bc.type_id WHERE bc.type_id=?", array($url[3])))
 {
 	header("Location: /staff/basket/pet-list"); exit;
 }
@@ -21,7 +21,7 @@ if(Form::submitted("pet-edit-basket"))
 		// Update the Basket Pet
 		Database::query("UPDATE basket_creatures SET rarity=? WHERE type_id=? LIMIT 1", array($_GET['rarity'], $typeID));
 		
-		$creature = Database::selectOne("SELECT bc.*, ct.family, ct.name, ct.prefix FROM basket_creatures bc INNER JOIN creatures_types ct ON ct.id=bc.type_id WHERE bc.type_id=?", array($url[2]));
+		$creature = Database::selectOne("SELECT bc.*, ct.family, ct.name, ct.prefix FROM basket_creatures bc INNER JOIN creatures_types ct ON ct.id=bc.type_id WHERE bc.type_id=?", array($url[3]));
 	}
 	else
 	{

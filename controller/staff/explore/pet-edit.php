@@ -1,7 +1,7 @@
 <?php if(!defined("CONF_PATH")) { die("No direct script access allowed."); }
 
 // Staff Permissions Page
-require("/includes/staff_global.php");
+require(APP_PATH . "/includes/staff_global.php");
 
 // Make sure this exploration zone is legitimate
 if(!$exploreType = Database::selectValue("SELECT type FROM explore_area WHERE type=? LIMIT 1", array($url[3])))
@@ -18,7 +18,7 @@ if(!$creature = Database::selectOne("SELECT ec.*, ct.family, ct.name, ct.prefix 
 // Sanitize
 $_GET['family'] = Sanitize::variable($_GET['family']);
 $_GET['name'] = Sanitize::variable($_GET['name']);
-$_GET['prefix'] = Sanitize::variable($_GET['prefix']);
+$_GET['prefix'] = Sanitize::variable($_GET['prefix'], " ");
 $_GET['rarity'] = (int) (isset($_GET['rarity']) ? $_GET['rarity'] + 0 : $creature['rarity']);
 
 $_GET['day_start'] = (!$_GET['day_start'] ? -1 : (is_numeric($_GET['day_start']) ? $_GET['day_start'] : date('z', strtotime($_GET['day_start']))));

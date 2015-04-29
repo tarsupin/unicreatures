@@ -60,7 +60,7 @@ abstract class MyExotic {
 	
 	// $typeID = MyExotic::chooseForShop();
 	{
-		return (int) Database::selectValue("SELECT id FROM creatures_types WHERE rarity=? AND evolution_level=? AND prefix=? ORDER BY RAND() LIMIT 1", array(20, 1, ""));
+		return (int) Database::selectValue("SELECT id FROM creatures_types WHERE rarity=? AND evolution_level=? AND prefix != 'Noble' AND prefix NOT LIKE 'Noble%' AND prefix != 'Exalted' AND prefix NOT LIKE 'Exalted%' ORDER BY RAND() LIMIT 1", array(20, 1));
 	}
 	
 	

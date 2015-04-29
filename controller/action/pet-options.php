@@ -12,29 +12,11 @@ $pet['uni_id'] = (int) $pet['uni_id'];
 $pet['active_until'] = (int) $pet['active_until'];
 $pet['total_points'] = (int) $pet['total_points'];
 
-// Get the User Data
-$userData = Me::$vals;
-
-// Get Area Data
-if($areaData = MyAreas::areaData((int) $pet['area_id']))
-{
-	$areaLink = $urlAdd . "/area/" . $areaData['id'];
-}
-else
-{
-	$areaLink = $urlAdd . "/wild";
-	$areaData['type'] = "wild";
-	$areaData['name'] = "The Wild";
-}
-
 // Check if the pet is performing an activity
 $isBusy = MyCreatures::isBusy($pet['activity'], $pet['active_until']);
 
 // Get the Pet Type Data
 $petType = MyCreatures::petTypeData((int) $pet['type_id'], "family, name, evolution_level, required_points, rarity, blurb, description, evolves_from, prefix");
-
-// Supply List
-$supplies = MySupplies::getSupplyList(Me::$id);
 
 // Update the pet name
 if(Form::submitted("uc-pet-options"))
@@ -71,19 +53,8 @@ echo '
 
 echo '
 <div id="uc-left-wide">
-	<div class="uc-static-block">
-		<a href="/pet/' . $pet['id'] . '"><img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" /></a>
-		<div class="uc-bold">' . (($pet['nickname'] == "Egg" and $petType['evolution_level'] == 1) ? $petType['family'] . ' ' . $pet['nickname'] : $pet['nickname']) . '</div>
-		<div class="uc-note">' . $pet['total_points'] . ($petType['required_points'] ? '/' . $petType['required_points'] : '') . ' Evolution Points</div>
-	</div>
-	<div class="uc-action-block hide-600">
-		<div class="supply-block"><img src="/assets/supplies/component_bag.png" /><div class="uc-note-bold">Components</div><div class="uc-note">' . number_format($supplies['components']) . '</div></div>
-		<div class="supply-block"><img src="/assets/supplies/coins_large.png" /><div class="uc-note-bold">Coins</div><div class="uc-note">' . number_format($supplies['coins']) . '</div></div>
-		<div class="supply-block"><img src="/assets/supplies/supplies.png" /><div class="uc-note-bold">Crafting</div><div class="uc-note">' . number_format($supplies['crafting']) . '</div></div>
-		<div class="supply-block"><img src="/assets/supplies/tree_seeds.png" /><div class="uc-note-bold">Alchemy</div><div class="uc-note">' . number_format($supplies['alchemy']) . '</div></div>
-		<div class="uc-action-inline"><a href="' . $areaLink . '"><img src="/assets/areas/' . $areaData['type'] . '.png"  style="max-height:70px;" /></a><div class="uc-note-bold">To Area</div><div class="uc-note">' . $areaData['name'] . '</div></div>
-		<div class="uc-action-inline"><a href="/' . $userData['handle'] . '"><img src="' . ProfilePic::image($pet['uni_id'], "medium") . '" style="border-radius:6px;" /></a><div class="uc-note-bold">Visit Center</div><div class="uc-note">&nbsp;</div></div>
-	</div>
+	' . MyBlocks::pet($pet, $petType, Me::$vals['handle']) . '
+	' . MyBlocks::inventory(Me::$id) . '
 </div>
 
 <div id="uc-right-wide">

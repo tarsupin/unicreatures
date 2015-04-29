@@ -18,6 +18,7 @@ MyCreatures::deleteCreature($creatureID);
 $typeID = MyCreatures::getTypeID($family, $name, $prefix);
 
 $src = MyCreatures::imgSrc($family, $name, $prefix);
+$royalty = MyCreatures::petRoyalty($prefix);
 
 $petData = MyCreatures::petData($petID, $columns = "*");
 $petTypeData = MyCreatures::petTypeData($typeID, $columns = "*");
@@ -104,12 +105,12 @@ abstract class MyCreatures {
 			MyAchievements::set(Me::$id, $creatureType['family'], "evolutions", $creatureType['evolution_level']);
 			
 			// Run the royalty achievement if there is an appropriate prefix
-			if($creatureType['prefix'] == "Noble")
+			if(self::petRoyalty($creatureType['prefix']) == "Noble")
 			{
 				MyAchievements::set(Me::$id, $creatureType['family'], "royalty", 1);
 			}
 			
-			else if($creatureType['prefix'] == "Exalted")
+			else if(self::petRoyalty($creatureType['prefix']) == "Exalted")
 			{
 				MyAchievements::set(Me::$id, $creatureType['family'], "royalty", 2);
 			}
@@ -205,7 +206,27 @@ abstract class MyCreatures {
 	
 	// $src = MyCreatures::imgSrc($family, $name, $prefix);
 	{
-		return '/creatures/' . $family . '/' . strtolower(($prefix != "" ? $prefix . '_' : "") . ($family != $name ? $family . '_' : '') . $name) . '.png';
+		return '/creatures/' . $family . '/' . strtolower(($prefix != "" ? str_replace(" ", "_", $prefix) . '_' : "") . ($family != $name ? $family . '_' : '') . $name) . '.png';
+	}
+	
+/****** Return whether a pet is noble or exalted ******/
+	public static function petRoyalty
+	(
+		string $prefix = ""	// <str> The prefix of the creature.
+	): string					// RETURNS <str> the royalty of the pet, without color prefix.
+	
+	// $royalty = MyCreatures::petRoyalty($prefix);
+	{
+		if($prefix == "Noble" || $prefix == "Exalted")
+			return $prefix;
+		
+		if(substr($prefix, 0, 6) == "Noble ")
+			return "Noble";
+		
+		if(substr($prefix, 0, 8) == "Exalted ")
+			return "Exalted";
+		
+		return "";
 	}
 	
 	
@@ -347,20 +368,20 @@ abstract class MyCreatures {
 		
 		if($gender == "m")
 		{
+			$repWith[] = "His";
 			$repWith[] = "his";
-			$repWith[] = "his";
+			$repWith[] = "He";
 			$repWith[] = "he";
-			$repWith[] = "he";
-			$repWith[] = "him";
+			$repWith[] = "Him";
 			$repWith[] = "him";
 		}
 		else
 		{
+			$repWith[] = "Her";
 			$repWith[] = "her";
-			$repWith[] = "her";
+			$repWith[] = "She";
 			$repWith[] = "she";
-			$repWith[] = "she";
-			$repWith[] = "her";
+			$repWith[] = "Her";
 			$repWith[] = "her";
 		}
 		

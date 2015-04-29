@@ -60,7 +60,7 @@ foreach($herdPets as $pet)
 	echo '
 	<div class="pet">
 		<img src="' . MyCreatures::imgSrc($pet['family'], $pet['name'], $pet['prefix']) . '" />
-		<br />' . $pet['nickname'] . '
+		<br />' . ($pet['prefix'] != "" && $pet['nickname'] == $pet['name'] ? $pet['prefix'] . " " : "") . $pet['nickname'] . '
 		<br /><a href="/herds/' . $herdData['id'] . '?wild=1&nickname=' . $pet['nickname'] . '&tID=' . $pet['type_id'] . '&' . $linkProtect . '">Return</a>
 	</div>';
 }

@@ -1,7 +1,7 @@
 <?php if(!defined("CONF_PATH")) { die("No direct script access allowed."); }
 
 // Staff Permissions Page
-require("/includes/staff_global.php");
+require(APP_PATH . "/includes/staff_global.php");
 
 // Check if a pet was deleted
 if(isset($_GET['delete']) && Link::clicked())
@@ -57,7 +57,7 @@ foreach($creatures as $creature)
 {
 	echo '
 	<tr>
-		<td><a href="/staff/basket-pet-edit/' . $creature['type_id'] . '">Edit</a>, <a href="/staff/basket-pets?delete=' . $creature['type_id'] . '&' . Link::prepare() . '">Delete</a></td>
+		<td><a href="/staff/basket/pet-edit/' . $creature['type_id'] . '">Edit</a>, <a href="/staff/basket-pets?delete=' . $creature['type_id'] . '&' . Link::prepare() . '">Delete</a></td>
 		<td>' . $creature['type_id'] . '</td>
 		<td><img src="' . MyCreatures::imgSrc($creature['family'], $creature['name'], $creature['prefix']) . '" /><br />' . ($creature['prefix'] != "" ? $creature['prefix'] . ' ' : '') . $creature['name'] . '</td>
 		<td>' . $creature['family'] . '</td>

@@ -46,15 +46,23 @@ abstract class MyTransfer {
 		if(!$oldID) { return; }
 		
 		// Transfer the pets
-		$fetch = Database::selectMultiple("SELECT c.id, c.total_points, c.nickname, c.gender, c.date_acquired, c.is_rare, ct.family, ct.name FROM creatures c INNER JOIN creatures_types ct ON ct.id=c.type_id WHERE uni_id=?", array($oldID));
+		$fetch = Database::selectMultiple("SELECT c.id, c.total_points, c.image, c.nickname, c.gender, c.date_acquired, c.is_rare, ct.family, ct.name FROM creatures c INNER JOIN creatures_types ct ON ct.id=c.type_id WHERE uni_id=?", array($oldID));
 		
 		Database::startTransaction();
 		foreach($fetch as $creature)
 		{
 			// Determine the Prefix of the Creature
+			// Color
 			$prefix = "";
-			if($creature['is_rare'] == 1) { $prefix = "Noble"; }
-			else if($creature['is_rare'] == 2) { $prefix = "Exalted"; }
+			$elements = explode("_", substr($creature['image'], 0, -4));
+			if (count($elements) >= 2 && $elements[0] != "noble" && $elements[0] != "exalted" && strtolower($creature['family']) == $elements[1])
+				$prefix = ucfirst($elements[0]);
+			elseif (count($elements) >= 3 && ($elements[0] == "noble" || $elements[0] == "exalted") && strtolower($creature['family']) == $elements[2])
+				$prefix = ucfirst($elements[1]);
+			
+			// Royalty
+			if($creature['is_rare'] == 1) { $prefix = "Noble" . ($prefix != "" ? " " . $prefix : ""); }
+			else if($creature['is_rare'] == 2) { $prefix = "Exalted" . ($prefix != "" ? " " . $prefix : ""); }
 			
 			// Gather experience for creature
 			$exp = Database::selectValue("SELECT SUM(strength + agility + speed + intelligence + wisdom + charisma + creativity + willpower + focus) as val FROM creature_abilities WHERE creature_id=? LIMIT 1", array($creature['id']));
@@ -62,9 +70,15 @@ abstract class MyTransfer {
 			$exp = (!$exp ? 0 : ceil(($exp - 63) * 10));
 			
 			// Determine the creature type
-			$typeID = (int) Database::selectValue("SELECT id FROM creatures_types WHERE family=? AND name=? AND prefix=? LIMIT 1", array($creature['family'], $creature['name'], $prefix));
+			$type = Database::selectOne("SELECT id, evolution_level FROM creatures_types WHERE family=? AND name=? AND prefix=? LIMIT 1", array($creature['family'], $creature['name'], $prefix));
 			
-			Database::query("INSERT INTO creatures_owned (uni_id, type_id, nickname, gender, total_points, date_acquired, experience) VALUES (?, ?, ?, ?, ?, ?, ?)", array($uniID, $typeID, $creature['nickname'], $creature['gender'], $creature['total_points'], $creature['date_acquired'], $exp));
+			Database::query("INSERT INTO creatures_owned (uni_id, type_id, nickname, gender, total_points, date_acquired, experience) VALUES (?, ?, ?, ?, ?, ?, ?)", array($uniID, (int) $type['id'], $creature['nickname'], $creature['gender'], $creature['total_points'], $creature['date_acquired'], $exp));
+			
+			MyAchievements::set($uniID, $creature['family'], "evolutions", (int) $type['evolution_level']);
+			$level = MyTraining::getLevel((int) $pet['experience']);
+			if($level >= 5) { MyAchievements::set($uniID, $creature['family'], "trained", ($level >= 10 ? 2 : 1)); }
+			if($creature['is_rare'] == 1) { MyAchievements::set($uniID, $creature['family'], "royalty", 1); }
+			else if($creature['is_rare'] == 2) { MyAchievements::set($uniID, $creature['family'], "royalty", 2); }
 		}
 		
 		Database::query("DELETE FROM creatures WHERE uni_id=?", array($oldID));

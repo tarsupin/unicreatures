@@ -1,13 +1,21 @@
 <?php if(!defined("CONF_PATH")) { die("No direct script access allowed."); }
 
 // Staff Permissions Page
-require("/includes/staff_global.php");
+require(APP_PATH . "/includes/staff_global.php");
 
 // Get the shop creature that you're editing
 if(!$creature = Database::selectOne("SELECT sc.*, ct.family, ct.name, ct.prefix FROM shop_creatures sc INNER JOIN creatures_types ct ON ct.id=sc.type_id WHERE sc.id=?", array($url[3])))
 {
 	header("Location: /staff/shop-pets"); exit;
 }
+
+// Sanitize
+$_GET['family'] = (isset($_GET['family']) ? Sanitize::variable($_GET['family']) : "");
+$_GET['name'] = (isset($_GET['name']) ? Sanitize::variable($_GET['name']) : "");
+$_GET['prefix'] = (isset($_GET['prefix']) ? Sanitize::variable($_GET['prefix'], " ") : "");
+$_GET['cost'] = (isset($_GET['cost']) ? $_GET['cost'] + 0 : "");
+$_GET['day_start'] = (isset($_GET['day_start']) ? $_GET['day_start'] + 0 : "");
+$_GET['day_end'] = (isset($_GET['day_end']) ? $_GET['day_end'] + 0 : "");
 
 // Prepare Date Conversion
 $_GET['day_start'] = ($_GET['day_start'] == "" ? -1 : (is_numeric($_GET['day_start']) ? $_GET['day_start'] : date('z', strtotime($_GET['day_start']))));
@@ -41,14 +49,6 @@ require(SYS_PATH . "/controller/includes/header.php");
 
 // Side Panel
 require(SYS_PATH . "/controller/includes/side-panel.php");
-
-// Sanitize
-$_GET['family'] = Sanitize::variable($_GET['family']);
-$_GET['name'] = Sanitize::variable($_GET['name']);
-$_GET['prefix'] = Sanitize::variable($_GET['prefix']);
-$_GET['cost'] = (isset($_GET['cost']) ? $_GET['cost'] + 0 : "");
-$_GET['day_start'] = (isset($_GET['day_start']) ? $_GET['day_start'] + 0 : "");
-$_GET['day_end'] = (isset($_GET['day_end']) ? $_GET['day_end'] + 0 : "");
 
 echo '
 <div id="content">

@@ -140,13 +140,8 @@ echo '
 
 echo '
 <div id="uc-left">
-	<div class="uc-static-block" style="margin-top:0px;"><a href="' . URL::unifaction_social() . '/' . Me::$vals['handle'] . '"><img src="' . (Me::$vals['avatar_opt'] ? Avatar::image((int) Me::$vals['uni_id'], (int) Me::$vals['avatar_opt']) : ProfilePic::image((int) Me::$vals['uni_id'], "huge")) . '" /></a><div class="uc-bold">' . Me::$vals['display_name'] . '</div></div>
-	<div class="uc-action-block hide-600">
-		<div class="supply-block"><img src="/assets/supplies/component_bag.png" /><div class="uc-note-bold">Components</div><div class="uc-note">' . number_format($supplies['components']) . '</div></div>
-		<div class="supply-block"><img src="/assets/supplies/coins_large.png" /><div class="uc-note-bold">Coins</div><div class="uc-note">' . number_format($supplies['coins']) . '</div></div>
-		<div class="supply-block"><img src="/assets/supplies/supplies.png" /><div class="uc-note-bold">Crafting</div><div class="uc-note">' . number_format($supplies['crafting']) . '</div></div>
-		<div class="supply-block"><img src="/assets/supplies/tree_seeds.png" /><div class="uc-note-bold">Alchemy</div><div class="uc-note">' . number_format($supplies['alchemy']) . '</div></div>
-	</div>
+	' . MyBlocks::avatar(Me::$vals) . '
+	' . MyBlocks::inventory(Me::$id) . '
 </div>
 <div id="uc-right">
 	<div class="area-cube">

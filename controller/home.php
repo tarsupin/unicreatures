@@ -31,9 +31,6 @@ if(count($areas) < 1)
 	}
 }
 
-// Supply List
-$supplies = MySupplies::getSupplyList($userData['uni_id']);
-
 // Prepare the Page's Active Hashtag
 $config['active-hashtag'] = "UniCreatures";
 
@@ -53,28 +50,16 @@ echo '
 
 echo '
 <div id="uc-left">
-	<div class="uc-static-block" style="margin-top:0px;"><a href="' . URL::unifaction_social() . '/' . $userData['handle'] . '"><img src="' . ($userData['avatar_opt'] ? Avatar::image((int) $userData['uni_id'], (int) $userData['avatar_opt']) : ProfilePic::image((int) $userData['uni_id'], "huge")) . '" /></a><div class="uc-bold">' . $userData['display_name'] . '</div></div>
-	
-	<div class="uc-action-block hide-600">
-		<div class="supply-block"><img src="/assets/supplies/component_bag.png" /><div class="uc-note-bold">Components</div><div class="uc-note">' . number_format($supplies['components']) . '</div></div>
-		<div class="supply-block"><img src="/assets/supplies/coins_large.png" /><div class="uc-note-bold">Coins</div><div class="uc-note">' . number_format($supplies['coins']) . '</div></div>
-		<div class="supply-block"><img src="/assets/supplies/supplies.png" /><div class="uc-note-bold">Crafting</div><div class="uc-note">' . number_format($supplies['crafting']) . '</div></div>
-		<div class="supply-block"><img src="/assets/supplies/tree_seeds.png" /><div class="uc-note-bold">Alchemy</div><div class="uc-note">' . number_format($supplies['alchemy']) . '</div></div>
-	</div>
+	' . MyBlocks::avatar($userData) . '
+	' . MyBlocks::inventory($userData['uni_id']) . '
 </div>
 
 <div id="uc-right">
-	<div class="uc-action-block">
-		<div class="uc-action-inline" style="opacity:0.7;"><img src="/assets/icons/button_hut.png" /><div class="uc-note-bold">Pet Areas</div></div>
-		<div class="uc-action-inline"><a href="/' . $userData['handle'] . '"><img src="/assets/icons/button_visit.png" /></a><div class="uc-note-bold">Visit Center</div></div>
-		<div class="uc-action-inline"><a href="' . $urlAdd . '/achievements"><img src="/assets/icons/button_trophy.png" /></a><div class="uc-note-bold">Achievements</div></div>
-		<div class="uc-action-inline"><a href="' . $urlAdd . '/training-center"><img src="/assets/icons/button_course.png" /></a><div class="uc-note-bold">Training</div></div>
-		<div class="uc-action-inline"><a href="' . $urlAdd . '/herd-list"><img src="/assets/icons/button_herds.png" /></a><div class="uc-note-bold">Herds</div></div>
-	</div>
+	' . MyBlocks::topnav($userData['handle'], $url[0]) . '
 	
 	<div class="area-cube">
 		<a href="' . $urlAdd . '/wild"><img src="/assets/areas/wild.png" /></a>
-		<div class="uc-bold">Wild Area</div>
+		<div class="uc-bold">The Wild</div>
 		<div class="uc-note">Unlimited</div>
 	</div>';
 

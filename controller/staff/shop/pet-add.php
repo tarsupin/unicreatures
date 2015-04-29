@@ -1,7 +1,15 @@
 <?php if(!defined("CONF_PATH")) { die("No direct script access allowed."); }
 
 // Staff Permissions Page
-require("/includes/staff_global.php");
+require(APP_PATH . "/includes/staff_global.php");
+
+// Sanitize
+$_GET['family'] = (isset($_GET['family']) ? Sanitize::variable($_GET['family']) : "");
+$_GET['name'] = (isset($_GET['name']) ? Sanitize::variable($_GET['name']) : "");
+$_GET['prefix'] = (isset($_GET['prefix']) ? Sanitize::variable($_GET['prefix'], " ") : "");
+$_GET['cost'] = (isset($_GET['cost']) ? $_GET['cost'] + 0 : "");
+$_GET['day_start'] = (isset($_GET['day_start']) ? $_GET['day_start'] + 0 : "");
+$_GET['day_end'] = (isset($_GET['day_end']) ? $_GET['day_end'] + 0 : "");
 
 // Prepare Date Conversion
 $_GET['day_start'] = ($_GET['day_start'] == "" ? -1 : (is_numeric($_GET['day_start']) ? $_GET['day_start'] : date('z', strtotime($_GET['day_start']))));
@@ -32,14 +40,6 @@ if(Form::submitted())
 		Alert::error("Does Not Exist", "That creature type does not exist. Please check your family, name, and prefix.");
 	}
 }
-
-// Sanitize
-$_GET['family'] = Sanitize::variable($_GET['family']);
-$_GET['name'] = Sanitize::variable($_GET['name']);
-$_GET['prefix'] = Sanitize::variable($_GET['prefix']);
-$_GET['cost'] = (isset($_GET['cost']) ? $_GET['cost'] + 0 : "");
-$_GET['day_start'] = (isset($_GET['day_start']) ? $_GET['day_start'] + 0 : "");
-$_GET['day_end'] = (isset($_GET['day_end']) ? $_GET['day_end'] + 0 : "");
 
 // Run Global Script
 require(APP_PATH . "/includes/global.php");

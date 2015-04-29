@@ -133,7 +133,7 @@ foreach($shopExotics as $exoticPet)
 				<a href="/exotic-pets?purchase=' . $exoticPet['id'] . '&' . $linkProtect . '"><img src="' . MyCreatures::imgSrc($exoticPet['family'], $exoticPet['name'], $exoticPet['prefix']) . '" /></a>
 			</div>
 			<div class="shop-block-right">
-				<div class="shop-block-title">' . ($exoticPet['name'] == "Egg" ? $exoticPet['family'] . ' Egg' : $exoticPet['name']) . '</div>
+				<div class="shop-block-title">' . ($exoticPet['prefix'] != "" ? $exoticPet['prefix'] . " " : "") . ($exoticPet['name'] == "Egg" ? $exoticPet['family'] . ' Egg' : $exoticPet['name']) . '</div>
 				<div class="shop-block-note">' . $exoticPet['blurb'] . '</div>';
 			
 			if($exoticPet['date_end'] > -1)

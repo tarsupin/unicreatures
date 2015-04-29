@@ -167,17 +167,45 @@ abstract class MyTreasure {
 	// $typeID = MyTreasure::randomExploreCreature($rarity);
 	{
 		// Set the likelihood of getting nobles and exalteds
-		$noNoble = (mt_rand(1, 100) > self::$nobleChance) ? " AND ct.prefix != 'noble' " : '';
-		$noExalted = (mt_rand(1, 100) > self::$exaltChance) ? " AND ct.prefix != 'Exalted' " : '';
+		$noNoble = (mt_rand(1, 100) > self::$nobleChance) ? " AND ct.prefix != 'Noble' AND ct.prefix NOT LIKE 'Noble%' " : '';
+		$noExalted = (mt_rand(1, 100) > self::$exaltChance) ? " AND ct.prefix != 'Exalted' AND ct.prefix NOT LIKE 'Exalted%' " : '';
 		
-		if($fetchOptions = Database::selectMultiple("SELECT ec.type_id FROM explore_creatures ec INNER JOIN creatures_types ct ON ec.type_id=ct.id WHERE ec.explore_zone=? AND ec.rarity=?" . $noNoble . $noExalted, array(self::$exploreZone, $rarity)))
+		$day = date("z");
+		if($fetchOptions = Database::selectMultiple("SELECT ec.type_id, ct.family, ct.evolution_level FROM explore_creatures ec INNER JOIN creatures_types ct ON ec.type_id=ct.id WHERE (ec.explore_zone=? OR ec.explore_zone=?) AND ec.rarity=?" . $noNoble . $noExalted . " AND ec.day_start = ? OR (ec.day_start <= ? AND ec.day_end >= ?) OR (ec.day_end >= ? AND ec.day_start <= ? AND ec.day_end >= ?)", array(self::$exploreZone, "", $rarity, -1, $day, $day, 365, $day+365, $day+365)))
 		{
+			$fetchOptions = MyTreasure::equalizeChances($fetchOptions);
+			
 			$rnd = mt_rand(0, count($fetchOptions) - 1);
 			
 			return (int) $fetchOptions[$rnd]['type_id'];
 		}
 		
 		return 0;
+	}
+	
+	
+/****** Filter the creature list to even out chances for multi-colored creatures ******/
+	public static function equalizeChances
+	(
+		array <int, array<str, mixed>> $list		// <int:[str:mixed]> The array of creatures.
+	): array <int, array<str, mixed>>				// RETURNS <int:[str:mixed]> The chance-equalized array.
+	
+	// $equalized = MyTreasure::equalizeChances($list);
+	{
+		$res = array();
+		// collect available type IDs for each family stage
+		foreach($list as $val)
+		{
+			$res[$val['family'] . '_' . $val['evolution_level']][] = $val['type_id'];
+		}
+		// reduce each family stage to 1 random type
+		$list = array();
+		foreach($res as $val)
+		{
+			$list[] = array("type_id" => $val[isset($val[1]) ? mt_rand(0, count($val)-1) : 0]);
+		}
+	
+		return $list;
 	}
 	
 	
@@ -373,7 +401,8 @@ abstract class MyTreasure {
 				// Give a collected pet to the user (add to their wild)
 				if($queueItem['treasure'] == "pet" && isset($json['petData']) && isset($json['petData']['id']))
 				{
-					MyCreatures::acquireCreature($uniID, (int) $json['petData']['id']);
+					// Database::$lastID must be overwritten to pass the value to the executing script for a direct link.
+					Database::$lastID = MyCreatures::acquireCreature($uniID, (int) $json['petData']['id']);
 				}
 				
 				return true;

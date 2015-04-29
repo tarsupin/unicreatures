@@ -34,18 +34,6 @@ else
 	You::$name = $userData['display_name'];
 }
 
-// Get Area Data
-if($areaData = MyAreas::areaData((int) $pet['area_id']))
-{
-	$areaLink = $urlAdd . "/area/" . $areaData['id'];
-}
-else
-{
-	$areaLink = $urlAdd . "/wild";
-	$areaData['type'] = "wild";
-	$areaData['name'] = "The Wild";
-}
-
 // Check if the pet is performing an activity
 $isBusy = MyCreatures::isBusy($pet['activity'], $pet['active_until']);
 
@@ -117,20 +105,7 @@ echo '
 
 echo '
 <div id="uc-left-wide">
-	<div class="uc-static-block">
-		<img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" />
-		<div class="uc-bold">' . (($pet['nickname'] == "Egg" and $petType['evolution_level'] == 1) ? $petType['family'] . ' ' . $pet['nickname'] : $pet['nickname']) . '</div>';
-	
-	switch($petType['prefix'])
-	{
-		case "Exalted":
-		case "Noble":
-			echo '<div class="uc-bold"><img src="/assets/medals/' . $petType['prefix'] . '.png" /> ' . $petType['prefix'] . ' Pet <img src="/assets/medals/' . $petType['prefix'] . '.png" /></div>';
-	}
-	
-	echo '
-		<div class="uc-note">' . $pet['total_points'] . ($petType['required_points'] ? '/' . $petType['required_points'] : '') . ' Evolution Points</div>
-	</div>
+	' . MyBlocks::pet($pet, $petType, $userData['handle']) . '
 	<div class="uc-bold-block">' . $petType['blurb'] . '</div>
 	<div class="uc-action-block">';
 	
@@ -143,8 +118,6 @@ echo '
 	}
 	
 	echo '
-		<div class="uc-action-inline"><a href="' . $areaLink . '"><img src="/assets/areas/' . $areaData['type'] . '.png"  style="max-height:70px;" /></a><div class="uc-note-bold">To Area</div><div class="uc-note">' . $areaData['name'] . '</div></div>
-		<div class="uc-action-inline"><a href="/' . $userData['handle'] . '"><img src="' . ProfilePic::image($pet['uni_id'], "medium") . '" style="border-radius:6px;" /></a><div class="uc-note-bold">Visit Center</div><div class="uc-note">&nbsp;</div></div>
 	</div>
 	<div class="uc-static-block">
 		<div style="text-align:center; font-weight:bold;">' . ($level ? 'Level ' . $level . ' ' : '') . ($pet['gender'] == "m" ? "Male" : "Female") . ' ' . $petType['family'] . '</div>
@@ -183,7 +156,7 @@ if(!$isBusy)
 			$evolve = $pet['total_points'] >= $petType['required_points'] ? true : false;
 			
 			echo '
-			<div class="uc-action-inline">' . ($evolve ? '<a href="/action/evolve/' . $pet['id'] . '?' . $linkProtect . '"><img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" style="max-height:70px;" /></a>' : '<img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '"  style="max-height:70px; opacity:0.5;" />') . '<div class="uc-note-bold">Evolve</div><div class="uc-note">' . ($evolve ? 'Can Evolve!' : '&nbsp;') . '</div></div>';
+			<div class="uc-action-inline">' . ($evolve ? '<a href="/action/evolve/' . $pet['id'] . '?' . $linkProtect . '"><img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" style="max-height:70px;" /></a>' : '<img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" style="max-height:70px; opacity:0.5;" />') . '<div class="uc-note-bold">Evolve</div><div class="uc-note">' . ($evolve ? 'Can Evolve!' : '&nbsp;') . '</div></div>';
 		}
 		
 		echo '
@@ -195,7 +168,31 @@ if(!$isBusy)
 	}
 	
 	echo '
-		<div id="pet-desc">' . nl2br(MyCreatures::descMarkup($petType['description'], $pet['nickname'], $pet['gender'])) . '</div>
+		<div id="pet-desc">' . nl2br(MyCreatures::descMarkup($petType['description'], $pet['nickname'], $pet['gender'])) . '</div>';
+	
+	// If you're logged in to your own pet page
+	if(Me::$id == $userData['uni_id'])
+	{
+		echo '
+		<div style="margin-bottom:10px;">&nbsp;</div>
+		<h3>Attract Users For Free Goodies</h3>		
+		<form class="uniform">
+		<div>
+			<div class="uc-note" style="font-weight:bold;">Direct Link:</div>
+			<input type="text" name="dir_link" value="' . URL::unicreatures_com() . '/' . Me::$vals['handle'] . '/' . $pet['id'] . '" style="width:100%;" readonly onclick="this.select();" />
+		</div>
+		<div style="margin-top:10px;">
+			<div class="uc-note" style="font-weight:bold;">BBCode Link:</div>
+			<input type="text" name="bb_link" value="[url=' . URL::unicreatures_com() . '/' . Me::$vals['handle'] . '/' . $pet['id'] . '][img]' . URL::unicreatures_com() . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '[/img][/url]" style="width:100%;" readonly onclick="this.select();" />
+		</div>
+		<div style="margin-top:10px;">
+			<div class="uc-note" style="font-weight:bold;">HTML Link:</div>
+			<input type="text" name="bb_link" value=\'<a href="' . URL::unicreatures_com() . '/' . Me::$vals['handle'] . '/' . $pet['id'] . '"><img src="' . URL::unicreatures_com() . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" /></a>\' style="width:100%;" readonly onclick="this.select();" />
+		</div>
+		</form>';
+	}
+	
+	echo '
 	</div>';
 }
 else

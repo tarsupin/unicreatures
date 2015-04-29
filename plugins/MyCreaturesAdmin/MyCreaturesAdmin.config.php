@@ -22,6 +22,9 @@ class MyCreaturesAdmin_config {
 	
 	// $plugin->install();
 	{
+		Database::initRoot();
+		DatabaseAdmin::editColumn("users", "avatar_opt", "tinyint(2) unsigned not null", 10);
+		
 		return $this->isInstalled();
 	}
 	

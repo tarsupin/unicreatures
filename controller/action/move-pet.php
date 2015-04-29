@@ -21,7 +21,7 @@ if(!$pet or $pet['uni_id'] != Me::$id)
 }
 
 // Get the Pet Type Data
-$petType = MyCreatures::petTypeData((int) $pet['type_id'], "family, name, prefix");
+$petType = MyCreatures::petTypeData((int) $pet['type_id'], "family, name, required_points, prefix");
 
 // If you moved the pet into an area
 if(isset($_GET['area']))
@@ -63,17 +63,11 @@ echo '
 
 echo '
 <div id="uc-left">
-	<div class="uc-static-block" style="margin-top:0px;"><a href="/pet/' . $pet['id'] . '"><img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" /></a><div class="uc-bold">' . $pet['nickname'] . '</div><div class="uc-note">Level ' . $level . " " . ($pet['gender'] == "m" ? "Male" : "Female") . '</div></div>
+	' . MyBlocks::pet($pet, $petType, Me::$vals['handle']) . '
 </div>
 
 <div id="uc-right">
-	<div class="uc-action-block">
-		<div class="uc-action-inline"><a href="/"><img src="/assets/icons/button_hut.png" /></a><div class="uc-note-bold">Pet Areas</div></div>
-		<div class="uc-action-inline"><a href="/' . Me::$vals['handle'] . '"><img src="/assets/icons/button_visit.png" /></a><div class="uc-note-bold">Visit Center</div></div>
-		<div class="uc-action-inline"><a href="' . $urlAdd . '/achievements"><img src="/assets/icons/button_trophy.png" /></a><div class="uc-note-bold">Achievements</div></div>
-		<div class="uc-action-inline"><a href="' . $urlAdd . '/training-center"><img src="/assets/icons/button_course.png" /></a><div class="uc-note-bold">Training</div></div>
-		<div class="uc-action-inline"><a href="' . $urlAdd . '/herd-list"><img src="/assets/icons/button_herds.png" /></a><div class="uc-note-bold">Herds</div></div>
-	</div>
+	' . MyBlocks::topnav(Me::$vals['handle'], $url[0]) . '
 	
 	<h2>Where would you like to move ' . $pet['nickname'] . '?</h2>';
 

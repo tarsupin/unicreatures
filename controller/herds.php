@@ -51,20 +51,11 @@ echo '
 </style>
 
 <div id="uc-left">
-	<div class="uc-static-block" style="margin-top:0px;">
-		<img src="' . ProfilePic::image((int) $userData['uni_id'], "huge") . '" />
-		<div class="uc-bold">' . $userData['display_name'] . '</div>
-	</div>
+	' . MyBlocks::avatar($userData) . '
 	<div class="uc-bold-block">Herd Score: ' . $herdData['score'] . '</div>
 </div>
 <div id="uc-right">
-	<div class="uc-action-block">
-		<div class="uc-action-inline"><a href="' . $urlAdd . '/home"><img src="/assets/icons/button_hut.png" /></a><div class="uc-note-bold">Pet Areas</div></div>
-		<div class="uc-action-inline"><a href="/' . $userData['handle'] . '"><img src="/assets/icons/button_visit.png" /></a><div class="uc-note-bold">Visit Center</div></div>
-		<div class="uc-action-inline"><a href="' . $urlAdd . '/achievements"><img src="/assets/icons/button_trophy.png" /></a><div class="uc-note-bold">Achievements</div></div>
-		<div class="uc-action-inline"><a href="' . $urlAdd . '/training-center"><img src="/assets/icons/button_course.png" /></a><div class="uc-note-bold">Training</div></div>
-		<div class="uc-action-inline"><a href="' . $urlAdd . '/herd-list"><img src="/assets/icons/button_herds.png" /></a><div class="uc-note-bold">Herds</div></div>
-	</div>
+	' . MyBlocks::topnav($userData['handle'], $url[0]) . '
 
 <h2>' . (Me::$id == $userData['uni_id'] ? 'My ' : $userData['display_name'] . '\'s ') . $family . ' Herd</h2>';
 
@@ -74,7 +65,7 @@ foreach($herdPets as $pet)
 	echo '
 	<div class="pet">
 		<img src="' . MyCreatures::imgSrc($family, $pet['name'], $pet['prefix']) . '" />
-		<div>' . $pet['nickname'] . '</div>
+		<div>' . ($pet['prefix'] != "" && $pet['nickname'] == $pet['name'] ? $pet['prefix'] . " " : "") . $pet['nickname'] . '</div>
 	</div>';
 }
 

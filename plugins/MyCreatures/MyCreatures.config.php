@@ -29,7 +29,7 @@ class MyCreatures_config {
 			
 			`family`				varchar(12)					NOT NULL	DEFAULT '',
 			`name`					varchar(12)					NOT NULL	DEFAULT '',
-			`prefix`				varchar(12)					NOT NULL	DEFAULT '',
+			`prefix`				varchar(30)					NOT NULL	DEFAULT '',
 			
 			`evolution_level`		tinyint(1)		unsigned	NOT NULL	DEFAULT '0',
 			
@@ -96,9 +96,14 @@ class MyCreatures_config {
 		CREATE TABLE IF NOT EXISTS `basket_creatures`
 		(
 			`rarity`				tinyint(1)		unsigned	NOT NULL	DEFAULT '0',
+			
+			`day_start`				smallint(3)					NOT NULL	DEFAULT '0',
+			`day_end`				smallint(3)					NOT NULL	DEFAULT '0',
+			
 			`type_id`				smallint(6)		unsigned	NOT NULL	DEFAULT '0',
 			
-			UNIQUE (`rarity`, `type_id`)
+			UNIQUE (`rarity`, `type_id`),
+			INDEX (`day_start`, `day_end`)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		");
 		

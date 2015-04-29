@@ -2,7 +2,7 @@
 
 
 // Staff Permissions Page
-require("/includes/staff_global.php");
+require(APP_PATH . "/includes/staff_global.php");
 
 // Run Global Script
 require(APP_PATH . "/includes/global.php");

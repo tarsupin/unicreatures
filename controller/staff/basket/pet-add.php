@@ -1,12 +1,12 @@
 <?php if(!defined("CONF_PATH")) { die("No direct script access allowed."); }
 
 // Staff Permissions Page
-require("/includes/staff_global.php");
+require(APP_PATH . "/includes/staff_global.php");
 
 // Sanitize Variables
 $_GET['family'] = Sanitize::variable($_GET['family']);
 $_GET['name'] = Sanitize::variable($_GET['name']);
-$_GET['prefix'] = Sanitize::variable($_GET['prefix']);
+$_GET['prefix'] = Sanitize::variable($_GET['prefix'], " ");
 $_GET['rarity'] = Sanitize::number($_GET['rarity'], 0, 9);
 
 // Add the Pet

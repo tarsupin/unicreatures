@@ -3,7 +3,7 @@
 // If not logged in, go to the welcome page
 if(!Me::$loggedIn)
 {
-	header("Location: /welcome"); exit;
+	Me::redirectLogin("/caretaker-hut"); exit;
 }
 
 // Prepare Values
@@ -39,7 +39,7 @@ if($checkLastGather != $dateCheck)
 				}
 				else
 				{
-					Alert::error("Egg Error", "An error has occurred while trying to gather a pet.", 1);
+					Alert::error("Egg Error", "An error has occurred while trying to gather an egg.", 1);
 				}
 			}
 		}
@@ -87,8 +87,8 @@ if($showHut == true)
 		echo '
 		<p>
 			<a href="/caretaker-hut?gather=' . $typeID . '"><img src="' . MyCreatures::imgSrc($typeData['family'], $typeData['name'], $typeData['prefix']) . '" /></a>
-			<div style="font-size:1.1em;">' . $typeData['blurb'] . '</div>
-			' . ($typeData['prefix'] != "" ? '<div style="font-size:0.9em; background-color:#abcdef; display:inline-block; padding:2px 6px 2px 6px; border-radius:6px;">' . $typeData['prefix'] . '</div>' : '') . '
+			<div>' . $typeData['blurb'] . '</div>
+			' . (MyCreatures::petRoyalty($typeData['prefix']) != "" ? '<div style="font-size:0.9em; background-color:#abcdef; display:inline-block; padding:2px 6px 2px 6px; border-radius:6px;">' . MyCreatures::petRoyalty($typeData['prefix']) . '</div>' : '') . '
 		</p>';
 	}
 	
@@ -98,7 +98,7 @@ if($showHut == true)
 else
 {
 	echo '
-	<div>You\'ve already chosen a pet from the caretaker hut this hour. You can return next hour.</div>';
+	<div>You\'ve already chosen an egg from the caretaker hut this hour. You can return next hour.</div>';
 }
 
 echo '

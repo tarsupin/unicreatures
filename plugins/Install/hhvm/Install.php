@@ -19,6 +19,18 @@ abstract class Install extends Installation {
 	): bool					// RETURNS <bool> TRUE on success, FALSE on failure.
 	
 	{
-		return true;
+		// Create the avatar table, which is used in multiple plugins
+		Database::exec("
+		CREATE TABLE IF NOT EXISTS `users_settings`
+		(
+			`uni_id`				int(10)			unsigned	NOT NULL	DEFAULT '0',
+			`avatar_list`			varchar(255)				NOT NULL	DEFAULT '',
+			
+			PRIMARY KEY (`uni_id`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8 PARTITION BY KEY (`uni_id`) PARTITIONS 13;
+		");
+		
+		// Make sure the newly installed tables exist
+		return DatabaseAdmin::columnsExist("users_settings", array("uni_id", "avatar_list"));
 	}
 }

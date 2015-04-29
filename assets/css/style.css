@@ -14,6 +14,7 @@
 
 .uc-static-block { text-align:center; background-color:#abcdef; padding:5px; border-radius:6px; margin-bottom:12px; }
 .uc-static-block img { max-width:100%; }
+.uc-static-inline { display:inline-block; vertical-align:top; padding:3px; margin:3px; width:110px; }
 
 .uc-action-block { text-align:center; background-color:#cdedef; padding:3px; border-radius:6px; margin-bottom:12px; }
 .uc-action-inline { display:inline-block; padding:3px; margin:3px; width:110px; }
@@ -109,4 +110,5 @@
 .shop-block-right { margin-left:80px; position:relative; height:100%; }
 .shop-block-title { font-weight:bold; font-size:1.1em; }
 .shop-block-note { font-size:0.9em; }
+.shop-block-arrive { position:absolute; bottom:0em; left:0px; font-size:0.9em; color:#00aa00; }
 .shop-block-leave { position:absolute; bottom:0px; left:0px; font-size:0.9em; color:#aa0000; }

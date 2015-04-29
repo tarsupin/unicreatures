@@ -37,29 +37,6 @@ if(isset($url[1]))
 	}
 }
 
-// Run Profile Actions
-if($link = Link::clicked() and $link == "uc-connect-avatar")
-{
-	// Connecting Game Avatar
-	if($userData['uni_id'] == Me::$id)
-	{
-		if(Avatar::hasAvatar())
-		{
-			Database::query("UPDATE users SET avatar_opt=? WHERE uni_id=? LIMIT 1", array(1, Me::$id));
-			
-			$userData['avatar_opt'] = 1;
-		}
-		else
-		{
-			// Direct to avatar site to create one
-			header("Location: " . URL::avatar_unifaction_com() . Me::$slg);
-		}
-	}
-}
-
-// Prepare Values
-$linkPrepare = Link::prepare("uc-connect-avatar");
-
 // Check if the user has already visited this page
 if(Me::$id != $userData['uni_id'] and MyIPTrack::userTracker($userData['uni_id']))
 {
@@ -134,53 +111,74 @@ echo '
 
 // Display the left side of the page
 echo '
-<style>
-.supply-block { display:inline-block; width:45%; padding:1%; margin-bottom:12px; }
-</style>
-
 <div id="uc-left">
-	<div class="uc-static-block" style="margin-top:0px;"><a href="' . URL::unifaction_social() . '/' . $userData['handle'] . '"><img src="' . ($userData['avatar_opt'] ? Avatar::image((int) $userData['uni_id'], (int) $userData['avatar_opt']) : ProfilePic::image((int) $userData['uni_id'], "huge")) . '" /></a><div class="uc-bold">' . $userData['display_name'] . '</div></div>
+	' . MyBlocks::avatar($userData) . '
+	' . (Me::$id == $userData['uni_id'] ? MyBlocks::inventory(Me::$id) : '') . '
 </div>
 <div id="uc-right">
-	<div class="uc-action-block">
-		<div class="uc-action-inline"><a href="' . $urlAdd . '/home"><img src="/assets/icons/button_hut.png" /></a><div class="uc-note-bold">Pet Areas</div></div>
-		<div class="uc-action-inline" style="opacity:0.7;"><img src="/assets/icons/button_visit.png" /><div class="uc-note-bold">Visit Center</div></div>
-		<div class="uc-action-inline"><a href="' . $urlAdd . '/achievements"><img src="/assets/icons/button_trophy.png" /></a><div class="uc-note-bold">Achievements</div></div>
-		<div class="uc-action-inline"><a href="' . $urlAdd . '/training-center"><img src="/assets/icons/button_course.png" /></a><div class="uc-note-bold">Training</div></div>
-		<div class="uc-action-inline"><a href="' . $urlAdd . '/herd-list"><img src="/assets/icons/button_herds.png" /></a><div class="uc-note-bold">Herds</div></div>
-	</div>
+	' . MyBlocks::topnav($userData['handle'], $url[0]) . '
 	<div id="pet-desc">';
+	
+	$individual = false;
+	if(isset($url[1]))
+	{
+		// show an individual pet		
+		$pet = MyCreatures::petData((int) $url[1]);
+		if($pet['uni_id'] == (int) $userData['uni_id'])
+		{
+			$individual = true;
+			$petType = MyCreatures::petTypeData((int) $pet['type_id'], "family, name, prefix");
+			echo '
+		<h3>' . ($petType['prefix'] != "" && $pet['nickname'] == $petType['name'] ? $petType['prefix'] . " " : "") . ($petType['name'] == "Egg" && $pet['nickname'] == "Egg" ? $petType['family'] . ' Egg' : $pet['nickname']) . ' is happy for your care!</h3>
+		<a href="/pet/' . $pet['id'] . '"><img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" /></a>';
+		}
+	}
 	
 	// Provide Treasures to the user
 	if(MyTreasure::$treasure)
 	{
-		echo '
+		// show message for an individual pet
+		if($individual)
+		{
+			echo '
+		<p>You just gave ' . ($petType['prefix'] != "" && $pet['nickname'] == $petType['name'] ? $petType['prefix'] . " " : "") . ($petType['name'] == "Egg" && $pet['nickname'] == "Egg" ? $petType['family'] . ' Egg' : $pet['nickname']) . ' the following gifts. ' . ($pet['gender'] == "m" && $petType['name'] != "Egg" ? "He" : ($petType['name'] != "Egg" ? "She" : "It")) . ' cheerfully brings them to ' . ($pet['gender'] == "m" && $petType['name'] != "Egg" ? "his" : ($petType['name'] != "Egg" ? "her" : "its")) . ' caretaker ' . $userData['display_name'] . '.</p>';
+		}
+		else
+		{
+			echo '
 		<h3>You just gave ' . $userData['display_name'] . ' the following gifts:</h3>';
+		}
 		
 		foreach(MyTreasure::$treasure as $treasureData)
 		{
 			if($treasureData['count'] > 0)
 			{
 				echo '
-				<div style="display:inline-block; text-align:center; width:130px;"><img src="' . $treasureData['image'] . '" /><div style="font-size:0.9em;">' . $treasureData['title'] . '</div><div style="font-size:0.9em;">' . $treasureData['count'] . ' Given</div></div>';
+				<div style="display:inline-block; text-align:center; width:130px;"><img src="' . $treasureData['image'] . '" /><div class="uc-note">' . $treasureData['title'] . '</div><div class="uc-note">' . $treasureData['count'] . ' Given</div></div>';
 			}
 		}
 		
 		echo '
 		<div style="margin-bottom:10px;">&nbsp;</div>';
 	}
+	elseif($individual)
+	{
+		echo '
+		<div style="margin-bottom:10px;">&nbsp;</div>';
+	}
 	
 	echo '
-		<div style="font-weight:bold; font-size:1.2em;">Welcome to ' . $userData['display_name'] . '\'s Visitation Page!</div>
+		<h3>Welcome to ' . $userData['display_name'] . '\'s Visitation Page!</h3>
 		<div>Every visitor grants three goodies to ' . $userData['display_name'] . ', up to once per day. The first five visitors grant fifty goodies! So far, ' . ($count == 1 ? 'one person has' : Number::toWord($count) . ' people have') . " given gifts to " . $userData['display_name'] . ' today!</div>';
-	
-	// Show off Pets
-	echo '
-	<div style="font-weight:bold; font-size:1.2em; margin-top:22px;">Some of ' . $userData['display_name'] . '\'s pets come visit you!</div>';
 	
 	// Get a list of Pet ID's
 	if($getPets = Database::selectMultiple("SELECT creature_id FROM creatures_user WHERE uni_id=? ORDER BY creature_id DESC LIMIT 25", array($userData['uni_id'])))
 	{
+		// Show off Pets
+		echo '
+		<div style="margin-bottom:10px;">&nbsp;</div>
+		<h3>Some of ' . $userData['display_name'] . '\'s pets come visit you!</h3>';
+		
 		shuffle($getPets);
 		
 		$getPets = array_splice($getPets, 0, mt_rand(4, 6));
@@ -200,8 +198,9 @@ echo '
 		{
 			if($pet['name'] == "Egg") { $eggVisit = true; }
 			
+			$prefix = str_replace(array("Noble", "Exalted", "Noble ", "Exalted "), array("", "", "", ""), $pet['prefix']);
 			echo '
-			<div class="pet-cube"><div class="pet-cube-inner"><a href="/pet/' . $pet['id'] . '"><img src="' . MyCreatures::imgSrc($pet['family'], $pet['name'], $pet['prefix']) . '" /></a></div><div>' . $pet['nickname'] . '</div></div>';
+			<div class="pet-cube"><div class="pet-cube-inner"><a href="/pet/' . $pet['id'] . '"><img src="' . MyCreatures::imgSrc($pet['family'], $pet['name'], $pet['prefix']) . '" /></a></div><div>' . ($prefix != "" && $pet['nickname'] == $pet['name'] ? $prefix . " " : "") . ($pet['name'] == "Egg" && $pet['nickname'] == "Egg" ? $pet['family'] . ' Egg' : $pet['nickname']) . (MyCreatures::petRoyalty($pet['prefix']) != "" ? ' <img src="/assets/medals/' . MyCreatures::petRoyalty($pet['prefix']) . '.png" />' : '') . '</div></div>';
 		}
 		
 		if($eggVisit)
@@ -215,20 +214,21 @@ echo '
 	if(Me::$id == $userData['uni_id'])
 	{
 		echo '
-		<div style="font-weight:bold; font-size:1.2em; margin-top:22px;">Attract Users For Free Goodies</div>
-		<div>Use these links to bring people to this page. Everyone that visits your page will earn you free components, coins, or other supplies!</div>
+		<div style="margin-bottom:10px;">&nbsp;</div>
+		<h3>Attract Users For Free Goodies</h3>
+		<div>Use these links to bring people to this page. Everyone who visits your page will earn you free components, coins, or other goodies!</div>
 		
 		<form class="uniform">
 		<div style="margin-top:10px;">
-			<div class="uc-note" style="font-weight:bold;">Direct Link To Your Visitation Page:</div>
+			<div class="uc-note" style="font-weight:bold;">Direct Link:</div>
 			<input type="text" name="dir_link" value="' . URL::unicreatures_com() . '/' . Me::$vals['handle'] . '" style="width:100%;" readonly onclick="this.select();" />
 		</div>
 		<div style="margin-top:16px;">
-			<div class="uc-note" style="font-weight:bold;">BBCode For Visitation Page:</div>
+			<div class="uc-note" style="font-weight:bold;">BBCode Link:</div>
 			<input type="text" name="bb_link" value="[url=' . URL::unicreatures_com() . '/' . Me::$vals['handle'] . ']' . URL::unicreatures_com() . '/' . Me::$vals['handle'] . '[/url]" style="width:100%;" readonly onclick="this.select();" />
 		</div>
 		<div style="margin-top:16px;">
-			<div class="uc-note" style="font-weight:bold;">HTML Link To Visitation Page:</div>
+			<div class="uc-note" style="font-weight:bold;">HTML Link:</div>
 			<input type="text" name="bb_link" value=\'<a href="' . URL::unicreatures_com() . '/' . Me::$vals['handle'] . '">' . URL::unicreatures_com() . '/' . Me::$vals['handle'] . '</a>\' style="width:100%;" readonly onclick="this.select();" />
 		</div>
 		</form>';
@@ -237,8 +237,6 @@ echo '
 echo '
 	</div>
 </div>';
-
-// echo '<br /><a href="/' . $userData['handle'] . '?' . $linkPrepare . '">Connect Your Avatar</a>';
 
 /*
 	// <h3>A pet challenges you to a game of UniBall. Do you accept the challenge? (You\'re on, PET!)</h3>

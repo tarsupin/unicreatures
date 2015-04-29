@@ -22,6 +22,7 @@ if(!$pet or $pet['uni_id'] != Me::$id)
 
 // Get the Pet Type Data
 $petType = MyCreatures::petTypeData((int) $pet['type_id'], "family, name, prefix, required_points");
+$prefix = str_replace(array("Noble", "Exalted", "Noble ", "Exalted "), array("", "", "", ""), $petType['prefix']);
 
 $evolvedTypes = Database::selectMultiple("SELECT id, description, family, name, prefix, evolution_level FROM creatures_types WHERE evolves_from=?", array($pet['type_id']));
 
@@ -88,7 +89,7 @@ echo '
 	</div>
 	<div class="uc-bold-block">' . $petType['name'] . ' has evolved into ' . $newType['name'] . '!</div>
 	<div class="uc-action-block">
-		<div class="uc-action-inline"><a href="/pet/' . $pet['id'] . '"><img src="' . MyCreatures::imgSrc($newType['family'], $newType['name'], $newType['prefix']) . '" style="max-width:100%; max-height:120px;" /></a><div class="uc-note-bold">To Pet</div><div class="uc-note">' . $pet['nickname'] . '</div></div>';
+		<div class="uc-action-inline"><a href="/pet/' . $pet['id'] . '"><img src="' . MyCreatures::imgSrc($newType['family'], $newType['name'], $newType['prefix']) . '" style="max-width:100%; max-height:120px;" /></a><div class="uc-note-bold">To Pet</div><div class="uc-note">' . ($prefix != "" && $pet['nickname'] == $newType['name'] ? $prefix . " " : "") . ($newType['name'] == "Egg" && $pet['nickname'] == "Egg" ? $newType['family'] . ' Egg' : $pet['nickname']) . (MyCreatures::petRoyalty($newType['prefix']) != "" ? ' <img src="/assets/medals/' . MyCreatures::petRoyalty($newType['prefix']) . '.png" />' : '') . '</div></div>';
 	
 	if($areaData)
 	{
@@ -101,13 +102,7 @@ echo '
 	</div>
 </div>
 <div id="uc-right-wide">
-	<div class="uc-action-block">
-		<div class="uc-action-inline" style="opacity:0.7;"><img src="/assets/icons/button_hut.png" /><div class="uc-note-bold">Pet Areas</div></div>
-		<div class="uc-action-inline"><a href="/' . Me::$vals['handle'] . '"><img src="/assets/icons/button_visit.png" /></a><div class="uc-note-bold">Visit Center</div></div>
-		<div class="uc-action-inline"><a href="' . $urlAdd . '/achievements"><img src="/assets/icons/button_trophy.png" /></a><div class="uc-note-bold">Achievements</div></div>
-		<div class="uc-action-inline"><a href="' . $urlAdd . '/training-center"><img src="/assets/icons/button_course.png" /></a><div class="uc-note-bold">Training</div></div>
-		<div class="uc-action-inline"><a href="' . $urlAdd . '/herd-list"><img src="/assets/icons/button_herds.png" /></a><div class="uc-note-bold">Herds</div></div>
-	</div>
+	' . MyBlocks::topnav(Me::$vals['handle'], $url[0]) . '
 	' . nl2br(MyCreatures::descMarkup($newType['description'], $newType['name'], $pet['gender'])) . '
 </div>';
 

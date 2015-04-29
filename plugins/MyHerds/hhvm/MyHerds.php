@@ -183,7 +183,14 @@ abstract class MyHerds {
 		}
 		
 		// Get the pet type data
-		$petTypeData = MyCreatures::petTypeData((int) $petData['type_id'], "family, evolution_level");
+		$petTypeData = MyCreatures::petTypeData((int) $petData['type_id'], "family, evolution_level, rarity, prefix");
+		
+		// Exotic pets cannot be herded
+		if(($petTypeData['rarity'] == 20 || $petTypeData['rarity'] == 21) && MyCreatures::petRoyalty($petTypeData['prefix']) == "")
+		{
+			Alert::saveError("Cannot Herd", "You cannot herd an exotic creature.");
+			return false;
+		}	
 		
 		// Check if a herd currently exists
 		if(!$population = self::population($uniID, $petTypeData['family']))

@@ -72,7 +72,7 @@ foreach($creatures as $shopPet)
 				<div>' . number_format($shopPet['cost']) . ' Coins</div>
 			</div>
 			<div class="shop-block-right">
-				<div class="shop-block-title">' . ($shopPet['name'] == "Egg" ? $shopPet['family'] . ' Egg' : $shopPet['name']) . '</div>
+				<div class="shop-block-title">' . ($shopPet['prefix'] != "" ? $shopPet['prefix'] . " " : "") . ($shopPet['name'] == "Egg" ? $shopPet['family'] . ' Egg' : $shopPet['name']) . '</div>
 				<div class="shop-block-note">' . $shopPet['blurb'] . '</div>';
 			
 			if($shopPet['day_end'] > -1)

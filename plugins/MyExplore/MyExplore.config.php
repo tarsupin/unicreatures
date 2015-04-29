@@ -42,12 +42,13 @@ class MyExplore_config {
 			`explore_zone`			varchar(16)					NOT NULL	DEFAULT '',
 			`rarity`				tinyint(1)		unsigned	NOT NULL	DEFAULT '0',
 			
-			`day_start`				smallint(3)		unsigned	NOT NULL	DEFAULT '0',
-			`day_end`				smallint(3)		unsigned	NOT NULL	DEFAULT '0',
+			`day_start`				smallint(3)					NOT NULL	DEFAULT '0',
+			`day_end`				smallint(3)					NOT NULL	DEFAULT '0',
 			
 			`type_id`				smallint(6)		unsigned	NOT NULL	DEFAULT '0',
 			
-			INDEX (`explore_zone`, `rarity`)
+			INDEX (`explore_zone`, `rarity`),
+			INDEX (`day_start`, `day_end`)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		");
 		

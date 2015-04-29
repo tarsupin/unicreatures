@@ -36,7 +36,7 @@ class MyShop_config {
 			`day_end`				smallint(3)					NOT NULL	DEFAULT '0',
 			
 			PRIMARY KEY (`id`),
-			INDEX (`day_start`)
+			INDEX (`day_start`, `day_end`)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		");
 		

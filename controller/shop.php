@@ -25,7 +25,7 @@ echo '
 
 <h3>UniFaction Shop</h3>
 <div class="pet-cube"><div class="pet-cube-inner"><a href="/shop-pets"><img src="/assets/icons/button_hut.png" /></a><div class="uc-bold">Pets</div></div></div>
-<div class="pet-cube"><div class="pet-cube-inner"><a href="/shop-pets"><img src="/assets/icons/button_hut.png" /></a><div class="uc-bold">Exotic Pets</div></div></div>
+<div class="pet-cube"><div class="pet-cube-inner"><a href="/exotic-pets"><img src="/assets/icons/button_exotic.png" /></a><div class="uc-bold">Exotic Pets</div></div></div>
 <div class="pet-cube"><div class="pet-cube-inner"><a href="/shop-supplies"><img src="/assets/icons/button_items.png" /></a><div class="uc-bold">Supplies</div></div></div>
 <div class="pet-cube"><div class="pet-cube-inner"><a href="/shop-deeds"><img src="/assets/icons/button_forest.png" /></a><div class="uc-bold">Land Deeds</div></div></div>
 

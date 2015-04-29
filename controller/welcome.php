@@ -43,7 +43,7 @@ foreach($showList as $pet)
 
 echo '
 	<h2 style="margin-top:42px;">How to Play</h2>
-	<div>UniCreatures is a virtual pet site, where you take care of pets and help them evolve. As you progress through the game, you can collect more pets, unlock new areas to explore, and gain recognition for your achievements. You can also help your friends by visiting their pets!</div>
+	<div>UniCreatures is a virtual pet site where you take care of pets and help them evolve. As you progress through the game, you can collect more pets, unlock new areas to explore, and gain recognition for your achievements. You can also help your friends by visiting their pets!</div>
 </div>
 </div>';
 

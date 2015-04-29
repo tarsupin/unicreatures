@@ -11,7 +11,7 @@ This plugin allows you to handle the pet areas.
 ------ Methods Available ------
 -------------------------------
 
-$basket	= MyAreas::checkBasket($uniID);
+$basket	= MyAreas::checkBasket($uniID, [$ymdH]);
 
 MyAreas::acquireDeed($uniID, $typeID);
 MyAreas::relocate($uniID, $fromID, $toID);
@@ -32,12 +32,13 @@ abstract class MyAreas {
 	public static function checkBasket
 	(
 		$uniID			// <int> The Uni-Account that you're checking the basket of.
+	,	$ymdH = 0		// <int> The date to use for the seed, for example in predictions.
 	)					// RETURNS <array> list of available pets in the basket, empty array on failure.
 	
 	// $basket = MyAreas::checkBasket($uniID);
 	{
 		// Seed our randomizer with the current hour
-		$seed = (int) ($uniID . date("ymdH"));
+		$seed = ($ymdH ? (int) ($uniID . $ymdH) : (int) ($uniID . date("ymdH")));
 		
 		mt_srand($seed);
 		
@@ -58,11 +59,13 @@ abstract class MyAreas {
 			// Cycle through the basket options for rarity goods
 			foreach($rarityList as $rarity => $count)
 			{
-				$noNoble = (mt_rand(1, 100) > MyTreasure::$nobleChance) ? " AND ct.prefix != 'noble' " : '';
-				$noExalted = (mt_rand(1, 100) > MyTreasure::$exaltChance) ? " AND ct.prefix != 'Exalted' " : '';
+				$noNoble = (mt_rand(1, 100) > MyTreasure::$nobleChance) ? " AND ct.prefix != 'Noble' AND ct.prefix NOT LIKE 'Noble%'" : '';
+				$noExalted = (mt_rand(1, 100) > MyTreasure::$exaltChance) ? " AND ct.prefix != 'Exalted' AND ct.prefix NOT LIKE 'Exalted%' " : '';
 				
-				if($fetchBasket = Database::selectMultiple("SELECT bc.type_id FROM basket_creatures bc INNER JOIN creatures_types ct ON bc.type_id=ct.id WHERE bc.rarity=?" . $noNoble . $noExalted, array($rarity)))
+				$day = date("z");
+				if($fetchBasket = Database::selectMultiple("SELECT bc.type_id, ct.family, ct.evolution_level FROM basket_creatures bc INNER JOIN creatures_types ct ON bc.type_id=ct.id WHERE bc.rarity=?" . $noNoble . $noExalted . " AND bc.day_start = ? OR (bc.day_start <= ? AND bc.day_end >= ?) OR (bc.day_end >= ? AND bc.day_start <= ? AND bc.day_end >= ?)", array($rarity, -1, $day, $day, 365, $day+365, $day+365)))
 				{
+					$fetchBasket = MyTreasure::equalizeChances($fetchBasket);
 					for($rnd = 0;$rnd < $count;$rnd++)
 					{
 						$val = mt_rand(0, count($fetchBasket) - 1);
@@ -223,7 +226,7 @@ abstract class MyAreas {
 	
 	// $pets = MyAreas::areaPets($areaID);
 	{
-		return Database::selectMultiple("SELECT c.id, c.nickname, ct.family, ct.name, ct.prefix, ca.sort_order, ca.special FROM creatures_area ca INNER JOIN creatures_owned c ON c.id=ca.creature_id INNER JOIN creatures_types ct ON ct.id=c.type_id WHERE ca.area_id=? ORDER BY ca.sort_order ASC", array($areaID));
+		return Database::selectMultiple("SELECT c.id, c.nickname, c.activity, c.active_until, ct.family, ct.name, ct.prefix, ca.sort_order, ca.special FROM creatures_area ca INNER JOIN creatures_owned c ON c.id=ca.creature_id INNER JOIN creatures_types ct ON ct.id=c.type_id WHERE ca.area_id=? ORDER BY ca.sort_order ASC", array($areaID));
 	}
 	
 	
@@ -343,7 +346,7 @@ abstract class MyAreas {
 			return array();
 		}
 		
-		return Database::selectMultiple("SELECT c.id, c.nickname, ct.family, ct.name, ct.prefix FROM creatures_user cu INNER JOIN creatures_owned c ON cu.creature_id=c.id INNER JOIN creatures_types ct ON ct.id=c.type_id WHERE c.uni_id=? AND c.area_id=? ORDER BY id DESC LIMIT " . (($page - 1) * $showNum) . ", " . ($showNum + 1), array($uniID, $wildID));
+		return Database::selectMultiple("SELECT c.id, c.nickname, c.activity, c.active_until, ct.family, ct.name, ct.prefix FROM creatures_user cu INNER JOIN creatures_owned c ON cu.creature_id=c.id INNER JOIN creatures_types ct ON ct.id=c.type_id WHERE c.uni_id=? AND c.area_id=? ORDER BY id DESC LIMIT " . (($page - 1) * $showNum) . ", " . ($showNum + 1), array($uniID, $wildID));
 	}
 	
 	
