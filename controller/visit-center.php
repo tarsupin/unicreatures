@@ -66,18 +66,18 @@ if(Me::$id != $userData['uni_id'] and MyIPTrack::userTracker($userData['uni_id']
 	// Grant supplies at random
 	for($a = 0; $a < $total; $a++)
 	{
-		$rand = mt_rand(0, 100);
+		$rand = mt_rand(1, 100);
 		
 		$treasure = "coins";	// 50% chance
 		
 		// Alchemy (2% chance)
-		if($rand >= 99) { $treasure = "alchemy"; }
+		if($rand > 98) { $treasure = "alchemy"; }
 		
 		// Crafting (3% chance)
-		else if($rand >= 96) { $treasure = "crafting"; }
+		else if($rand > 95) { $treasure = "crafting"; }
 		
 		// Components (45% chance)
-		else if($rand >= 50) { $treasure = "components"; }
+		else if($rand > 50) { $treasure = "components"; }
 		
 		// Add the result
 		$treasures[$treasure] += 1;
@@ -91,9 +91,6 @@ else
 	$dayCountData = MyIPTrack::getDayCount($userData['uni_id']);
 	$count = (int) $dayCountData['count'];
 }
-
-// Prepare the Page's Active Hashtag
-$config['active-hashtag'] = "UniCreatures";
 
 // Run Global Script
 require(APP_PATH . "/includes/global.php");
@@ -113,7 +110,7 @@ echo '
 echo '
 <div id="uc-left">
 	' . MyBlocks::avatar($userData) . '
-	' . (Me::$id == $userData['uni_id'] ? MyBlocks::inventory(Me::$id) : '') . '
+	' . (Me::$id == $userData['uni_id'] ? MyBlocks::inventory() : '') . '
 </div>
 <div id="uc-right">
 	' . MyBlocks::topnav($userData['handle'], $url[0]) . '
@@ -128,9 +125,11 @@ echo '
 		{
 			$individual = true;
 			$petType = MyCreatures::petTypeData((int) $pet['type_id'], "family, name, prefix");
-			echo '
-		<h3>' . ($petType['prefix'] != "" && $pet['nickname'] == $petType['name'] ? $petType['prefix'] . " " : "") . ($petType['name'] == "Egg" && $pet['nickname'] == "Egg" ? $petType['family'] . ' Egg' : $pet['nickname']) . ' is happy for your care!</h3>
-		<a href="/pet/' . $pet['id'] . '"><img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" /></a>';
+			foreach($pet as $key => $val)
+				$pet[$key] = (is_numeric($val) ? (int) $val : $val);
+			foreach($petType as $key => $val)
+				$pet[$key] = (is_numeric($val) ? (int) $val : $val);
+			echo MyBlocks::petPlain($pet, '/pet/' . $pet['id']);
 		}
 	}
 	
@@ -192,15 +191,13 @@ echo '
 		
 		list($sqlWhere, $sqlArray) = Database::sqlFilters(array("co.id" => $petIDs));
 		
-		$pets = $sqlWhere ? Database::selectMultiple("SELECT co.id, co.nickname, ct.family, ct.name, ct.prefix FROM creatures_owned co INNER JOIN creatures_types ct ON co.type_id=ct.id WHERE " . $sqlWhere, $sqlArray) : array();
+		$pets = $sqlWhere ? Database::selectMultiple("SELECT co.id, co.nickname, co.activity, co.active_until, ct.family, ct.name, ct.prefix FROM creatures_owned co INNER JOIN creatures_types ct ON co.type_id=ct.id WHERE " . $sqlWhere, $sqlArray) : array();
 		
 		foreach($pets as $pet)
 		{
 			if($pet['name'] == "Egg") { $eggVisit = true; }
 			
-			$prefix = str_replace(array("Noble", "Exalted", "Noble ", "Exalted "), array("", "", "", ""), $pet['prefix']);
-			echo '
-			<div class="pet-cube"><div class="pet-cube-inner"><a href="/pet/' . $pet['id'] . '"><img src="' . MyCreatures::imgSrc($pet['family'], $pet['name'], $pet['prefix']) . '" /></a></div><div>' . ($prefix != "" && $pet['nickname'] == $pet['name'] ? $prefix . " " : "") . ($pet['name'] == "Egg" && $pet['nickname'] == "Egg" ? $pet['family'] . ' Egg' : $pet['nickname']) . (MyCreatures::petRoyalty($pet['prefix']) != "" ? ' <img src="/assets/medals/' . MyCreatures::petRoyalty($pet['prefix']) . '.png" />' : '') . '</div></div>';
+			echo MyBlocks::petPlain($pet, '/pet/' . $pet['id']);
 		}
 		
 		if($eggVisit)

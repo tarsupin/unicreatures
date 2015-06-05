@@ -3,32 +3,39 @@
 // Must Log In
 if(!Me::$loggedIn)
 {
-	Me::redirectLogin("/uc-static-blocks");
+	header("Location: /"); exit;
 }
 
 // Make sure pet exists
-if(!isset($url[2]))
+if(!isset($url[2]) or !$pet = MyCreatures::petData((int) $url[2], "id, uni_id, area_id, type_id, nickname, gender, activity, active_until, experience, total_points, date_acquired"))
 {
 	header("Location: /"); exit;
 }
 
-// Get Pet Data
-$pet = MyCreatures::petData($url[2]);
-
-if(!$pet or $pet['uni_id'] != Me::$id)
+// Make sure you own the pet
+if($pet['uni_id'] != Me::$id)
 {
 	header("Location: /"); exit;
 }
+
+// Prepare Values
+$pet['id'] = (int) $pet['id'];
+$pet['uni_id'] = (int) $pet['uni_id'];
+$pet['active_until'] = (int) $pet['active_until'];
+$pet['total_points'] = (int) $pet['total_points'];
+
+// Get the User Data
+$userData = Me::$vals;
 
 if($isBusy = MyCreatures::isBusy($pet['activity'], $pet['active_until']))
 {
-	Alert::saveError("Cannot Join Herd", "Cannot join a herd while busy.");
+	Alert::saveError("Cannot Join Team", "Cannot join a team while busy.");
 	
 	header("Location: /pet/" . $pet['id']); exit;
 }
 
 // Protect Variables
-if(!isset($_POST['herdName'])) { $_POST['herdName'] = $pet['nickname'] . "'s Herd"; }
+if(!isset($_POST['herdName'])) { $_POST['herdName'] = $pet['nickname'] . "'s Team"; }
 
 $_POST['herdName'] = Sanitize::safeword($_POST['herdName'], " '()#-+");
 
@@ -37,17 +44,18 @@ if(Form::submitted("uni-start-herd"))
 {
 	if(FormValidate::pass())
 	{
-		if($herdID = MyHerds::createHerd(Me::$id, $pet['id'], $_POST['herdName']))
+		if($herdID = MyTeams::createHerd(Me::$id, $pet['id'], $_POST['herdName']))
 		{
-			Alert::saveSuccess("Created Herd", "You have created the herd \"" . $_POST['herdName'] . "\"");
+			Alert::saveSuccess("Created Herd", "You have created the team \"" . $_POST['herdName'] . "\".");
 			
-			header("Location: /herds/" . $herdID); exit;
+			header("Location: /teams/" . $herdID); exit;
 		}
 	}
 }
 
 // Get Pet Type Data
-$petType = MyCreatures::petTypeData($pet['type_id'], "family, name, prefix");
+$petType = MyCreatures::petTypeData((int) $pet['type_id'], "family, name, evolution_level, required_points, rarity, blurb, description, evolves_from, prefix");
+$level = MyTraining::getLevel((int) $pet['experience']);
 
 // Run Global Script
 require(APP_PATH . "/includes/global.php");
@@ -65,14 +73,36 @@ echo '
 
 echo '
 <div id="uc-left-wide">
-	<div id="pet"><a href="/pet/' . $pet['id'] . '"><img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" /></a><div class="uc-bold">' . $pet['nickname'] . '</div><div class="uc-note">Level ' . MyTraining::getLevel($pet['experience']) . ' ' . $petType['name'] . '</div></div>
-	<div id="pet-blurb">Name the herd you would like to create.</div>
+	' . MyBlocks::pet($pet, $petType, $userData['handle']) . '
+	<div class="uc-bold-block">' . $petType['blurb'] . '</div>';
+	
+	if($pet['experience'] > 0)
+	{
+		echo '
+	<div class="uc-static-block">
+		<div style="text-align:center; font-weight:bold;">' . ($level ? 'Level ' . $level . ' ' : '') . ($pet['gender'] == "m" ? "Male" : "Female") . ' ' . $petType['family'] . '</div>
+		<div style="text-align:center;">' . number_format($pet['experience']) . ' EXP</div>
+		<div style="margin-top:12px;">';
+		
+		$attributes = MyTraining::getAttributes($petType['family'], $level);
+		
+		foreach($attributes as $key => $value)
+		{
+			echo '
+		<div class="attr-row"><div class="attr-name">' . ucfirst($key) . '</div><div class="attr-num">' . $value . '</div><div class="attr-graph">' . str_pad("", ($value / 4), "-")  . '</div></div>';
+		}
+		
+		echo '
+		</div>
+	</div>';
+	}
+echo '
 </div>
 
 <div id="uc-right-wide">
-	<form class="uniform" action="/action/start-herd/' . $pet['id'] . '" method="post">' . Form::prepare("uni-start-herd") . '
-		<p>Herd Name: <input type="text" name="herdName" value="' . $_POST['herdName'] . '" maxlength="22" /></p>
-		<p><input type="submit" name="submit" value="Create Herd" /></p>
+	<form class="uniform" method="post">' . Form::prepare("uni-start-herd") . '
+		<p>Team Name: <input type="text" name="herdName" value="' . $_POST['herdName'] . '" maxlength="22" /></p>
+		<p><input type="submit" name="submit" value="Create Team" /></p>
 	</form>
 </div>
 

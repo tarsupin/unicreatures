@@ -13,7 +13,7 @@ if(!isset($url[2]))
 }
 
 // Get Pet Data
-$pet = MyCreatures::petData((int) $url[2], "id, area_id, uni_id, type_id, nickname, gender, experience, total_points, date_acquired");
+$pet = MyCreatures::petData((int) $url[2], "id, uni_id, area_id, type_id, nickname, gender, activity, active_until, experience, total_points, date_acquired");
 
 if(!$pet or $pet['uni_id'] != Me::$id)
 {
@@ -21,7 +21,7 @@ if(!$pet or $pet['uni_id'] != Me::$id)
 }
 
 // Get the Pet Type Data
-$petType = MyCreatures::petTypeData((int) $pet['type_id'], "family, name, required_points, prefix");
+$petType = MyCreatures::petTypeData((int) $pet['type_id'], "family, name, evolution_level, required_points, rarity, blurb, description, evolves_from, prefix");
 
 // If you moved the pet into an area
 if(isset($_GET['area']))

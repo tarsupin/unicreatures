@@ -59,13 +59,13 @@ abstract class MyTeams {
 		
 		if($petData['uni_id'] != $uniID)
 		{
-			Alert::saveError("Illegal Herd", "Illegal team creation attempt.");
+			Alert::saveError("Illegal Team", "Illegal team creation attempt.");
 			
 			return 0;
 		}
 		
 		// Get creature type details
-		if(!$typeData = MyCreatures::petTypeData($petData['type_id'], "family, name, prefix"))
+		if(!$typeData = MyCreatures::petTypeData((int) $petData['type_id'], "family, name, prefix"))
 		{
 			return 0;
 		}
@@ -129,12 +129,12 @@ abstract class MyTeams {
 	
 	// MyTeams::sendToHerd($creatureID, $teamID);
 	{
-		if(!$petData = MyCreatures::petData($creatureID, "uni_id, type_id, nickname, experience, total_points, activity, active_until"))
+		if(!$petData = MyCreatures::petData($creatureID, "uni_id, type_id, nickname, gender, experience, total_points, activity, active_until"))
 		{
 			return false;
 		}
 		
-		$isBusy = MyCreatures::isBusy($petData['activity'], $petData['active_until']);
+		$isBusy = MyCreatures::isBusy($petData['activity'], (int) $petData['active_until']);
 		
 		// Pets that are currently active cannot be moved
 		if($isBusy)
@@ -155,9 +155,26 @@ abstract class MyTeams {
 			return false;
 		}
 		
+		// Check maximum population
+		$population = Database::selectValue("SELECT COUNT(type_id) FROM teams_creatures WHERE team_id=? LIMIT 30", array($teamID));
+		
+		// Cannot add over 30 pets to a team
+		if($population >= 30)
+		{
+			Alert::saveError("Cannot Herd", "Maximum population of a team is 30 creatures.");
+			return false;
+		}
+		
+		// Cannot team 2 pets of the same type
+		if($exist = Database::selectOne("SELECT type_id FROM teams_creatures WHERE team_id=? AND type_id=? LIMIT 1", array($teamID, $petData['type_id'])))
+		{
+			Alert::saveError("Cannot Herd", "You cannot add multiple pets of the same family and color to the same team.");
+			return false;
+		}		
+		
 		Database::startTransaction();
 		
-		if($pass = Database::query("INSERT INTO teams_creatures (team_id, type_id, nickname, experience, points) VALUE (?, ?, ?, ?, ?)", array($teamID, $petData['type_id'], $petData['nickname'], $petData['experience'], $petData['total_points'])))
+		if($pass = Database::query("INSERT INTO teams_creatures (team_id, type_id, nickname, gender, experience, points) VALUE (?, ?, ?, ?, ?, ?)", array($teamID, $petData['type_id'], $petData['nickname'], $petData['gender'], $petData['experience'], $petData['total_points'])))
 		{
 			if($pass = Database::query("UPDATE teams SET experience=experience+?, points=points+? WHERE id=? LIMIT 1", array($petData['experience'], $petData['total_points'], $teamID)))
 			{
@@ -180,7 +197,7 @@ abstract class MyTeams {
 	
 	// MyTeams::backToWild($uniID, $teamID, $typeID, $nickname);
 	{
-		if(!$teamData = MyTeams::teamData($teamID, 'uni_id'))
+		if(!$teamData = self::teamData($teamID))
 		{
 			return false;
 		}
@@ -200,10 +217,9 @@ abstract class MyTeams {
 		if($pass = Database::query("DELETE FROM teams_creatures WHERE team_id=? AND nickname=? AND type_id=? LIMIT 1", array($teamID, $nickname, $typeID)))
 		{
 			$pass = false;
-			
 			if($creatureID = MyCreatures::acquireCreature($uniID, $typeID, $fetchPet['gender'], $nickname, (int) $fetchPet['experience'], (int) $fetchPet['points']))
 			{
-				$pass = Database::query("UPDATE teams SET experience=experience-?, points=points-? WHERE id=? LIMIT 1", array(1, $fetchPet['experience'], $fetchPet['points'], $teamID));
+				$pass = Database::query("UPDATE teams SET experience=experience-?, points=points-? WHERE id=? LIMIT 1", array($fetchPet['experience'], $fetchPet['points'], $teamID));
 			}
 		}
 		
@@ -219,7 +235,33 @@ abstract class MyTeams {
 	
 	// $teamPets = MyTeams::getPets($teamID);
 	{
-		return Database::selectMultiple("SELECT hc.type_id, hc.nickname, ct.family, ct.name, ct.prefix FROM teams_creatures hc INNER JOIN creatures_types ct ON hc.type_id=ct.id WHERE hc.team_id=?", array($teamID));
+		return Database::selectMultiple("SELECT hc.type_id, hc.nickname, ct.family, ct.name, ct.prefix FROM teams_creatures hc INNER JOIN creatures_types ct ON hc.type_id=ct.id WHERE hc.team_id=? LIMIT 30", array($teamID));
+	}
+	
+	
+/****** Get the list of pets from a team ******/
+	public static function deleteHerd
+	(
+		$teamID		// <int> The Herd ID to delete.
+	)				// RETURNS <bool> TRUE on success, FALSE on failure.
+	
+	// $teamPets = MyTeams::deleteHerd($teamID);
+	{
+		$population = Database::selectValue("SELECT COUNT(type_id) FROM teams_creatures WHERE team_id=? LIMIT 1", array($teamID));
+		if($population)
+		{
+			Alert::error("Creatures Present", "You cannot disband a team that has creatures in it.");
+			return false;
+		}
+		
+		Database::startTransaction();
+		
+		if($pass = Database::query("DELETE FROM teams WHERE id=? LIMIT 1", array($teamID)))
+		{
+			$pass = Database::query("DELETE FROM teams_by_user WHERE uni_id=? AND team_id=? LIMIT 1", array(Me::$id, $teamID));
+		}
+		
+		return Database::endTransaction($pass);
 	}
 	
 }

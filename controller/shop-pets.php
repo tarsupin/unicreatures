@@ -42,9 +42,6 @@ if(isset($_GET['purchase']) and $value = Link::clicked() and $value == "pet-shop
 // Prepare Values
 $linkProtect = Link::prepare("pet-shop");
 
-// Prepare the Page's Active Hashtag
-$config['active-hashtag'] = "UniCreatures";
-
 // Run Global Script
 require(APP_PATH . "/includes/global.php");
 
@@ -62,30 +59,8 @@ echo '
 <h2>Pet Shop</h2>
 <p>You have ' . number_format($coins) . ' Coins. Click on a pet to purchase it.</p>';
 
-foreach($creatures as $shopPet)
-{
-	echo '
-	<div class="shop-block">
-		<div class="shop-block-inner">
-			<div class="shop-block-left">
-				<a href="/shop-pets?purchase=' . $shopPet['id'] . '&' . $linkProtect . '"><img src="' . MyCreatures::imgSrc($shopPet['family'], $shopPet['name'], $shopPet['prefix']) . '" /></a>
-				<div>' . number_format($shopPet['cost']) . ' Coins</div>
-			</div>
-			<div class="shop-block-right">
-				<div class="shop-block-title">' . ($shopPet['prefix'] != "" ? $shopPet['prefix'] . " " : "") . ($shopPet['name'] == "Egg" ? $shopPet['family'] . ' Egg' : $shopPet['name']) . '</div>
-				<div class="shop-block-note">' . $shopPet['blurb'] . '</div>';
-			
-			if($shopPet['day_end'] > -1)
-			{
-				echo '
-				<div class="shop-block-leave">Leaves ' . ($shopPet['day_end'] - $day > 0 ? ' in ' . ($shopPet['day_end'] - $day) . ' Days' : 'Today') . '</div>';
-			}
-			
-			echo '
-			</div>
-		</div>
-	</div>';
-}
+foreach($creatures as $pet)
+	echo MyBlocks::petInfo($pet, '/shop-pets?purchase=' . $pet['id'] . '&' . $linkProtect);
 
 echo '
 </div>';

@@ -27,7 +27,7 @@ abstract class MyShop {
 	{
 		$day = date("z");
 		
-		return Database::selectMultiple("SELECT sc.id, sc.type_id, sc.cost, sc.day_end, ct.family, ct.name, ct.prefix, ct.blurb FROM shop_creatures sc INNER JOIN creatures_types ct ON ct.id=sc.type_id WHERE sc.day_start = ? OR (sc.day_start <= ? AND sc.day_end >= ?) OR (sc.day_end >= ? AND sc.day_start <= ? AND sc.day_end >= ?)", array(-1, $day, $day, 365, $day+365, $day+365));
+		return Database::selectMultiple("SELECT sc.id, sc.type_id, sc.cost, sc.day_start, sc.day_end, ct.family, ct.name, ct.prefix, ct.blurb, ct.rarity FROM shop_creatures sc INNER JOIN creatures_types ct ON ct.id=sc.type_id WHERE sc.day_start = ? OR (sc.day_start <= ? AND sc.day_end >= ?) OR (sc.day_end >= ? AND sc.day_start <= ? AND sc.day_end >= ?)", array(-1, $day, $day, 365, $day+365, $day+365));
 	}
 	
 	

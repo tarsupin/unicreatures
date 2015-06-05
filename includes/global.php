@@ -2,6 +2,7 @@
 
 // Base style sheet for this site
 Metadata::addHeader('<link rel="stylesheet" href="' . CDN . '/css/unifaction-2col.css" />');
+Metadata::addFooter('<script src="/assets/scripts/info.js"></script>');
 
 // Update the user activity module
 UserActivity::update();
@@ -20,7 +21,7 @@ if(Me::$loggedIn)
 			
 			<li class="menu-slot"><a href="/caretaker-hut">Caretaker Hut</a></li><li class="menu-slot"><a href="/shop">Shop</a><ul><li class="dropdown-slot"><a href="/shop-pets">Pet Shop</a></li><li class="dropdown-slot"><a href="/exotic-pets">Exotic Pet Shop</a></li><li class="dropdown-slot"><a href="/shop-supplies">Supply Shop</a></li><li class="dropdown-slot"><a href="/shop-deeds">Land Plots</a></li></ul>
 			
-			<li class="menu-slot"><a href="/explore-zones">Explore</a></li><li class="menu-slot"><a href="#">Info</a><ul><li class="dropdown-slot"><a href="/creature-database">Pet Database</a></li><li class="dropdown-slot"><a href="/schedule">Rotation Schedule</a></li><li class="dropdown-slot"><a href="#">Help &amp; Tutorial</a></li><li class="dropdown-slot"><a href="' . URL::avatar_unifaction_community() . '/unicreatures' . Me::$slg . '">UniCreatures Forum</a></li><li class="dropdown-slot"><a href="/tos">UniCreatures TOS</a></li></ul>
+			<li class="menu-slot"><a href="/explore-zones">Explore</a></li><li class="menu-slot"><a href="#">Info</a><ul><li class="dropdown-slot"><a href="/creature-database">Pet Database</a></li><li class="dropdown-slot"><a href="/schedule">Rotation Schedule</a></li><li class="dropdown-slot"><a href="/explore-map">Exploration Map</a></li><li class="dropdown-slot"><a href="#">Help &amp; Tutorial</a></li><li class="dropdown-slot"><a href="' . URL::avatar_unifaction_community() . '/unicreatures' . Me::$slg . '">UniCreatures Forum</a></li><li class="dropdown-slot"><a href="/tos">UniCreatures TOS</a></li></ul>
 		</ul>
 	</div>');
 	
@@ -28,17 +29,25 @@ if(Me::$loggedIn)
 	WidgetLoader::add("MobilePanel", 10, '
 	<div class="panel-box">
 		<ul class="panel-slots">
-			<li class="nav-slot' . ($url[0] == "" or $url[0] == "home" ? " nav-active" : "") . '"><a href="/">My Profile<span class="icon-circle-right nav-arrow"></span></a></li>
-			<li class="nav-slot' . ($url[0] == "caretaker-hut" ? " nav-active" : "") . '"><a href="/caretaker-hut">Caretaker Hut<span class="icon-circle-right nav-arrow"></span></a></li>
-			<li class="nav-slot' . ($url[0] == "shop" ? " nav-active" : "") . '"><a href="/shop">Shop<span class="icon-circle-right nav-arrow"></span></a></li>
-			<li class="nav-slot' . ($url[0] == "exotic-pets" ? " nav-active" : "") . '"><a href="/exotic-pets">Exotic Pets<span class="icon-circle-right nav-arrow"></span></a></li>
-			<li class="nav-slot' . ($url[0] == "explore-zones" ? " nav-active" : "") . '"><a href="/explore-zones">Explore<span class="icon-circle-right nav-arrow"></span></a></li>
-			<li class="nav-slot' . ($url[0] == "achievements" ? " nav-active" : "") . '"><a href="/achievements">Achievements<span class="icon-circle-right nav-arrow"></span></a></li>
-			<li class="nav-slot' . ($url[0] == "training-center" ? " nav-active" : "") . '"><a href="/training-center">Training Center<span class="icon-circle-right nav-arrow"></span></a></li>
-			<li class="nav-slot' . ($url[0] == "herd-list" ? " nav-active" : "") . '"><a href="/herds">Herds<span class="icon-circle-right nav-arrow"></span></a></li>
-			<li class="nav-slot' . ($url[0] == "treasure-chest" ? " nav-active" : "") . '"><a href="/treasure-chest">Treasure Chest<span class="icon-circle-right nav-arrow"></span></a></li>
-			<li class="nav-slot' . ($url[0] == "settings" ? " nav-active" : "") . '"><a href="/settings">Settings<span class="icon-circle-right nav-arrow"></span></a></li>
-			<li class="nav-slot' . ($url[0] == "tos" ? " nav-active" : "") . '"><a href="/tos">UniCreatures TOS<span class="icon-circle-right nav-arrow"></span></a></li>
+			<li class="nav-slot"><a href="/">My Profile<span class="icon-circle-right nav-arrow"></span></a></li>
+			<li class="nav-slot"><a href="/' . Me::$vals['handle'] . '">Visit Center<span class="icon-circle-right nav-arrow"></span></a></li>
+			<li class="nav-slot"><a href="/achievements">Achievements<span class="icon-circle-right nav-arrow"></span></a></li>
+			<li class="nav-slot"><a href="/training-center">Training Center<span class="icon-circle-right nav-arrow"></span></a></li>
+			<li class="nav-slot"><a href="/herds">Herds<span class="icon-circle-right nav-arrow"></span></a></li>
+			<li class="nav-slot"><a href="/treasure-chest">Treasure Chest<span class="icon-circle-right nav-arrow"></span></a></li>
+			<li class="nav-slot"><a href="/settings">Settings<span class="icon-circle-right nav-arrow"></span></a></li>
+			
+			<li class="nav-slot"><a href="/caretaker-hut">Caretaker Hut<span class="icon-circle-right nav-arrow"></span></a></li>
+			
+			<li class="nav-slot"><a href="/shop">Shop<span class="icon-circle-right nav-arrow"></span></a></li>
+			
+			<li class="nav-slot"><a href="/explore-zones">Explore<span class="icon-circle-right nav-arrow"></span></a></li>		
+			
+			<li class="nav-slot"><a href="/creature-database">Pet Database<span class="icon-circle-right nav-arrow"></span></a></li>
+			<li class="nav-slot"><a href="/schedule">Rotation Schedule<span class="icon-circle-right nav-arrow"></span></a></li>
+			<li class="nav-slot"><a href="/explore-map">Exploration Map<span class="icon-circle-right nav-arrow"></span></a></li>
+			<li class="nav-slot"><a href="' . URL::avatar_unifaction_community() . '/unicreatures' . Me::$slg . '">UniCreatures Forum<span class="icon-circle-right nav-arrow"></span></a></li>
+			<li class="nav-slot"><a href="/tos">UniCreatures TOS<span class="icon-circle-right nav-arrow"></span></a></li>
 		</ul>
 	</div>');
 }

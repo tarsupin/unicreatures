@@ -32,7 +32,7 @@ abstract class MyAreas {
 	public static function checkBasket
 	(
 		int $uniID			// <int> The Uni-Account that you're checking the basket of.
-	,	int $ymdH = 0		// <int> The date to use for the seed, for example in predictions.
+	,	string $ymdH = ""		// <str> The date to use for the seed, for example in predictions.
 	): array					// RETURNS <array> list of available pets in the basket, empty array on failure.
 	
 	// $basket = MyAreas::checkBasket($uniID);
@@ -62,7 +62,15 @@ abstract class MyAreas {
 				$noNoble = (mt_rand(1, 100) > MyTreasure::$nobleChance) ? " AND ct.prefix != 'Noble' AND ct.prefix NOT LIKE 'Noble%'" : '';
 				$noExalted = (mt_rand(1, 100) > MyTreasure::$exaltChance) ? " AND ct.prefix != 'Exalted' AND ct.prefix NOT LIKE 'Exalted%' " : '';
 				
-				$day = date("z");
+				if(!$ymdH)
+				{
+					$day = date("z");
+				}
+				else
+				{
+					$time = date_create_from_format("ymdH", $ymdH);
+					$day = (int) date_format($time, "z");
+				}
 				if($fetchBasket = Database::selectMultiple("SELECT bc.type_id, ct.family, ct.evolution_level FROM basket_creatures bc INNER JOIN creatures_types ct ON bc.type_id=ct.id WHERE bc.rarity=?" . $noNoble . $noExalted . " AND bc.day_start = ? OR (bc.day_start <= ? AND bc.day_end >= ?) OR (bc.day_end >= ? AND bc.day_start <= ? AND bc.day_end >= ?)", array($rarity, -1, $day, $day, 365, $day+365, $day+365)))
 				{
 					$fetchBasket = MyTreasure::equalizeChances($fetchBasket);
@@ -226,7 +234,7 @@ abstract class MyAreas {
 	
 	// $pets = MyAreas::areaPets($areaID);
 	{
-		return Database::selectMultiple("SELECT c.id, c.nickname, c.activity, c.active_until, ct.family, ct.name, ct.prefix, ca.sort_order, ca.special FROM creatures_area ca INNER JOIN creatures_owned c ON c.id=ca.creature_id INNER JOIN creatures_types ct ON ct.id=c.type_id WHERE ca.area_id=? ORDER BY ca.sort_order ASC", array($areaID));
+		return Database::selectMultiple("SELECT c.id, c.nickname, c.activity, c.active_until, c.uni_id, ct.family, ct.name, ct.prefix, ca.sort_order, ca.special FROM creatures_area ca INNER JOIN creatures_owned c ON c.id=ca.creature_id INNER JOIN creatures_types ct ON ct.id=c.type_id WHERE ca.area_id=? ORDER BY ca.sort_order ASC", array($areaID));
 	}
 	
 	
@@ -346,7 +354,7 @@ abstract class MyAreas {
 			return array();
 		}
 		
-		return Database::selectMultiple("SELECT c.id, c.nickname, c.activity, c.active_until, ct.family, ct.name, ct.prefix FROM creatures_user cu INNER JOIN creatures_owned c ON cu.creature_id=c.id INNER JOIN creatures_types ct ON ct.id=c.type_id WHERE c.uni_id=? AND c.area_id=? ORDER BY id DESC LIMIT " . (($page - 1) * $showNum) . ", " . ($showNum + 1), array($uniID, $wildID));
+		return Database::selectMultiple("SELECT c.id, c.nickname, c.activity, c.active_until, c.uni_id, ct.family, ct.name, ct.prefix FROM creatures_user cu INNER JOIN creatures_owned c ON cu.creature_id=c.id INNER JOIN creatures_types ct ON ct.id=c.type_id WHERE c.uni_id=? AND c.area_id=? ORDER BY id DESC LIMIT " . (($page - 1) * $showNum) . ", " . ($showNum + 1), array($uniID, $wildID));
 	}
 	
 	
@@ -423,7 +431,14 @@ abstract class MyAreas {
 	
 	// MyAreas::deleteArea($areaID);
 	{
-		return Database::query("DELETE FROM land_plots WHERE id=? LIMIT 1", array($areaID));
+		Database::startTransaction();
+		
+		if($pass = Database::query("DELETE FROM land_plots WHERE id=? LIMIT 1", array($areaID)))
+		{
+			$pass = Database::query("DELETE FROM land_plots_by_user WHERE uni_id=? AND area_id=? LIMIT 1", array(Me::$id, $areaID));
+		}
+		
+		return Database::endTransaction($pass);
 	}
 	
 	
@@ -435,12 +450,14 @@ abstract class MyAreas {
 	{
 		return array(
 			'meadow'			=> array('cost' => 250,		'title' => 'Meadow')
+		,	'pond'				=> array('cost' => 375,		'title'	=> 'Pond')
 		,	'forest'			=> array('cost' => 500,		'title' => 'Forest')
 		,	'dry_zone'			=> array('cost' => 1000,	'title' => 'Dry Zone')
 		,	'beach'				=> array('cost' => 2500,	'title' => 'Beach')
 		,	'underwater'		=> array('cost' => 5000,	'title' => 'Underwater')
 		,	'mountain'			=> array('cost' => 10000,	'title' => 'Mountains')
 		,	'ghost_town'		=> array('cost' => 20000,	'title' => 'Ghost Town')
+		,	'sky_island'		=> array('cost' => 35000,	'title' => 'Sky Island')
 		,	'castle_ruins'		=> array('cost' => 50000,	'title' => 'Castle Ruins')
 		);
 	}

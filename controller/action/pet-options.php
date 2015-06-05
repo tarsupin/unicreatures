@@ -51,13 +51,15 @@ echo '
 <div id="panel-right"></div>
 <div id="content">' . Alert::display();
 
+foreach($petType as $key => $val)
+	$pet[$key] = (is_numeric($val) ? (int) $val : $val);
+
 echo '
-<div id="uc-left-wide">
-	' . MyBlocks::pet($pet, $petType, Me::$vals['handle']) . '
-	' . MyBlocks::inventory(Me::$id) . '
+<div id="uc-left">
+	<div class="uc-static-block">' . MyBlocks::petPlain($pet, '/pet/' . $pet['id']) . '<div class="uc-note">Evolution Points: ' . $pet['total_points'] . '</div><div class="uc-note">Level: ' . MyTraining::getLevel((int) $pet['experience']) . '</div></div>
 </div>
 
-<div id="uc-right-wide">
+<div id="uc-right">
 	<div class="uc-action-block">
 		<div class="uc-bold" style="margin-bottom:10px;">Additional Pet Options</div>
 		<div class="uc-action-inline"><a href="/action/change-gender/' . $pet['id'] . '"><img src="/assets/items/genx_' . ($pet['gender'] == "m" ? 'female' : 'male') . '.png" /></a><div class="uc-note-bold">Change Gender</div><div class="uc-note">5 Alchemy</div></div>

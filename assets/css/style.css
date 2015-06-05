@@ -17,7 +17,9 @@
 .uc-static-inline { display:inline-block; vertical-align:top; padding:3px; margin:3px; width:110px; }
 
 .uc-action-block { text-align:center; background-color:#cdedef; padding:3px; border-radius:6px; margin-bottom:12px; }
+.uc-action-block img { max-width:100%; }
 .uc-action-inline { display:inline-block; padding:3px; margin:3px; width:110px; }
+#uc-right-wide .uc-action-inline { width:95px; }
 
 .uc-bold { font-weight:bold; font-size:1.1em; }
 .uc-bold-block { font-weight:bold; text-align:center; margin-bottom:12px; }
@@ -27,7 +29,7 @@
 /* Pet Cubes */
 @media screen and (min-width:751px) {
 	.pet-cube { display:inline-block; text-align:center; }
-	.pet-cube-inner { display:table-cell; vertical-align:bottom; width:140px; height:140px; overflow:hidden; }
+	.pet-cube-inner { display:table-cell; vertical-align:bottom; width:140px; max-height:140px; overflow:hidden; }
 	.pet-cube img { max-width:140px; max-height:140px; }
 }
 
@@ -65,6 +67,32 @@
 .attr-name { display:table-cell; text-align:right; padding-left:4px; }
 .attr-num { display:table-cell; padding-left:10px; font-weight:bold; }
 
+/* Info Popup */
+#info-display, #info-display-big {
+	position:fixed;
+	top:50%;
+	left:50%;
+	-webkit-transform:translate(-50%,-50%);
+	transform:translate(-50%,-50%);
+	padding:3px;
+	border-radius:6px;
+	background-color:#cdedef;
+	-webkit-box-shadow:0px 0px 0px 5px rgba(171,205,239,1);
+	-moz-box-shadow:0px 0px 0px 5px rgba(171,205,239,1);
+	box-shadow:0px 0px 0px 5px rgba(171,205,239,1);
+	max-height:70%;
+	max-width:70%;
+	overflow:auto;
+}
+#info-display {
+	text-align:center;
+	z-index:102;
+}
+#info-display-big {
+	width:70%;
+	z-index:101;
+}
+
 /* Responsive Design (Wide Sidebars) */
 @media screen and (min-width:675px) {
 	#uc-left-wide { float:left; width:300px; margin:0 10px 10px 0; }
@@ -88,6 +116,12 @@
 	#uc-right { margin-left:190px; }
 }
 
+/* Responsive Design (Avatar and Inventory) */
+@media screen and (max-width:574px) {
+	#uc-avatar { display:none; }
+	#uc-inventory { display:none; }
+}
+
 
 /**********************
 ****** Shop Page ******
@@ -107,8 +141,10 @@
 
 .shop-block-inner { padding:4px; margin:4px; background-color:#deefff; border-radius:6px; height:150px; overflow:hidden; }
 .shop-block-left { float:left; width:70px; text-align:center; margin-top:12px; }
-.shop-block-right { margin-left:80px; position:relative; height:100%; }
+.shop-block-left img { max-width:100%; }
+.shop-block-right { margin-left:80px; position:relative; height:100%; overflow:auto; }
 .shop-block-title { font-weight:bold; font-size:1.1em; }
 .shop-block-note { font-size:0.9em; }
-.shop-block-arrive { position:absolute; bottom:0em; left:0px; font-size:0.9em; color:#00aa00; }
-.shop-block-leave { position:absolute; bottom:0px; left:0px; font-size:0.9em; color:#aa0000; }
+.shop-block-info { position:absolute; bottom:1em; left:0px; font-size:0.9em; color:#6Ca0d9; white-space:nowrap; }
+.shop-block-arrive { position:absolute; bottom:0em; left:0px; font-size:0.9em; color:#00aa00; white-space:nowrap; }
+.shop-block-leave { position:absolute; bottom:0px; left:0px; font-size:0.9em; color:#aa0000; white-space:nowrap; }

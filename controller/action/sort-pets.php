@@ -23,6 +23,26 @@ if($area['uni_id'] != Me::$id)
 // Get pets from the area
 $pets = MyAreas::areaPets((int) $area['id']);
 
+if($link = Link::clicked() and $link == "change-pet-linebreak")
+{
+	if(isset($_GET['pet']))
+	{
+		if($petData = Database::selectOne("SELECT special FROM creatures_area WHERE area_id=? AND creature_id=? LIMIT 1", array($area['id'], $_GET['pet'] + 0)))
+		{
+			if(Database::query("UPDATE creatures_area SET special=? WHERE area_id=? AND creature_id=? LIMIT 1", array(1 - $petData['special'], $area['id'], $_GET['pet'] + 0)))
+			{
+				Alert::success("Linebreak Changed", "The linebreak has been " . ($petData['special'] ? "removed" : "added") . ".");
+				foreach($pets as $key => $pet)
+					if($pet['id'] == $_GET['pet'])
+					{
+						$pets[$key]['special'] = 1 - $petData['special'];
+						break;
+					}
+			}
+		}
+	}
+}
+
 // Provide Instructions
 Alert::info("Click Pet", "Click on the pet you would like to move.");
 
@@ -42,18 +62,17 @@ echo '
 
 echo '
 <div id="uc-left">
+	<div class="uc-static-block"><a href="/area/' . $area['id'] . '"><img src="/assets/areas/' . $area['type'] . '.png" /></a><div class="uc-bold">' . $area['name'] . '</div><div class="uc-note">' . $area['population'] . ' / ' . $area['max_population'] . '</div></div>
 	' . MyBlocks::avatar(Me::$vals) . '
-	' . MyBlocks::inventory(Me::$id) . '
 </div>
 
 <div id="uc-right">
 	' . MyBlocks::topnav(Me::$vals['handle'], $url[0]);
 
+$linkProtect = Link::prepare("change-pet-linebreak");
 foreach($pets as $pet)
 {
-	$prefix = str_replace(array("Noble", "Exalted", "Noble ", "Exalted "), array("", "", "", ""), $pet['prefix']);
-	echo '
-	<div class="pet-cube"><div class="pet-cube-inner"><a href="/action/sort-pets-to?area=' . $area['id'] . '&s=' . $pet['sort_order'] . '"><img src="' . MyCreatures::imgSrc($pet['family'], $pet['name'], $pet['prefix']) . '" /></a></div><div class="uc-note">' . ($prefix != "" && $pet['nickname'] == $pet['name'] ? $prefix . " " : "") . ($pet['name'] == "Egg" && $pet['nickname'] == "Egg" ? $pet['family'] . ' Egg' : $pet['nickname']) . (MyCreatures::petRoyalty($pet['prefix']) != "" ? ' <img src="/assets/medals/' . MyCreatures::petRoyalty($pet['prefix']) . '.png" />' : '') . '</div></div>';
+	echo MyBlocks::petPlain($pet, '/action/sort-pets-to?area=' . $area['id'] . '&s=' . $pet['sort_order'], ' <a href="/action/sort-pets?area=' . $area['id'] . '&pet=' . $pet['id'] . '&linebreak=' . (1 - $pet['special']) . '&' . $linkProtect . '" title="' . ($pet['special'] ? 'Remove' : 'Add') . ' Linebreak"><span class="icon-' . ($pet['special'] ? 'undo' : 'redo') . '"></span></a>');
 	
 	// Prepare a line break after this creature if necessary
 	if($pet['special'])

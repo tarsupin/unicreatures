@@ -54,9 +54,13 @@ class MyTeams_config {
 		CREATE TABLE IF NOT EXISTS `teams_creatures`
 		(
 			`team_id`				int(10)			unsigned	NOT NULL	DEFAULT '0',
-			`creature_id`			int(10)			unsigned	NOT NULL	DEFAULT '0',
+			`type_id`				smallint(6)		unsigned	NOT NULL	DEFAULT '0',
+			`nickname`				varchar(22)					NOT NULL	DEFAULT '',
+			`gender`				char(1)						NOT NULL	DEFAULT 'm',			
+			`experience`			mediumint(8)	unsigned	NOT NULL	DEFAULT '0',
+			`points`				smallint(6)		unsigned	NOT NULL	DEFAULT '0',
 			
-			UNIQUE (`team_id`, `creature_id`)
+			UNIQUE (`team_id`, `type_id`)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8 PARTITION BY KEY(team_id) PARTITIONS 23;
 		");
 		
@@ -73,7 +77,7 @@ class MyTeams_config {
 		// Make sure the newly installed tables exist
 		$pass1 = DatabaseAdmin::columnsExist("teams", array("id", "uni_id"));
 		$pass2 = DatabaseAdmin::columnsExist("teams_by_user", array("uni_id", "team_id"));
-		$pass3 = DatabaseAdmin::columnsExist("teams_creatures", array("team_id", "creature_id"));
+		$pass3 = DatabaseAdmin::columnsExist("teams_creatures", array("team_id", "type_id"));
 		
 		return ($pass1 and $pass2 and $pass3);
 	}

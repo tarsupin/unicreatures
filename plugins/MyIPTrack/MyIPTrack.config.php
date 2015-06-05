@@ -5,7 +5,7 @@ class MyIPTrack_config {
 	
 /****** Plugin Variables ******/
 	public $pluginType = "standard";
-	public $pluginName = "MyEnergy";
+	public $pluginName = "MyIPTrack";
 	public $title = "IP Tracking Plugin";
 	public $version = 1.0;
 	public $author = "Brint Paris";

@@ -17,13 +17,13 @@ You only show achievements for creatures that you have acquired at some point. R
 	1 point for training a family to level 5
 	1 point for training a family to level 10
 	1 point for having a noble
-	1 point for having an exalted
+	2 points for having an exalted
 	1 point for having a small herd
 	1 point for having a large herd
-	1 point for winning a trophy with them
-	1 point for winning gold with them
 	
 	++add++ 1 point for crowning the family
+	++add++ 1 point for winning gold with them
+	++add++ 1 point for winning a trophy with them
 	
 	
 -------------------------------
@@ -139,7 +139,7 @@ abstract class MyAchievements {
 		}
 		
 		// Check if all of the achievements have been finalized
-		if($achievementData['royalty'] >= 3 and $achievementData['trained'] >= 2 and $achievementData['herd'] >= 2 and $achievement['awards'] >= 2 and $achievement['fully_evolved'] >= 1)
+		if($achievementData['royalty'] >= 3 and $achievementData['trained'] >= 2 and $achievementData['herd'] >= 2 and $achievement['awards'] >= 3 and $achievement['fully_evolved'] >= 1)
 		{
 			Database::query("UPDATE achievements SET finished=? WHERE uni_id=? AND creature_family=? LIMIT 1", array(1, $uniID, $creatureFamily));
 		}

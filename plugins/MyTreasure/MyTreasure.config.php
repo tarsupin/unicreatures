@@ -35,6 +35,15 @@ class MyTreasure_config {
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8 PARTITION BY KEY(uni_id) PARTITIONS 21;
 		");
 		
+		Database::exec("
+		CREATE TABLE IF NOT EXISTS `mystery_creatures`
+		(
+			`type_id`				smallint(6)			unsigned	NOT NULL	DEFAULT '0',
+			
+			UNIQUE (`type_id`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+		");
+		
 		return $this->isInstalled();
 	}
 	

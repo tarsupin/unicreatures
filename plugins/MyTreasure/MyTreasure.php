@@ -75,28 +75,29 @@ abstract class MyTreasure {
 		*/
 		
 		// Receive a major bonus 2% of the time
-		if($rand >= 980)
+		if($rand > 980)
 		{
-			// Special Item (1.1% chance)
-			if($rand >= 990) { /* Nothing Yet */ }
+			// Special Item (1.0% chance)
+			if($rand > 997) { return "mystery_boxes"; }
+			if($rand > 990) { /* Nothing Yet */ }
 			
 			// Random Pet (1.0% chance)
-			else if($rand >= 980) { return "pet"; }
+			else { return "pet"; }
 		}
 		
 		// Receive a supply 54% of the time
-		else if($rand >= 440)
+		else if($rand > 440)
 		{
-			// Alchemy (4% chance)
-			if($rand >= 950) { return "alchemy"; }
+			// Alchemy (3% chance)
+			if($rand > 950) { return "alchemy"; }
 			
 			// Crafting (6% chance)
-			else if($rand >= 890) { return "crafting"; }
+			else if($rand > 890) { return "crafting"; }
 			
-			// Components (15% chance)
-			else if($rand >= 700) { return "components"; }
+			// Components (19% chance)
+			else if($rand > 700) { return "components"; }
 			
-			// Coins (29% chance)
+			// Coins (26% chance)
 			return "coins";
 		}
 		
@@ -110,7 +111,7 @@ abstract class MyTreasure {
 	
 	// $eggRarity = MyTreasure::randomEggRarity();
 	{
-		$chance = mt_rand(0, 1000);
+		$chance = mt_rand(1, 1000);
 		$rarity = 0;
 		
 		// Egg Boost can potentially provide benefits
@@ -184,6 +185,127 @@ abstract class MyTreasure {
 	}
 	
 	
+/****** Open a mystery box ******/
+	public static function openMysteryBox
+	(
+		$uniID		// <int> The ID of the user opening the box.
+	)				// RETURNS <str:mixed> data on the content.
+	
+	// $content = MyTreasure::openMysteryBox(Me::$id);
+	{
+		// check whether the user owns a mystery box
+		if(!$mystery = MySupplies::getSupplies($uniID, "mystery_boxes"))
+		{
+			return array();
+		}
+		
+		Database::startTransaction();
+		
+		// remove the box
+		$remaining = MySupplies::changeSupplies($uniID, "mystery_boxes", -1);
+		
+		$rand = mt_rand(1, 100);
+		$treasureData = array();
+		
+		// 3% chance of a special pet
+		if($rand > 97)
+		{
+			if($fetchOptions = Database::selectMultiple("SELECT type_id FROM mystery_creatures", array()))
+			{
+				$treasure = "pet";
+				$rnd = mt_rand(0, count($fetchOptions) - 1);
+				$typeID = (int) $fetchOptions[$rnd]['type_id'];
+				
+				// Get the Creature Data
+				$typeData = MyCreatures::petTypeData($typeID, "id, family, name, prefix");				
+				$treasureData['type'] = "pet";
+				$treasureData['title'] = ($typeData['prefix'] ? $typeData['prefix'] . " " : "") . ($typeData['name'] == "Egg" ? $typeData['family'] . ' Egg' : $typeData['name']);				
+				$treasureData['petData'] = $typeData;				
+				$treasureData['image'] = MyCreatures::imgSrc($typeData['family'], $typeData['name'], $typeData['prefix']);				
+				if($treasureData !== array())
+				{
+					$prepareQueue = array(
+						"petData"		=> $treasureData['petData']
+					,	"image"			=> $treasureData['image']
+					);
+					
+					// Add the pet to the item queue
+					MyTreasure::addToQueue($uniID, $treasure, $prepareQueue, 86400 * 2);					
+					self::$treasure[$treasure] = $treasureData;	
+				}
+			}
+		}
+		
+		// 4% chance of an energy coupon
+		else if($rand > 93)
+		{
+			$treasure = "energy";
+			$treasureData = self::data("energy");
+			$rnd = mt_rand(1, 100);
+			$treasureData['count'] = ($rnd > 90 ? 200 : 100);
+			$prepareQueue = array(
+				"count"			=> ($rnd > 90 ? 200 : 100)
+			,	"image"			=> $treasureData['image']
+			);
+			MyTreasure::addToQueue($uniID, $treasure, $prepareQueue, 86400 * 30);
+			self::$treasure[$treasure] = $treasureData;
+		}
+		
+		// 3% chance of a seer coupon (caretaker hut prediction)
+		else if($rand > 90)
+		{
+			$rnd = mt_rand(1, 10);
+			// rare 24 hour prediction (10% chance)
+			if($rnd > 9) { $span = 24; }
+			// 12 hour prediction (90% chance)
+			else { $span = 12; }
+			
+			$treasure = "prediction";
+			$treasureData = self::data("prediction");
+			$treasureData['span'] = $span;
+			$prepareQueue = array(
+				"span"			=> $span
+			,	"image"			=> $treasureData['image']
+			);
+			MyTreasure::addToQueue($uniID, $treasure, $prepareQueue, 86400 * 30);
+			self::$treasure[$treasure] = $treasureData;
+		}
+		
+		// 90% chance of supplies; distribution is taken from the visit center
+		else
+		{
+			$rnd = mt_rand(1, 100);
+			$count = mt_rand(1, 3);
+			// Coins (50% chance)
+			$treasure = "coins";
+			// Alchemy (2% chance)
+			if($rnd > 98) { $treasure = "alchemy"; }
+			// Crafting (3% chance)
+			else if($rnd > 95) { $treasure = "crafting"; }
+			// Components (45% chance)
+			else if($rnd > 50) { $treasure = "components"; }
+			
+			$treasureData = MyTreasure::acquire($uniID, $treasure, $count);
+		}
+		
+		if($treasureData)
+		{
+			Database::endTransaction();
+		}
+		else
+		{
+			Database::endTransaction(false);
+		}
+		
+		$treasureData['remaining'] = $remaining ? number_format($remaining) : "0";
+		if(isset($treasureData['total']))
+		{
+			$treasureData['total'] = number_format($treasureData['total']);
+		}
+		return $treasureData;
+	}
+	
+	
 /****** Filter the creature list to even out chances for multi-colored creatures ******/
 	public static function equalizeChances
 	(
@@ -234,7 +356,7 @@ abstract class MyTreasure {
 		$treasureData = array();
 		
 		// Prepare Treasures
-		if(in_array($treasure, array("alchemy", "coins", "crafting", "components")))
+		if(in_array($treasure, array("alchemy", "coins", "crafting", "components", "ninja_boxes", "mystery_boxes")))
 		{
 			$supply = MySupplies::changeSupplies($uniID, $treasure, $count);
 			
@@ -247,17 +369,30 @@ abstract class MyTreasure {
 		// Prepare Pet
 		if($treasure == "pet")
 		{
-			$treasureData = self::data($treasure);
-			
-			if($treasureData !== array())
+			for($i=0; $i<$count; $i++)
 			{
-				$prepareQueue = array(
-					"petData"		=> $treasureData['petData']
-				,	"image"			=> $treasureData['image']
-				);
+				$treasureData[$i] = self::data($treasure);
 				
-				// Add the pet to the item queue
-				MyTreasure::addToQueue(Me::$id, $treasure, $prepareQueue, 86400 * 2);
+				if($treasureData[$i] !== array())
+				{
+					$prepareQueue = array(
+						"petData"		=> $treasureData[$i]['petData']
+					,	"image"			=> $treasureData[$i]['image']
+					);
+					
+					// Add the pet to the item queue; need to manipulate expiration time so that all pets are saved
+					MyTreasure::addToQueue($uniID, $treasure, $prepareQueue, (86400 + $i) * 2);
+				}
+				else
+				{
+					unset($treasureData[$i]);
+				}
+			}
+			// only put pets in array if there is more than 1
+			$treasureData = array_values($treasureData);
+			if(count($treasureData) == 1)
+			{
+				$treasureData = $treasureData[0];
 			}
 		}
 		
@@ -315,7 +450,7 @@ abstract class MyTreasure {
 		else if($treasure == "coins")
 		{
 			$treasureData['type'] = "coins";
-			$treasureData['title'] = "Auro Coin";
+			$treasureData['title'] = "Coin";
 			$treasureData['image'] = '/assets/supplies/coins_large.png';
 		}
 		
@@ -343,6 +478,39 @@ abstract class MyTreasure {
 			$treasureData['image'] = '/assets/supplies/' . $shuffle[0] . '.png';
 		}
 		
+		// Special Item
+		else if($treasure == "ninja_boxes")
+		{
+			$treasureData['type'] = "ninja_boxes";
+			$treasureData['title'] = "Ninja Box";
+			
+			$treasureData['image'] = '/assets/supplies/ninja_gift.gif';
+		}
+		
+		else if($treasure == "mystery_boxes")
+		{
+			$treasureData['type'] = "mystery_boxes";
+			$treasureData['title'] = "Mystery Box";
+			
+			$treasureData['image'] = '/assets/supplies/mystery_box.png';
+		}
+		
+		else if($treasure == "energy")
+		{
+			$treasureData['type'] = "energy";
+			$treasureData['title'] = "Energy";
+			
+			$treasureData['image'] = '/assets/items/potion_pink.png';
+		}
+		
+		else if($treasure == "prediction")
+		{
+			$treasureData['type'] = "prediction";
+			$treasureData['title'] = "Caretaker Hut Prediction";
+			
+			$treasureData['image'] = '/assets/items/key_balloon.png';
+		}
+		
 		// Pet
 		else if($treasure == "pet")
 		{
@@ -356,7 +524,7 @@ abstract class MyTreasure {
 				$typeData = MyCreatures::petTypeData($typeID, "id, family, name, prefix");
 				
 				$treasureData['type'] = "pet";
-				$treasureData['title'] = "Found " . ($typeData['name'] == "Egg" ? $typeData['family'] . ' Egg' : $typeData['name']);
+				$treasureData['title'] = ($typeData['prefix'] ? $typeData['prefix'] . " " : "") . ($typeData['name'] == "Egg" ? $typeData['family'] . ' Egg' : $typeData['name']);
 				
 				$treasureData['petData'] = $typeData;
 				
@@ -403,6 +571,20 @@ abstract class MyTreasure {
 				{
 					// Database::$lastID must be overwritten to pass the value to the executing script for a direct link.
 					Database::$lastID = MyCreatures::acquireCreature($uniID, (int) $json['petData']['id']);
+				}
+				
+				// Give energy to the user
+				elseif($queueItem['treasure'] == "energy" && isset($json['count']))
+				{
+					MyEnergy::change($uniID, (int) $json['count']);
+				}
+				
+				// Give prediction page access to the user
+				elseif($queueItem['treasure'] == "prediction" && isset($json['span']))
+				{
+					$time = time() + $json['span'] * 3600;
+					$test = mktime(date("H", $time), 0, 0, date("n", $time), date("j", $time), date("Y", $time));
+					Confirm::create("prediction-" . $uniID, $json, $test - time());
 				}
 				
 				return true;

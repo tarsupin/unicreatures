@@ -27,9 +27,6 @@ if(count($herds) == $showNum + 1)
 	array_pop($herds);
 }
 
-// Prepare the Page's Active Hashtag
-$config['active-hashtag'] = "UniCreatures";
-
 // Run Global Script
 require(APP_PATH . "/includes/global.php");
 
@@ -62,7 +59,7 @@ if(count($herds) > 0)
 		<div class="pet-cube">
 			<div class="pet-cube-inner"><a href="' . $urlAdd . '/herds/' . $herd['family'] . '"><img src="/creatures/' . $herd['family'] . '/' . strtolower($herd['family']) . '.png" /></a></div>
 			<div>' . $herd['family'] . ' Herd</div>
-			<div style="font-size:0.9em;">Pop: ' . $herd['population'] . '</div>
+			<div style="font-size:0.8em;">Pop: ' . $herd['population'] . ', Points: ' . $herd['score'] . '</div>
 		</div>';
 	}
 	

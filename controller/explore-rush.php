@@ -57,8 +57,6 @@ if(Form::submitted("explore-zone-rush"))
 	}
 	
 	// If the user was searching for something specific, adjust the results accordingly
-	$tList = array("alchemy", "coins", "components", "crafting");
-	
 	if($_POST['searchingFor'])
 	{
 		foreach($treasures as $k => $v)
@@ -72,6 +70,12 @@ if(Form::submitted("explore-zone-rush"))
 				$treasures[$k] = round($v / 2);
 			}
 		}
+		
+		// Guarantee a Mystery Box when searching for it at full energy
+		if($_POST['searchingFor'] == "mystery_boxes" && $energyUsed >= MyEnergy::$maxEnergy && !isset($treasures['mystery_boxes']))
+		{
+			$treasures['mystery_boxes'] = 1;
+		}		
 		
 		// Booster for Creatures
 		if($_POST['searchingFor'] == "creatures")
@@ -115,7 +119,7 @@ echo '
 echo '
 <style>
 .zone { display:inline-block; padding:3px; text-align:center; }
-.zoneInput input { cursor:pointer; width: 140px; height: 140px; border: none; }
+.zoneInput input { cursor:pointer; width: 140px; height: 140px; border: none !important; }
 </style>';
 
 // If you did a speed run successfully
@@ -125,7 +129,18 @@ if($treasures !== array())
 	<h2>Your "Speed Run" Adventure:</h2>
 	<p>You\'ve just completed a Speed Run, and received the following:</p>';
 	
-	foreach(MyTreasure::$treasure as $tData)
+	// Switch eggs from array to separate entries if there is more than 1
+	$treasureCopy = MyTreasure::$treasure;
+	if(isset($treasureCopy['pet'][0]))
+	{
+		foreach($treasureCopy['pet'] as $tPet)
+		{
+			$treasureCopy[] = $tPet;
+		}
+		unset($treasureCopy['pet']);
+	}
+	
+	foreach($treasureCopy as $tData)
 	{
 		$count = isset($tData['count']) ? " (" . $tData['count'] . ")" : "";
 		
@@ -158,6 +173,7 @@ else
 			<option value="coins">Coins</option>
 			<option value="components">Components</option>
 			<option value="crafting">Crafting Supplies</option>
+			<option value="mystery_boxes">Mystery Boxes</option>
 			<option value="creatures">Rare Creatures</option>
 		</select>
 	</p>

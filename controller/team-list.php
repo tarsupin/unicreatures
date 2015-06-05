@@ -1,28 +1,31 @@
 <?php if(!defined("CONF_PATH")) { die("No direct script access allowed."); }
 
-// Determine the user being viewed
-if(isset($url[1]))
+// Get the active user
+if(!isset($userData))
 {
-	if(!$userData = User::getDataByHandle(Sanitize::variable($url[1]), "uni_id, handle, display_name"))
-	{
-		header("Location: /"); exit;
-	}
-	
-	You::$id = (int) $userData['uni_id'];
-	You::$handle = $userData['handle'];
-}
-else
-{
+	// If you're not viewing someone and not logged in yourself
 	if(!Me::$loggedIn)
 	{
-		header("Location: /"); exit;
+		Me::redirectLogin("/training-center");
 	}
 	
 	$userData = Me::$vals;
+	$userData['uni_id'] = (int) $userData['uni_id'];
 }
 
 // Get your list of herds
-$herds = MyHerds::userHerds(Me::$id);
+$currentPage = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+$showNum = 30;
+$morePages = false;
+
+$herds = MyTeams::userHerds($userData['uni_id'], $currentPage, $showNum);
+
+// Check if there are more pages to the right
+if(count($herds) == $showNum + 1)
+{
+	$morePages = true;
+	array_pop($herds);
+}
 
 // Run Global Script
 require(APP_PATH . "/includes/global.php");
@@ -39,10 +42,13 @@ echo '
 <div id="content">' . Alert::display();
 
 echo '
-<div style="float:left; text-align:center; background-color:#abcdef; padding:6px; border-radius:6px;">
-	<img src="' . ProfilePic::image((int) $userData['uni_id'], "huge") . '" />
-	<div id="pet-nickname">' . $userData['display_name'] . '</div>
-</div>';
+<div id="uc-left">
+	' . MyBlocks::avatar($userData) . '
+</div>
+<div id="uc-right">
+	' . MyBlocks::topnav($userData['handle'], $url[0]) . '
+	
+	<h1>' . $userData['display_name'] . '\'s Teams</h1>';
 
 if(count($herds) > 0)
 {
@@ -51,17 +57,34 @@ if(count($herds) > 0)
 	{
 		echo '
 		<div class="pet-cube">
-			<div class="pet-cube-inner"><a href="/herds/' . $herd['id'] . '"><img src="' . $herd['image'] . '" /></a></div>
-			<div>' .$herd['name'] . '</div>
+			<div class="pet-cube-inner"><a href="/teams/' . $herd['id'] . '"><img src="' . $herd['image'] . '" /></a></div>
+			<div>' . $herd['name'] . '</div>
 		</div>';
 	}
+	
+	echo '
+	<div style="margin-top:12px;">';
+
+	if($currentPage > 1)
+	{
+		echo '<a class="button" href="' . $urlAdd . '/herd-list?page=' . ($currentPage - 1) . '">Previous Page</a>';
+	}
+
+	if($morePages == true)
+	{
+		echo ' <a class="button" href="' . $urlAdd . '/herd-list?page=' . ($currentPage + 1) . '">Next Page</a>';
+	}
+
+	echo '
+	</div>';
 }
 else
 {
-	echo "You do not currently have any herds.";
+	echo (Me::$id == $userData['uni_id'] ? "You do" : $userData['display_name'] . " does") . " not currently have any teams.";
 }
 
 echo '
+</div>
 </div>';
 
 // Display the Footer

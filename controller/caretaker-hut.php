@@ -50,9 +50,6 @@ if($checkLastGather != $dateCheck)
 	}
 }
 
-// Prepare the Page's Active Hashtag
-$config['active-hashtag'] = "UniCreatures";
-
 // Run Global Script
 require(APP_PATH . "/includes/global.php");
 
@@ -68,37 +65,32 @@ echo '
 <div id="content">' . Alert::display();
 
 echo '
-<div id="uc-left-wide">
+<div id="uc-left">
 	<div class="uc-static-block uc-bold">The Caretaker Hut</div>
 	<div class="uc-bold-block">You can collect ONE egg here every hour. Choose wisely!</div>
 </div>
-<div id="uc-right-wide">';
+<div id="uc-right">';
 
 if($showHut == true)
 {
-	// Caretaker Pets
-	echo '
-	<div style="text-align:center;">';
-	
+	// Caretaker Pets	
 	foreach($basket as $typeID)
 	{
-		$typeData = MyCreatures::petTypeData($typeID, "family, name, prefix, blurb");
-		
-		echo '
-		<p>
-			<a href="/caretaker-hut?gather=' . $typeID . '"><img src="' . MyCreatures::imgSrc($typeData['family'], $typeData['name'], $typeData['prefix']) . '" /></a>
-			<div>' . $typeData['blurb'] . '</div>
-			' . (MyCreatures::petRoyalty($typeData['prefix']) != "" ? '<div style="font-size:0.9em; background-color:#abcdef; display:inline-block; padding:2px 6px 2px 6px; border-radius:6px;">' . MyCreatures::petRoyalty($typeData['prefix']) . '</div>' : '') . '
-		</p>';
+		$pet = MyCreatures::petTypeData($typeID, "family, name, prefix, blurb, rarity");
+		echo MyBlocks::petInfo($pet, '/caretaker-hut?gather=' . $typeID);
 	}
-	
-	echo '
-	</div>';
 }
 else
 {
 	echo '
 	<div>You\'ve already chosen an egg from the caretaker hut this hour. You can return next hour.</div>';
+}
+
+$confirm = new Confirm("prediction-" . Me::$id);
+if($confirm->validate())
+{
+	echo '
+	<div style="clear:both;">You have an active coupon. <a href="/caretaker-hut-predict">Would you like to see the Caretaker Hut Prediction?</a></div>';
 }
 
 echo '

@@ -37,6 +37,20 @@ else
 // Check if the pet is performing an activity
 $isBusy = MyCreatures::isBusy($pet['activity'], $pet['active_until']);
 
+if($isBusy)
+{
+	switch($pet['activity'])
+	{
+		case "training":
+			Alert::info("Busy", $pet['nickname'] . ' is busy training. They will be available ' . Time::fuzzy($pet['active_until']) . '. <a href="' . $urlAdd . '/training-center">Visit Training Center</a>');
+			break;
+		
+		default:
+			Alert::info("Busy", $pet['nickname'] . ' is currently busy.' . ($pet['active_until'] ? ' They will be available ' . Time::fuzzy($pet['active_until']) . '.' : ''));
+			break;
+	}
+}
+
 // Get the Pet Type Data
 $petType = MyCreatures::petTypeData((int) $pet['type_id'], "family, name, evolution_level, required_points, rarity, blurb, description, evolves_from, prefix");
 
@@ -52,13 +66,14 @@ if(Me::$loggedIn)
 	if($link = Link::clicked() and $link == "uc-pet-page-" . $pet['id'])
 	{
 		// Feed the pet
-		if(isset($_GET['feed']) && $_GET['feed'] > 0 && $_GET['feed'] < 50)
+		if(isset($_GET['feed']) && $_GET['feed'] > 0 && $_GET['feed'] <= 1000)
 		{
 			// Make sure the pet can be fed now
 			if(!$isBusy)
 			{
-				$_GET['feed'] = (int) abs($_GET['feed'] + 0);
-				$components = MySupplies::getSupplies(Me::$id, "components");
+				$_GET['feed'] = (int) $_GET['feed'];
+				// Do not feed beyond 10000 care points
+				$_GET['feed'] = min($_GET['feed'], 10000 - $pet['total_points']);
 				
 				if($components >= $_GET['feed'])
 				{
@@ -106,43 +121,58 @@ echo '
 echo '
 <div id="uc-left-wide">
 	' . MyBlocks::pet($pet, $petType, $userData['handle']) . '
-	<div class="uc-bold-block">' . $petType['blurb'] . '</div>
-	<div class="uc-action-block">';
+	<div class="uc-bold-block">' . $petType['blurb'] . '</div>';
 	
 	if(!$isBusy)
 	{
 		echo '
+	<div class="uc-action-block">';
+		$needsToEvolve = max(min($petType['required_points'] - $pet['total_points'], $components, 1000), 0);
+		echo '
 		<div style="margin-bottom:10px;">Components Available: ' . $components . '</div>
-		<div class="uc-action-inline"><a href="/pet/' . $pet['id'] . '?feed=1&' . $linkProtect . '"><img src="/assets/supplies/sunnyseed.png" /></a><div class="uc-note-bold">Feed Pet</div><div class="uc-note">&nbsp;</div></div>
-		<div class="uc-action-inline"><a href="/pet/' . $pet['id'] . '?feed=10&' . $linkProtect . '"><img src="/assets/supplies/component_bag.png" /></a><div class="uc-note-bold">Feed Pet x10</div><div class="uc-note">&nbsp;</div></div>';
+		<div class="uc-action-inline"><a href="/pet/' . $pet['id'] . '?feed=1&' . $linkProtect . '"><img src="/assets/supplies/sunnyseed.png" /></a><div class="uc-note-bold">Feed</div><div class="uc-note">&nbsp;</div></div>';
+		
+		if($needsToEvolve)
+		{
+			echo '
+		<div class="uc-action-inline"><a href="/pet/' . $pet['id'] . '?feed=' . $needsToEvolve . '&' . $linkProtect . '"><img src="/assets/supplies/component_bag.png" /></a><div class="uc-note-bold">Feed x' . $needsToEvolve . '</div><div class="uc-note">&nbsp;</div></div>';
+		}
+		else
+		{
+			echo '
+			<div class="uc-action-inline"><a id="feedcustom" href="#"><img src="/assets/supplies/component_bag.png" /></a><div class="uc-note-bold">Feed x<input type="number" value="0" min="0" max="1000" onchange="document.getElementById(\'feedcustom\').href=\'/pet/' . $pet['id'] . '?feed=\' + this.value + \'&' . $linkProtect . '\';" style="max-width:4em;" /></div><div class="uc-note">&nbsp;</div></div>';
+		}
+		echo '
+	</div>';
 	}
 	
-	echo '
-	</div>
+	if($pet['experience'] > 0)
+	{
+		echo '
 	<div class="uc-static-block">
 		<div style="text-align:center; font-weight:bold;">' . ($level ? 'Level ' . $level . ' ' : '') . ($pet['gender'] == "m" ? "Male" : "Female") . ' ' . $petType['family'] . '</div>
 		<div style="text-align:center;">' . number_format($pet['experience']) . ' EXP</div>
 		<div style="margin-top:12px;">';
-	
-	$attributes = MyTraining::getAttributes($petType['family'], $level);
-	
-	foreach($attributes as $key => $value)
-	{
-		echo '
+		
+		$attributes = MyTraining::getAttributes($petType['family'], $level);
+		
+		foreach($attributes as $key => $value)
+		{
+			echo '
 		<div class="attr-row"><div class="attr-name">' . ucfirst($key) . '</div><div class="attr-num">' . $value . '</div><div class="attr-graph">' . str_pad("", ($value / 4), "-")  . '</div></div>';
-	}
-	
-	echo '
+		}
+		
+		echo '
 		</div>
-	</div>
-</div>';
+	</div>';
+	}
+echo '
+</div>
+<div id="uc-right-wide">';
 
 // If the pet is available (i.e. not busy with an activity) show several details of the pet
 if(!$isBusy)
 {
-	echo '
-	<div id="uc-right-wide">';
-	
 	if(Me::$id == $pet['uni_id'])
 	{
 		// Determine cost of training
@@ -163,20 +193,23 @@ if(!$isBusy)
 			<div class="uc-action-inline"><a href="/action/send-trainer?pet=' . $pet['id'] . '"><img src="/assets/items/training_manual.png" /></a><div class="uc-note-bold">Train</div><div class="uc-note">' . $trainCost . ' Coins</div></div>
 			<div class="uc-action-inline"><a href="/action/move-pet/' . $pet['id'] . '"><img src="/assets/icons/backpack.png" /></a><div class="uc-note-bold">Move Pet</div><div class="uc-note">&nbsp;</div></div>
 			<div class="uc-action-inline"><a href="/action/join-herd/' . $pet['id'] . '"><img src="/assets/icons/herd.png" /></a><div class="uc-note-bold">Send to Herd</div><div class="uc-note">&nbsp;</div></div>
+			<div class="uc-action-inline"><a href="/action/join-team/' . $pet['id'] . '"><img src="/assets/icons/campfire.png" /></a><div class="uc-note-bold">Send to Team</div><div class="uc-note">&nbsp;</div></div>
 			<div class="uc-action-inline"><a href="/action/pet-options/' . $pet['id'] . '"><img src="/assets/items/notes_diagram.png" /></a><div class="uc-note-bold">More Options</div><div class="uc-note">&nbsp;</div></div>
 		</div>';
 	}
-	
+}
+
+// Pet Description
+echo '
+	<div id="pet-desc">' . nl2br(MyCreatures::descMarkup($petType['description'], $pet['nickname'], $pet['gender'])) . '</div>';
+
+// If you're logged in to your own pet page
+if(Me::$id == $userData['uni_id'])
+{
 	echo '
-		<div id="pet-desc">' . nl2br(MyCreatures::descMarkup($petType['description'], $pet['nickname'], $pet['gender'])) . '</div>';
-	
-	// If you're logged in to your own pet page
-	if(Me::$id == $userData['uni_id'])
-	{
-		echo '
-		<div style="margin-bottom:10px;">&nbsp;</div>
-		<h3>Attract Users For Free Goodies</h3>		
-		<form class="uniform">
+	<div style="margin-bottom:10px;">&nbsp;</div>
+	<h3>Attract Users For Free Goodies</h3>		
+	<form class="uniform">
 		<div>
 			<div class="uc-note" style="font-weight:bold;">Direct Link:</div>
 			<input type="text" name="dir_link" value="' . URL::unicreatures_com() . '/' . Me::$vals['handle'] . '/' . $pet['id'] . '" style="width:100%;" readonly onclick="this.select();" />
@@ -189,31 +222,7 @@ if(!$isBusy)
 			<div class="uc-note" style="font-weight:bold;">HTML Link:</div>
 			<input type="text" name="bb_link" value=\'<a href="' . URL::unicreatures_com() . '/' . Me::$vals['handle'] . '/' . $pet['id'] . '"><img src="' . URL::unicreatures_com() . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" /></a>\' style="width:100%;" readonly onclick="this.select();" />
 		</div>
-		</form>';
-	}
-	
-	echo '
-	</div>';
-}
-else
-{
-	echo '
-	<div>';
-	
-	switch($pet['activity'])
-	{
-		case "training":
-			echo $pet['nickname'] . ' is busy training. They will be available ' . Time::fuzzy($pet['active_until']);
-			echo '<div style="margin-top:22px;"><a href="' . $urlAdd . '/training-center">Visit Training Center</a></div>';
-			break;
-		
-		default:
-			echo $pet['nickname'] . ' is currently busy. They will be available ' . Time::fuzzy($pet['active_until']);
-			break;
-	}
-	
-	echo '
-	</div>';
+	</form>';
 }
 
 echo '

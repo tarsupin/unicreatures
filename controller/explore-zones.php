@@ -12,9 +12,6 @@ if(!$achievements = MySupplies::getSupplies(Me::$id, "achievements"))
 // Get a list of the user's supplies
 $energy = MyEnergy::get(Me::$id);
 
-// Prepare the Page's Active Hashtag
-$config['active-hashtag'] = "UniCreatures";
-
 // Run Global Script
 require(APP_PATH . "/includes/global.php");
 
@@ -37,7 +34,7 @@ echo '
 
 <div class="area-cube">
 	<a href="/explore-rush"><img src="/assets/explore_zones/great_plains.png" /></a>
-	<div class="uc-bold">Speed Run</div>
+	<div>Speed Run</div>
 	<div class="uc-note">&nbsp;</div>
 </div>';
 
@@ -46,7 +43,7 @@ foreach($zones as $key => $zone)
 	echo '
 	<div class="area-cube">
 		<a href="/explore/' . $key . '?' . Link::prepare($key) . '"><img src="/assets/explore_zones/' . $key. '.png" /></a>
-		<div class="uc-bold"><span' . ($achievements < $zone['achievements'] ? ' style="color:red"' : '') . '>' . $zone['title']  . '</span></div>
+		<div><span' . ($achievements < $zone['achievements'] ? ' style="color:red"' : '') . '>' . $zone['title']  . ' <a href="javascript:viewExplore(\'' . $key . '\');"><span class="icon-circle-info"></span></a></span></div>
 		<div class="uc-note">' .  ($achievements < $zone['achievements'] ? $zone['achievements'] . '+' : '&nbsp;') . '</div>
 	</div>';
 }

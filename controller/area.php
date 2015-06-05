@@ -59,10 +59,8 @@ if(!$pets)
 }
 
 foreach($pets as $pet)
-{
-	$prefix = str_replace(array("Noble", "Exalted", "Noble ", "Exalted "), array("", "", "", ""), $pet['prefix']);
-	echo '
-	<div class="pet-cube"><div class="pet-cube-inner"><a href="/pet/' . $pet['id'] . '"><img src="' . MyCreatures::imgSrc($pet['family'], $pet['name'], $pet['prefix']) . '" /></a></div><div>' . ($prefix != "" && $pet['nickname'] == $pet['name'] ? $prefix . " " : "") . ($pet['name'] == "Egg" && $pet['nickname'] == "Egg" ? $pet['family'] . ' Egg' : $pet['nickname']) . ($pet['activity'] && $pet['active_until'] >= time() ? ' <span class="icon-spinner" ></span>' : '') . (MyCreatures::petRoyalty($pet['prefix']) != "" ? ' <img src="/assets/medals/' . MyCreatures::petRoyalty($pet['prefix']) . '.png" />' : '') . '</div></div>';
+{	
+	echo MyBlocks::petPlain($pet, '/pet/' . $pet['id']);
 	
 	// Prepare a line break after this creature if necessary
 	if($pet['special'])

@@ -3,7 +3,7 @@
 // Must Log In
 if(!Me::$loggedIn)
 {
-	Me::redirectLogin("/action/edit-area"); exit;
+	Me::redirectLogin("/"); exit;
 }
 
 // Make sure you have the right information sent
@@ -141,7 +141,7 @@ echo '
 echo '
 <div id="uc-left">
 	' . MyBlocks::avatar(Me::$vals) . '
-	' . MyBlocks::inventory(Me::$id) . '
+	' . MyBlocks::inventory() . '
 </div>
 <div id="uc-right">
 	<div class="area-cube">
@@ -154,14 +154,13 @@ echo '
 	{
 		echo '
 		<div class="area-cube">
-			<a href="/action/edit-area/' . $area['id'] . '?upgrade=plot&' . $linkProtect . '"><img src="/assets/areas/' . $upgradedArea['type'] . '.png" /></a>
+			<a href="/action/edit-area/' . $area['id'] . '?upgrade=plot&' . $linkProtect . '" onclick="return confirm(\'Are you sure you want to upgrade this plot? Doing so will change its image, but not the population limit. To change the population limit, choose the Engineering option.\');"><img src="/assets/areas/' . $upgradedArea['type'] . '.png" /></a>
 			<div class="uc-bold">Upgrade Plot</div>
 			<div class="uc-note">' . $upgradedArea['upgrade_cost'] . '<span class="hide-800"> Crafting</span> Supplies</div>
 		</div>';
 	}
 	
-	echo '
-	
+	echo '	
 	<div style="text-align:center; width:160px; margin-top:22px;"><a href="/action/edit-area/' . $area['id'] . '?upgrade=engineering&' . $linkProtect . '"><img src="/assets/icons/button_supplies.png" /></a><div style="font-size:0.9em; font-weight:bold;">Engineering</div><div style="font-size:0.9em;">+5 Max. Population</div><div style="font-size:0.8em;">' . $engCost . ' Crafting Supplies</div></div>
 	
 	<div style="margin-top:22px;">

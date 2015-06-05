@@ -13,7 +13,7 @@ if(!isset($url[2]))
 }
 
 // Get Pet Data
-$pet = MyCreatures::petData((int) $url[2], "id, uni_id, type_id, nickname, gender");
+$pet = MyCreatures::petData((int) $url[2], "id, uni_id, area_id, type_id, nickname, gender, activity, active_until, experience, total_points, date_acquired");
 
 if(!$pet or $pet['uni_id'] != Me::$id)
 {
@@ -29,7 +29,7 @@ $supplies['alchemy'] = (int) $supplies['alchemy'];
 $swapCost = 5;
 
 // Get the Pet Type Data
-$petType = MyCreatures::petTypeData((int) $pet['type_id'], "family, name, prefix");
+$petType = MyCreatures::petTypeData((int) $pet['type_id'], "family, name, evolution_level, required_points, rarity, blurb, description, evolves_from, prefix");
 $prefix = str_replace(array("Noble", "Exalted", "Noble ", "Exalted "), array("", "", "", ""), $petType['prefix']);
 
 // If you changed the gender of the pet
@@ -71,10 +71,13 @@ echo '
 <div id="panel-right"></div>
 <div id="content">' . Alert::display();
 
+foreach($petType as $key => $val)
+	$pet[$key] = (is_numeric($val) ? (int) $val : $val);
+
 echo '
 <div id="uc-left">
-	' . MyBlocks::avatar(Me::$vals) . '
-	' . MyBlocks::inventory(Me::$id) . '
+	<div class="uc-static-block">' . MyBlocks::petPlain($pet, '/pet/' . $pet['id']) . '<div class="uc-note">Evolution Points: ' . $pet['total_points'] . '</div><div class="uc-note">Level: ' . MyTraining::getLevel((int) $pet['experience']) . '</div></div>
+	' . MyBlocks::inventory() . '
 </div>
 
 <div id="uc-right">
@@ -84,10 +87,6 @@ echo '
 		<div class="uc-bold">Are you sure you want to change ' . $pet['nickname'] . '\'s gender to ' . ($pet['gender'] == 'm' ? 'female' : 'male') . '?</div>
 		
 		<div>This effect will require ' . $swapCost . ' alchemy ingredients.</div>
-		
-		<div class="pet-cube"><div class="pet-cube-inner"><img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" /></div>
-		
-		<div class="uc-note">' . ($prefix != "" && $pet['nickname'] == $petType['name'] ? $prefix . " " : "") . ($petType['name'] == "Egg" && $pet['nickname'] == "Egg" ? $petType['family'] . ' Egg' : $pet['nickname']) . (MyCreatures::petRoyalty($petType['prefix']) != "" ? ' <img src="/assets/medals/' . MyCreatures::petRoyalty($petType['prefix']) . '.png" />' : '') . '</div></div>
 		
 		<div class="uc-action-block"><a href="/action/change-gender/' . $pet['id'] . '?gender=true&' . $linkProtect . '" style="display:block; padding:4px;">Yes, change ' . ($pet['gender'] == 'm' ? 'his' : 'her') . ' gender to ' . ($pet['gender'] == 'm' ? 'female' : 'male') . '.</a></div>
 	</div>

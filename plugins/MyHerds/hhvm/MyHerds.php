@@ -23,7 +23,11 @@ $herdList = MyHerds::herdList($uniID, $page, $numRows);
 
 $herdPets = MyHerds::getPets($uniID, $family, [$page], [$numRows]);
 
+$herdPets = MyHerds::getTypes($uniID, $family);
+
 MyHerds::sendToHerd($creatureID);
+
+MyHerds::removeFromHerd($creatureType, $creatureNick);
 
 */
 
@@ -130,7 +134,7 @@ abstract class MyHerds {
 	
 	// $herdList = MyHerds::herdList($uniID, $page, $numRows);
 	{
-		return Database::selectMultiple("SELECT family, population FROM herds WHERE uni_id=? ORDER BY family ASC LIMIT " . (($page - 1) * $numRows) . ', ' . ($numRows + 1), array($uniID));
+		return Database::selectMultiple("SELECT family, population, score FROM herds WHERE uni_id=? ORDER BY family ASC LIMIT " . (($page - 1) * $numRows) . ', ' . ($numRows + 1), array($uniID));
 	}
 	
 	
@@ -145,7 +149,20 @@ abstract class MyHerds {
 	
 	// $herdPets = MyHerds::getPets($uniID, $family, [$page], [$numRows]);
 	{
-		return Database::selectMultiple("SELECT hc.type_id, hc.nickname, ct.name, ct.prefix, ct.evolution_level FROM herds_creatures hc INNER JOIN creatures_types ct ON hc.type_id=ct.id WHERE hc.uni_id=? AND hc.family=? LIMIT " . (($page - 1) * $numRows) . ', ' . ($numRows + 0), array($uniID, $family));
+		return Database::selectMultiple("SELECT hc.type_id, hc.nickname, ct.name, ct.prefix, ct.evolution_level FROM herds_creatures hc INNER JOIN creatures_types ct ON hc.type_id=ct.id WHERE hc.uni_id=? AND hc.family=? LIMIT " . (($page - 1) * $numRows) . ', ' . ($numRows + 1), array($uniID, $family));
+	}
+	
+/****** Get the list of types from a herd ******/
+	public static function getTypes
+	(
+		int $uniID			// <int> The UniID that you're finding pets in.
+	,	string $family			// <str> The creature family's herd to count the types of.
+	,	int $population		// <int> The population of the herd.
+	): array <int, array<str, mixed>>					// RETURNS <int:[str:mixed]> the array of types in the herd.
+	
+	// $herdPets = MyHerds::getTypes($uniID, $family);
+	{
+		return Database::selectMultiple("SELECT COUNT(*) AS number, ct.name, ct.prefix FROM herds_creatures hc INNER JOIN creatures_types ct ON hc.type_id=ct.id WHERE hc.uni_id=? AND hc.family=? GROUP BY hc.type_id ORDER BY ct.evolution_level, ct.prefix LIMIT ?", array($uniID, $family, $population));
 	}
 	
 	
@@ -186,11 +203,11 @@ abstract class MyHerds {
 		$petTypeData = MyCreatures::petTypeData((int) $petData['type_id'], "family, evolution_level, rarity, prefix");
 		
 		// Exotic pets cannot be herded
-		if(($petTypeData['rarity'] == 20 || $petTypeData['rarity'] == 21) && MyCreatures::petRoyalty($petTypeData['prefix']) == "")
+		if($petTypeData['rarity'] == 20 || $petTypeData['rarity'] == 21)
 		{
 			Alert::saveError("Cannot Herd", "You cannot herd an exotic creature.");
 			return false;
-		}	
+		}
 		
 		// Check if a herd currently exists
 		if(!$population = self::population($uniID, $petTypeData['family']))
@@ -241,4 +258,45 @@ abstract class MyHerds {
 		
 		return $pass;
 	}
+	
+/****** Remove a creature from herd ******/
+	public static function removeFromHerd
+	(
+		int $creatureType	// <int> The creature type to remove from the herd.
+	,	string $creatureNick	// <str> The nickname of the creature to remove.
+	): bool					// RETURNS <bool> TRUE on success, or FALSE on failure.
+	
+	// MyHerds::removeFromHerd($creatureType, $creatureNick);
+	{
+		$uniID = Me::$id;
+		
+		// Get the pet type data
+		$petTypeData = MyCreatures::petTypeData($creatureType, "family, evolution_level");
+		
+		Database::startTransaction();
+		
+		// remove pet
+		if($pass = Database::query("DELETE FROM herds_creatures WHERE uni_id=? AND family=? AND nickname=? AND type_id=? LIMIT 1", array($uniID, $petTypeData['family'], $creatureNick, $creatureType)))
+		{
+			// update population
+			if($pass = self::updatePopulation($uniID, $petTypeData['family']))
+			{
+				$pass = self::updateScore($uniID, $petTypeData['family'], 1-$petTypeData['evolution_level']);
+			}
+			// check if the herd is empty and if so, remove it
+			else
+			{
+				if(!$creatureCount = self::countCreatures($uniID, $petTypeData['family']))
+				{
+					$pass = Database::query("DELETE FROM herds WHERE uni_id=? AND family=? LIMIT 1", array($uniID, $petTypeData['family']));
+				}
+			}
+		}
+		
+		Database::endTransaction($pass);
+		
+		return $pass;
+	}
+	
+	
 }

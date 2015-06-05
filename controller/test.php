@@ -3,7 +3,55 @@
 if(Me::$id != 43)
 	exit;
 
-$issue = Database::selectMultiple("SELECT * FROM creatures_types", array());
+$rarity = array();
+$loop = Database::selectMultiple("SELECT id, rarity, evolves_from FROM creatures_types", array());
+foreach($loop as $l)
+	$rarity[$l['id']] = array("id" => $l['id'], "rarity" => $l['rarity'], "evolves_from" => $l['evolves_from']);
+	
+foreach($rarity as $r)
+{
+	if($r['evolves_from'])
+	{
+		if($rarity[$r['evolves_from']]['rarity'] != $r['rarity'] && $rarity[$r['evolves_from']]['rarity'] != $r['rarity'] - 1)
+		{
+			$r['evolves_from_rarity'] = $rarity[$r['evolves_from']]['rarity'];
+			print_r($r);
+			echo "<br/>";
+		}
+	}
+}
+
+/*$loop = Database::selectMultiple("SELECT ct.id, ct.family, ct.prefix, ct.rarity AS cr, bc.rarity AS br FROM creatures_types ct INNER JOIN basket_creatures bc ON ct.id=bc.type_id", array());
+foreach($loop as $l)
+{
+	if($l['cr'] != $l['br'])
+	{
+		print_r($l);
+		echo "<br/>";
+	}
+}
+echo "<hr/>";
+$loop = Database::selectMultiple("SELECT ct.id, ct.family, ct.prefix, ct.rarity AS cr, bc.rarity AS br FROM creatures_types ct INNER JOIN explore_creatures bc ON ct.id=bc.type_id", array());
+foreach($loop as $l)
+{
+	if($l['cr'] != $l['br'])
+	{
+		print_r($l);
+		echo "<br/>";
+	}
+}
+echo "<hr/>";
+$loop = Database::selectMultiple("SELECT ct.id, ct.family, ct.prefix, ct.rarity AS cr, bc.rarity AS br FROM creatures_types ct INNER JOIN shop_creatures bc ON ct.id=bc.type_id", array());
+foreach($loop as $l)
+{
+	if($l['cr'] != $l['br'])
+	{
+		print_r($l);
+		echo "<br/>";
+	}
+}*/
+
+/*$issue = Database::selectMultiple("SELECT * FROM creatures_types", array());
 foreach ($issue as $i)
 {
 	if($i['evolves_from'] == 0)
@@ -51,7 +99,7 @@ foreach($unused as $key => $u)
 {
 	$base = MyCreatures::getTypeID($u[0], "Egg", MyCreatures::petRoyalty($u[1]));
 	echo "[#" . $key . " / #" . $base . "] " . $u[0] . " " . $u[1] . "<br/>";
-}
+}*/
 
 /*$old = Database::selectMultiple("SELECT * FROM old_creature_types", array());
 foreach($old as $o)

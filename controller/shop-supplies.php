@@ -111,9 +111,6 @@ if($link = Link::clicked() and $link == "shop-supply-uc")
 // Prepare Values
 $linkProtect = Link::prepare("shop-supply-uc");
 
-// Prepare the Page's Active Hashtag
-$config['active-hashtag'] = "UniCreatures";
-
 // Run Global Script
 require(APP_PATH . "/includes/global.php");
 

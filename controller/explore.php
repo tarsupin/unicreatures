@@ -16,6 +16,7 @@ if(!isset($url[1]))
 $zone = $url[1];
 $zoneList = MyExplore::zoneList();
 $totalAchievements = MyAchievements::getScore(Me::$id);
+unset($config['active-hashtag']);
 
 // Make sure you're in a valid zone
 if(!isset($zoneList[$zone]))

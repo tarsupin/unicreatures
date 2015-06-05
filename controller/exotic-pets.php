@@ -124,29 +124,8 @@ echo '
 </p>';
 
 // Display Exotics
-foreach($shopExotics as $exoticPet)
-{
-	echo '
-	<div class="shop-block">
-		<div class="shop-block-inner">
-			<div class="shop-block-left">
-				<a href="/exotic-pets?purchase=' . $exoticPet['id'] . '&' . $linkProtect . '"><img src="' . MyCreatures::imgSrc($exoticPet['family'], $exoticPet['name'], $exoticPet['prefix']) . '" /></a>
-			</div>
-			<div class="shop-block-right">
-				<div class="shop-block-title">' . ($exoticPet['prefix'] != "" ? $exoticPet['prefix'] . " " : "") . ($exoticPet['name'] == "Egg" ? $exoticPet['family'] . ' Egg' : $exoticPet['name']) . '</div>
-				<div class="shop-block-note">' . $exoticPet['blurb'] . '</div>';
-			
-			if($exoticPet['date_end'] > -1)
-			{
-				echo '
-				<div class="shop-block-leave">Leaves ' . Time::fuzzy((int) $exoticPet['date_end']) . '</div>';
-			}
-			
-			echo '
-			</div>
-		</div>
-	</div>';
-}
+foreach($shopExotics as $pet)
+	echo MyBlocks::petInfo($pet, '/exotic-pets?purchase=' . $pet['id'] . '&' . $linkProtect);
 
 echo '
 </div>';

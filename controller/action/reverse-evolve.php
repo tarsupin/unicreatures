@@ -13,7 +13,7 @@ if(!isset($url[2]))
 }
 
 // Get Pet Data
-$pet = MyCreatures::petData((int) $url[2], "id, uni_id, type_id, nickname");
+$pet = MyCreatures::petData((int) $url[2], "id, uni_id, area_id, type_id, nickname, gender, activity, active_until, experience, total_points, date_acquired");
 
 if(!$pet or $pet['uni_id'] != Me::$id)
 {
@@ -25,7 +25,7 @@ $swapCost = 10;
 $alchemy = MySupplies::getSupplies(Me::$id, "alchemy");
 
 // Get the Pet Type Data
-$petType = MyCreatures::petTypeData((int) $pet['type_id'], "evolves_from, family, name, prefix");
+$petType = MyCreatures::petTypeData((int) $pet['type_id'], "family, name, evolution_level, required_points, rarity, blurb, description, evolves_from, prefix");
 $prefix = str_replace(array("Noble", "Exalted", "Noble ", "Exalted "), array("", "", "", ""), $petType['prefix']);
 
 if($petType['evolves_from'] == 0)
@@ -40,7 +40,7 @@ if(isset($_GET['reverse']) and $value = Link::clicked() and $value == "reverse-e
 	if($alchemy >= $swapCost)
 	{
 		// Get the Changed Type
-		$newType = MyCreatures::petTypeData((int) $petType['evolves_from'], "id, name, prefix");
+		$newType = MyCreatures::petTypeData((int) $petType['evolves_from'], "id, family, name, evolution_level, required_points, rarity, blurb, description, evolves_from, prefix");
 		
 		if($newType)
 		{
@@ -48,9 +48,16 @@ if(isset($_GET['reverse']) and $value = Link::clicked() and $value == "reverse-e
 			Database::startTransaction();
 			$alchemy = MySupplies::changeSupplies(Me::$id, "alchemy", $swapCost);
 			Database::query("UPDATE creatures_owned SET type_id=? WHERE id=? LIMIT 1", array($newType['id'], $pet['id']));
+			// Update the Pet Name, if original was default
+			if($pet['nickname'] == $petType['name'])
+			{
+				$pet['nickname'] = $newType['name'];
+				
+				Database::query("UPDATE creatures_owned SET nickname=? WHERE id=? LIMIT 1", array($pet['nickname'], $pet['id']));
+			}
 			Database::endTransaction();
 			
-			Alert::saveSuccess("Reversed Evolution", "You have reversed " . $pet['nickname'] . "'s evolution to a " . ($newType['prefix'] != "" ? $newType['prefix'] . ' ' : "") . $newType['name'] . "!");
+			Alert::saveSuccess("Reversed Evolution", "You have reversed " . ($petType['prefix'] != "" ? $petType['prefix'] . ' ' : "") . $petType['name'] . "'s evolution to a " . ($newType['prefix'] != "" ? $newType['prefix'] . ' ' : "") . $newType['name'] . "!");
 			
 			// Return to the pet's page with the new gender
 			header("Location: /pet/" . $pet['id']); exit;
@@ -79,23 +86,23 @@ echo '
 <div id="panel-right"></div>
 <div id="content">' . Alert::display();
 
+foreach($petType as $key => $val)
+	if($key != "id")
+		$pet[$key] = (is_numeric($val) ? (int) $val : $val);
+
 echo '
 <div id="uc-left">
-	' . MyBlocks::avatar(Me::$vals) . '
-	' . MyBlocks::inventory(Me::$id) . '
+	<div class="uc-static-block">' . MyBlocks::petPlain($pet, '/pet/' . $pet['id']) . '<div class="uc-note">Evolution Points: ' . $pet['total_points'] . '</div><div class="uc-note">Level: ' . MyTraining::getLevel((int) $pet['experience']) . '</div></div>
+	' . MyBlocks::inventory() . '
 </div>
 
 <div id="uc-right">
 	' . MyBlocks::topnav(Me::$vals['handle'], $url[0]) . '
 	
 	<div>
-		<div class="uc-bold">Are you sure you want to reverse evolve ' . $pet['nickname'] . ' to its earlier stage? This effect will require ' . $swapCost . ' alchemy ingredients.</div>
+		<div class="uc-bold">Are you sure you want to reverse evolve ' . $pet['nickname'] . ' to its earlier stage?</div>
 		
-		<div class="uc-note">You currently have ' . $alchemy . ' alchemy ingredients.</div>
-		
-		<div class="pet-cube"><div class="pet-cube-inner"><img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" /></div>
-		
-		<div class="uc-note">' . ($prefix != "" && $pet['nickname'] == $petType['name'] ? $prefix . " " : "") . ($petType['name'] == "Egg" && $pet['nickname'] == "Egg" ? $petType['family'] . ' Egg' : $pet['nickname']) . (MyCreatures::petRoyalty($petType['prefix']) != "" ? ' <img src="/assets/medals/' . MyCreatures::petRoyalty($petType['prefix']) . '.png" />' : '') . '</div></div>
+		<div>This effect will require ' . $swapCost . ' alchemy ingredients.</div>
 		
 		<div class="uc-action-block"><a href="/action/reverse-evolve/' . $pet['id'] . '?reverse=true&' . $linkProtect . '" style="display:block; padding:4px;">Yes, reverse-evolve this pet.</a></div>
 	</div>

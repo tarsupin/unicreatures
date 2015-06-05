@@ -109,7 +109,7 @@ abstract class MyEnergy {
 		}
 		else if($newEnergy > self::$maxEnergy)
 		{
-			$newEnergy = self::$maxEnergy - $current;
+			$newEnergy = self::$maxEnergy;
 		}
 		
 		// Update the energy

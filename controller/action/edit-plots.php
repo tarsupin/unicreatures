@@ -37,7 +37,7 @@ echo '
 echo '
 <div id="uc-left">
 	' . MyBlocks::avatar(Me::$vals) . '
-	' . MyBlocks::inventory(Me::$id) . '
+	' . MyBlocks::inventory() . '
 </div>
 
 <div id="uc-right">

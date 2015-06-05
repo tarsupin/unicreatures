@@ -3,7 +3,7 @@
 // Must Log In
 if(!Me::$loggedIn)
 {
-	Me::redirectLogin("/uc-static-blocks");
+	header("Location: /"); exit;
 }
 
 // Make sure pet exists
@@ -42,6 +42,7 @@ if($link = Link::clicked() and $link == "send-to-herd" && isset($_GET['confirm']
 
 // Prepare Values
 $population = MyHerds::population(Me::$id, $petType['family']);
+$score = MyHerds::getScore(Me::$id, $petType['family']);
 
 // Prepare Values
 $linkProtect = Link::prepare("send-to-herd");
@@ -60,12 +61,15 @@ echo '
 <div id="panel-right"></div>
 <div id="content">' . Alert::display();
 
+foreach($petType as $key => $val)
+	$pet[$key] = (is_numeric($val) ? (int) $val : $val);
+
 echo '
-<div id="uc-left-wide">
-	<div class="uc-static-block"><a href="/pet/' . $pet['id'] . '"><img src="' . MyCreatures::imgSrc($petType['family'], $petType['name'], $petType['prefix']) . '" /></a><div class="uc-bold">' . $pet['nickname'] . '</div><div class="uc-note">Level ' . MyTraining::getLevel((int) $pet['experience']) . ' ' . $petType['name'] . '</div><div style="font-size:0.8em;">' . $pet['total_points'] . ' Evolution Points</div></div>
-	<div class="uc-action-block"><img src="' . MyCreatures::imgSrc($petType['family'], $petType['family'], "") . '" /><div class="uc-bold">The ' . $petType['family'] . ' Herd</div><div class="uc-note">Population: ' . $population . '</div></div>
+<div id="uc-left">
+	<div class="uc-static-block">' . MyBlocks::petPlain($pet, '/pet/' . $pet['id']) . '<div class="uc-note">Evolution Points: ' . $pet['total_points'] . '</div><div class="uc-note">Level: ' . MyTraining::getLevel((int) $pet['experience']) . '</div></div>
+	<div class="uc-action-block"><img src="' . MyCreatures::imgSrc($petType['family'], $petType['family'], "") . '" style="max-width:100%;" /><div class="uc-bold">The ' . $petType['family'] . ' Herd</div><div class="uc-note">Pop: ' . $population . ', Score: ' . $score . '</div></div>
 </div>
-<div id="uc-right-wide">
+<div id="uc-right">
 	' . MyBlocks::topnav(Me::$vals['handle'], $url[0]) . '
 	
 	<h1>Send ' . $pet['nickname'] . ' to the Herd</h1>

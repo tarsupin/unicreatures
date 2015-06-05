@@ -31,9 +31,6 @@ if(count($areas) < 1)
 	}
 }
 
-// Prepare the Page's Active Hashtag
-$config['active-hashtag'] = "UniCreatures";
-
 // Run Global Script
 require(APP_PATH . "/includes/global.php");
 
@@ -51,7 +48,7 @@ echo '
 echo '
 <div id="uc-left">
 	' . MyBlocks::avatar($userData) . '
-	' . MyBlocks::inventory($userData['uni_id']) . '
+	' . ($userData['uni_id'] == Me::$id ? MyBlocks::inventory() : '') . '
 </div>
 
 <div id="uc-right">

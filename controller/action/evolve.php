@@ -13,7 +13,7 @@ if(!isset($url[2]))
 }
 
 // Get Pet Data
-$pet = MyCreatures::petData((int) $url[2], "id, uni_id, area_id, type_id, nickname, gender, total_points");
+$pet = MyCreatures::petData((int) $url[2], "id, uni_id, area_id, type_id, nickname, gender, activity, active_until, experience, total_points, date_acquired");
 
 if(!$pet or $pet['uni_id'] != Me::$id)
 {
@@ -21,7 +21,7 @@ if(!$pet or $pet['uni_id'] != Me::$id)
 }
 
 // Get the Pet Type Data
-$petType = MyCreatures::petTypeData((int) $pet['type_id'], "family, name, prefix, required_points");
+$petType = MyCreatures::petTypeData((int) $pet['type_id'], "id, family, name, evolution_level, required_points, rarity, blurb, description, evolves_from, prefix");
 $prefix = str_replace(array("Noble", "Exalted", "Noble ", "Exalted "), array("", "", "", ""), $petType['prefix']);
 
 $evolvedTypes = Database::selectMultiple("SELECT id, description, family, name, prefix, evolution_level FROM creatures_types WHERE evolves_from=?", array($pet['type_id']));
@@ -48,6 +48,7 @@ if($pet['total_points'] < $petType['required_points'])
 
 // Update the Pet Type
 $newType = $evolvedTypes[0];
+
 MyCreatures::changePetType((int) $pet['id'], (int) $newType['id']);
 
 // Update the Pet Name, if original was default
@@ -78,18 +79,19 @@ echo '
 <div id="panel-right"></div>
 <div id="content">' . Alert::display();
 
+foreach($newType as $key => $val)
+	if($key != "id")
+		$pet[$key] = (is_numeric($val) ? (int) $val : $val);
+
 echo '
 <style>
 .uc-action-inline img { max-width:90px; max-height:110px; }
 </style>
 
 <div id="uc-left-wide">
-	<div class="uc-static-block">
-		<a href="/pet/' . $pet['id'] . '"><img src="' . MyCreatures::imgSrc($newType['family'], $newType['name'], $newType['prefix']) . '" /></a>
-	</div>
+	<div class="uc-static-block">' . MyBlocks::petPlain($pet, '/pet/' . $pet['id']) . '<div class="uc-note">Evolution Points: ' . $pet['total_points'] . '</div><div class="uc-note">Level: ' . MyTraining::getLevel((int) $pet['experience']) . '</div></div>
 	<div class="uc-bold-block">' . $petType['name'] . ' has evolved into ' . $newType['name'] . '!</div>
-	<div class="uc-action-block">
-		<div class="uc-action-inline"><a href="/pet/' . $pet['id'] . '"><img src="' . MyCreatures::imgSrc($newType['family'], $newType['name'], $newType['prefix']) . '" style="max-width:100%; max-height:120px;" /></a><div class="uc-note-bold">To Pet</div><div class="uc-note">' . ($prefix != "" && $pet['nickname'] == $newType['name'] ? $prefix . " " : "") . ($newType['name'] == "Egg" && $pet['nickname'] == "Egg" ? $newType['family'] . ' Egg' : $pet['nickname']) . (MyCreatures::petRoyalty($newType['prefix']) != "" ? ' <img src="/assets/medals/' . MyCreatures::petRoyalty($newType['prefix']) . '.png" />' : '') . '</div></div>';
+	<div class="uc-action-block">';
 	
 	if($areaData)
 	{
@@ -98,7 +100,7 @@ echo '
 	}
 	
 	echo '
-		<div class="uc-action-inline"><a href="/wild"><img src="/assets/areas/wild.png" style="max-width:100%;" /></a><div class="uc-note-bold">To Wild</div><div class="uc-note">&nbsp;</div></div>
+		<div class="uc-action-inline"><a href="/wild"><img src="/assets/areas/wild.png" style="max-width:100%;" /></a><div class="uc-note-bold">The Wild</div><div class="uc-note">&nbsp;</div></div>
 	</div>
 </div>
 <div id="uc-right-wide">
