@@ -33,6 +33,7 @@ define("APP_PATH", CONF_PATH);
 // Site-Wide Configurations
 $config['site-name'] = "UniCreatures";
 $config['database']['name'] = "unicreatures";
+$config['active-hashtag'] = "UniCreatures";
 
 
 /***********************************
