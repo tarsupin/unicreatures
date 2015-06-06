@@ -62,7 +62,7 @@ abstract class MyIPTrack {
 	public static function getDayCount
 	(
 		int $uniID				// <int> The UniID to update the day count for.
-	,	int $update = false		// <int> Update the day counter.
+	,	bool $update = false		// <bool> Update the day counter.
 	): array <str, mixed>						// RETURNS <str:mixed> The data for the user's day count.
 	
 	// $dayCountData = MyIPTrack::getDayCount($uniID, [$update]);
