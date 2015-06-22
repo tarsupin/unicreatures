@@ -71,7 +71,7 @@ abstract class MyAreas {
 					$time = date_create_from_format("ymdH", $ymdH);
 					$day = (int) date_format($time, "z");
 				}
-				if($fetchBasket = Database::selectMultiple("SELECT bc.type_id, ct.family, ct.evolution_level FROM basket_creatures bc INNER JOIN creatures_types ct ON bc.type_id=ct.id WHERE bc.rarity=?" . $noNoble . $noExalted . " AND bc.day_start = ? OR (bc.day_start <= ? AND bc.day_end >= ?) OR (bc.day_end >= ? AND bc.day_start <= ? AND bc.day_end >= ?)", array($rarity, -1, $day, $day, 365, $day+365, $day+365)))
+				if($fetchBasket = Database::selectMultiple("SELECT bc.type_id, ct.family, ct.evolution_level FROM basket_creatures bc INNER JOIN creatures_types ct ON bc.type_id=ct.id WHERE bc.rarity=?" . $noNoble . $noExalted . " AND (bc.day_start = ? OR (bc.day_start <= ? AND bc.day_end >= ?) OR (bc.day_end >= ? AND bc.day_start <= ? AND bc.day_end >= ?))", array($rarity, -1, $day, $day, 365, $day+365, $day+365)))
 				{
 					$fetchBasket = MyTreasure::equalizeChances($fetchBasket);
 					for($rnd = 0;$rnd < $count;$rnd++)

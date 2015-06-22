@@ -172,7 +172,7 @@ abstract class MyTreasure {
 		$noExalted = (mt_rand(1, 100) > self::$exaltChance) ? " AND ct.prefix != 'Exalted' AND ct.prefix NOT LIKE 'Exalted%' " : '';
 		
 		$day = date("z");
-		if($fetchOptions = Database::selectMultiple("SELECT ec.type_id, ct.family, ct.evolution_level FROM explore_creatures ec INNER JOIN creatures_types ct ON ec.type_id=ct.id WHERE (ec.explore_zone=? OR ec.explore_zone=?) AND ec.rarity=?" . $noNoble . $noExalted . " AND ec.day_start = ? OR (ec.day_start <= ? AND ec.day_end >= ?) OR (ec.day_end >= ? AND ec.day_start <= ? AND ec.day_end >= ?)", array(self::$exploreZone, "", $rarity, -1, $day, $day, 365, $day+365, $day+365)))
+		if($fetchOptions = Database::selectMultiple("SELECT ec.type_id, ct.family, ct.evolution_level FROM explore_creatures ec INNER JOIN creatures_types ct ON ec.type_id=ct.id WHERE (ec.explore_zone=? OR ec.explore_zone=?) AND ec.rarity=?" . $noNoble . $noExalted . " AND (ec.day_start = ? OR (ec.day_start <= ? AND ec.day_end >= ?) OR (ec.day_end >= ? AND ec.day_start <= ? AND ec.day_end >= ?))", array(self::$exploreZone, "", $rarity, -1, $day, $day, 365, $day+365, $day+365)))
 		{
 			$fetchOptions = MyTreasure::equalizeChances($fetchOptions);
 			
@@ -614,13 +614,17 @@ abstract class MyTreasure {
 		$parameters = json_encode($parameters);
 		$disappears = time() + $duration;
 		
-		if(!Database::query("INSERT IGNORE INTO `queue_treasure` (uni_id, treasure, json, date_disappears) VALUES (?, ?, ?, ?)", array($uniID, $treasure, $parameters, $disappears)))
+		// If the treasure isn't added, there is a date_disappears conflict. Set it $attempt seconds back.
+		$attempt = 0;
+		$pass = false;
+		while(!$pass && $attempt < 10)
 		{
-			// If the treasure wasn't added, there was a date_disappears conflict. Set it one second back.
-			return Database::query("INSERT IGNORE INTO `queue_treasure` (uni_id, treasure, json, date_disappears) VALUES (?, ?, ?, ?)", array($uniID, $treasure, $parameters, $disappears - 1));
+			Database::query("INSERT IGNORE INTO `queue_treasure` (uni_id, treasure, json, date_disappears) VALUES (?, ?, ?, ?)", array($uniID, $treasure, $parameters, $disappears - $attempt));
+			$pass = Database::$rowsAffected;
+			$attempt++;
 		}
 		
-		return true;
+		return (bool) $pass;
 	}
 	
 	

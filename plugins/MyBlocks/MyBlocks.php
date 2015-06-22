@@ -108,7 +108,7 @@ abstract class MyBlocks {
 			$html .= '
 					<div class="shop-block-info" title="Rarity: ' . $pet['rarity'] . '">' . $stars . '</div>';
 		}
-		elseif($petData = MyShop::shopPet((int) $pet['id']))
+		elseif($pet['rarity'] < 20 && $petData = MyShop::shopPet((int) $pet['id']))
 		{
 			$html .= '
 				<div class="shop-block-info">' . $petData['cost'] . ' Coins</div>';

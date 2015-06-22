@@ -7,6 +7,16 @@ function removePopup(display)
 		popup.parentNode.removeChild(popup);
 }
 
+function removePopupClick(e, display)
+{
+	e = e ? e : window.event;
+	if(e.stopPropagation)
+		e.stopPropagation();
+	else
+		e.cancelBubble = true;
+	removePopup(display);
+}
+
 function createPopup(display)
 {
 	popup = document.getElementById(display);
@@ -15,9 +25,9 @@ function createPopup(display)
 		popup = document.createElement("div");
 		popup.setAttribute("id", display);
 		if (popup.addEventListener)
-			popup.addEventListener("click", function(e) { handleException(e, display); });
+			popup.addEventListener("click", function(e) { removePopupClick(e, display); });
 		else if (popup.attachEvent)
-			popup.attachEvent("onclick", function(e) { handleException(e, display); });
+			popup.attachEvent("onclick", function(e) { removePopupClick(e, display); });
 		document.body.appendChild(popup);
 	}
 	window.clearTimeout(autoRemove);
@@ -25,21 +35,6 @@ function createPopup(display)
 		autoRemove = setTimeout("removePopup('" + display + "')", 10000);
 	
 	return popup;
-}
-
-function handleException(e, display)
-{
-	var remove = true;
-	e = e ? e : window.event;
-	if(e.target.hasAttribute("class"))
-		if(e.target.className == "icon-circle-info")
-			remove = false;
-	if(remove)
-		if(e.path[2].hasAttribute("id"))
-			if(e.path[2].id == "mystery-block")
-				remove = false;
-	if(remove)
-		removePopup(display);
 }
 
 function openMysteryBox()
@@ -62,7 +57,6 @@ function viewExplore(zone)
 
 function viewInventory()
 {
-	keep = true;
 	getAjax("", "view-inventory", "viewResponse");
 }
 
